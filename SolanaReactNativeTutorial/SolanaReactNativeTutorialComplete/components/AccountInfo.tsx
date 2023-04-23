@@ -1,29 +1,34 @@
 import React from 'react';
 import {LAMPORTS_PER_SOL, PublicKey} from '@solana/web3.js';
-import { StyleSheet, View, Text } from 'react-native';
-import { Authorization } from '../screens/MainScreen'
+import {StyleSheet, View, Text} from 'react-native';
+import {Authorization} from '../screens/MainScreen';
 
 type AccountInfoProps = Readonly<{
   authorization: Authorization;
   balance: number | null;
-}>
+}>;
 
 function convertLamportsToSOL(lamports: number) {
   return new Intl.NumberFormat(undefined, {maximumFractionDigits: 1}).format(
     (lamports || 0) / LAMPORTS_PER_SOL,
-  )
+  );
 }
 
-const LAMPORTS_PER_AIRDROP = 100000000;
-
-export default function AccountInfo({ authorization, balance }: AccountInfoProps) {
+export default function AccountInfo({
+  authorization,
+  balance,
+}: AccountInfoProps) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
         <Text style={styles.walletBalance}>
-          {balance !== null ? `Balance: ${convertLamportsToSOL(balance)} SOL` : "Loading balance..."}
+          {balance !== null
+            ? `Balance: ${convertLamportsToSOL(balance)} SOL`
+            : 'Loading balance...'}
         </Text>
-        <Text style={styles.walletName}>{authorization.label ?? "Wallet name not found"}</Text>
+        <Text style={styles.walletName}>
+          {authorization.label ?? 'Wallet name not found'}
+        </Text>
         <Text style={styles.walletNameSubtitle}>{authorization.address}</Text>
       </View>
     </View>
