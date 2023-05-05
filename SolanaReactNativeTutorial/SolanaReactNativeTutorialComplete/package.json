@@ -1,6 +1,6 @@
 {
-  "name": "SolanaReactNativeTutorialComplete",
-  "version": "0.0.1",
+  "name": "@solana-mobile/solana-react-native-tutorial-complete",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -15,6 +15,7 @@
     "@solana/wallet-adapter-react": "^0.15.32",
     "@solana/web3.js": "^1.74.0",
     "@types/react": "~18.0.27",
+    "buffer": "^6.0.3",
     "react": "18.2.0",
     "react-native": "0.71.4",
     "react-native-safe-area-context": "3.4.1",

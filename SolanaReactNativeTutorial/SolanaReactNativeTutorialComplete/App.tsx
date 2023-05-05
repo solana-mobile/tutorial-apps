@@ -1,18 +1,18 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import {ConnectionProvider} from '@solana/wallet-adapter-react';
-import {clusterApiUrl } from '@solana/web3.js';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {clusterApiUrl} from '@solana/web3.js';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import React from 'react';
 
-import MainScreen from './screens/MainScreen'
+import MainScreen from './screens/MainScreen';
 
-
-const DEVNET_ENDPOINT = /*#__PURE__*/ clusterApiUrl('devnet');
+const DEVNET_ENDPOINT = /*#__PURE__*/ clusterApiUrl('testnet');
 
 export default function App() {
-
   return (
-    <ConnectionProvider config={{commitment: 'processed'}} endpoint={DEVNET_ENDPOINT}>
+    <ConnectionProvider
+      config={{commitment: 'processed'}}
+      endpoint={DEVNET_ENDPOINT}>
       <SafeAreaView style={styles.container}>
         <MainScreen />
       </SafeAreaView>
@@ -22,6 +22,6 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%'
+    height: '100%',
   },
 });
