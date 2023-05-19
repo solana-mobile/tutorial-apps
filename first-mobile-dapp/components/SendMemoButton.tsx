@@ -5,8 +5,6 @@ import {
   Web3MobileWallet,
 } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {
-  clusterApiUrl,
-  Connection,
   Transaction,
   TransactionInstruction,
   PublicKey,

@@ -118,6 +118,7 @@ function AuthorizationProvider(props: {children: ReactNode}) {
             cluster: APP_CLUSTER,
             identity: APP_IDENTITY,
           }));
+      console.log(authorizationResult);
       return (await handleAuthorizationResult(authorizationResult))
         .selectedAccount;
     },
