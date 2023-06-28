@@ -65,15 +65,15 @@ export default function MainScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {selectedAccount ? (
             <>
-              <Section title="Fetch Counter Account">
-                <FetchCounterAccountButton counterPubkey={counterPubkey} />
-              </Section>
-
-              <Section title="Increment Counter">
+              <Section title="1. Initialize Counter">
                 <InitializeCounterButton counterPubkey={counterPubkey} />
               </Section>
 
-              <Section title="Increment Counter">
+              <Section title="2. Fetch Counter Account">
+                <FetchCounterAccountButton counterPubkey={counterPubkey} />
+              </Section>
+
+              <Section title="3. Increment Counter">
                 <IncrementCounterButton counterPubkey={counterPubkey} />
               </Section>
             </>

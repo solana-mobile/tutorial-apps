@@ -56,8 +56,6 @@ const createAnchorWallet = (
   } as anchor.Wallet;
 };
 
-const LAMPORTS_PER_AIRDROP = 100000000;
-
 type Props = Readonly<{
   counterPubkey: PublicKey | null;
 }>;

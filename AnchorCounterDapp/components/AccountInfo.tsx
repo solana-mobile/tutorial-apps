@@ -30,10 +30,10 @@ export default function AccountInfo({
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text>Wallet Account Info</Text>
-        <Text style={styles.walletHeader}>
+        <Text style={styles.walletHeader}>Wallet Account Info</Text>
+        <Text style={styles.walletBalance}>
           {selectedAccount.label
-            ? `${selectedAccount.label}: ${
+            ? `${selectedAccount.label}: ◎${
                 balance ? convertLamportsToSOL(balance) : '0'
               } SOL`
             : 'Wallet name not found'}
@@ -70,8 +70,10 @@ const styles = StyleSheet.create({
     columnGap: 10,
   },
   walletHeader: {
-    fontSize: 20,
     fontWeight: 'bold',
+  },
+  walletBalance: {
+    fontSize: 20,
   },
   walletNameSubtitle: {
     fontSize: 12,
