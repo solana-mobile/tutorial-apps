@@ -28,7 +28,7 @@ export default function IncrementCounterButton() {
 
   return (
     <Button
-      title="Increment Counter"
+      title="+1 Counter"
       disabled={signingInProgress}
       onPress={async () => {
         if (signingInProgress) {
@@ -41,7 +41,7 @@ export default function IncrementCounterButton() {
           setTimeout(async () => {
             Alert.alert(
               'Counter increment successful!',
-              'Fetch the counter account to see the updated value.',
+              'Click the update button to see the new count.',
               [{text: 'Ok', style: 'cancel'}],
             );
           }, 100);

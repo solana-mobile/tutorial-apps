@@ -24,6 +24,12 @@ export interface CounterProgramProviderProps {
   children: ReactNode;
 }
 
+export type CounterAccount = {
+  count: anchor.BN;
+  authority: PublicKey;
+  bump: number;
+};
+
 export const CounterProgramProvider: FC<CounterProgramProviderProps> = ({
   children,
 }) => {

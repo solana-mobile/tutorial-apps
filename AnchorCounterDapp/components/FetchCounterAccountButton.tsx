@@ -1,30 +1,23 @@
 import React, {useState, useCallback} from 'react';
 import {Alert, Button} from 'react-native';
-import {useCounterProgram} from './providers/CounterProgramProvider';
+import {
+  CounterAccount,
+  useCounterProgram,
+} from './providers/CounterProgramProvider';
 
-export default function FetchCounterAccountButton() {
+type FetchCounterAccountButtonProps = Readonly<{
+  onFetchComplete: (counterAccount: CounterAccount) => void;
+}>;
+
+export default function FetchCounterAccountButton({
+  onFetchComplete,
+}: FetchCounterAccountButtonProps) {
   const [fetchingInProgress, setFetchingInProgress] = useState(false);
   const {counterProgram, counterAccountPubkey} = useCounterProgram();
 
-  const fetchCounterAccount = useCallback(async () => {
-    if (!counterProgram) {
-      console.warn(
-        'CounterProgram is not initialized yet. Try connecting a wallet first.',
-      );
-      return;
-    }
-    const counterAccount = await counterProgram.account.counter.fetch(
-      counterAccountPubkey,
-    );
-
-    console.log('fetched counterAccount:');
-    console.log(counterAccount);
-    return counterAccount;
-  }, [counterProgram, counterAccountPubkey]);
-
   return (
     <Button
-      title="Fetch Counter Account"
+      title="Update Count"
       disabled={fetchingInProgress}
       onPress={async () => {
         if (fetchingInProgress) {
@@ -32,15 +25,22 @@ export default function FetchCounterAccountButton() {
         }
         setFetchingInProgress(true);
         try {
-          const counterAccount = await fetchCounterAccount();
-          console.log(counterAccount);
-          setTimeout(async () => {
-            Alert.alert(
-              'Counter Account fetched!',
-              `Current Count: ${counterAccount?.count}`,
-              [{text: 'Ok', style: 'cancel'}],
+          if (!counterProgram) {
+            console.warn(
+              'CounterProgram is not initialized yet. Try connecting a wallet first.',
             );
-          }, 100);
+            return;
+          }
+          const counterAccount: CounterAccount =
+            await await counterProgram.account.counter.fetch(
+              counterAccountPubkey,
+            );
+          onFetchComplete(counterAccount);
+          Alert.alert(
+            'Counter Account updated!',
+            `Current Count: ${counterAccount?.count}`,
+            [{text: 'Ok', style: 'cancel'}],
+          );
         } finally {
           setFetchingInProgress(false);
         }

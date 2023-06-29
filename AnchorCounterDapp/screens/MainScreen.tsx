@@ -14,19 +14,21 @@ import {useConnection} from '../components/providers/ConnectionProvider';
 import IncrementCounterButton from '../components/IncrementCounterButton';
 import {PublicKey} from '@solana/web3.js';
 import FetchCounterAccountButton from '../components/FetchCounterAccountButton';
-import InitializeCounterButton from '../components/InitializeCounterButton';
+import CounterInfo from '../components/CounterInfo';
+import {
+  CounterAccount,
+  useCounterProgram,
+} from '../components/providers/CounterProgramProvider';
 
 export default function MainScreen() {
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
-  const [counterPubkey, setCounterPubkey] = useState<PublicKey | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
+  const [counterValue, setCounterValue] = useState<string | null>(null);
 
   const fetchAndUpdateBalance = useCallback(
     async (account: Account) => {
-      console.log('Fetching balance for: ' + account.publicKey);
       const fetchedBalance = await connection.getBalance(account.publicKey);
-      console.log('Balance fetched: ' + fetchedBalance);
       setBalance(fetchedBalance);
     },
     [connection],
@@ -39,42 +41,25 @@ export default function MainScreen() {
     fetchAndUpdateBalance(selectedAccount);
   }, [fetchAndUpdateBalance, selectedAccount]);
 
-  const fetchCounterAccount = useCallback(async () => {
-    const counterSeed = anchor.utils.bytes.utf8.encode('counter');
-
-    const counterProgramId = new PublicKey(
-      '5tH6v5gyhxnEjyVDQFjuPrH9SzJ3Rvj1Q4zKphnZsN74',
-    );
-
-    const [counterPubkey] = anchor.web3.PublicKey.findProgramAddressSync(
-      [counterSeed],
-      counterProgramId,
-    );
-    console.log('Counter fetch');
-    console.log(counterPubkey);
-    setCounterPubkey(counterPubkey);
-  }, []);
-
-  useEffect(() => {
-    fetchCounterAccount();
-  }, [fetchCounterAccount]);
-
   return (
     <>
       <View style={styles.mainContainer}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {selectedAccount ? (
             <>
-              <Section title="1. Initialize Counter">
-                <InitializeCounterButton />
+              <Section title="Counter Program Info">
+                <CounterInfo counterValue={counterValue} />
               </Section>
 
-              <Section title="2. Fetch Counter Account">
-                <FetchCounterAccountButton />
-              </Section>
-
-              <Section title="3. Increment Counter">
-                <IncrementCounterButton />
+              <Section title="Increment the counter!">
+                <View style={styles.buttonGroup}>
+                  <IncrementCounterButton />
+                  <FetchCounterAccountButton
+                    onFetchComplete={(counterAccount: CounterAccount) => {
+                      setCounterValue(counterAccount.count.toString());
+                    }}
+                  />
+                </View>
               </Section>
             </>
           ) : null}
@@ -104,7 +89,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   buttonGroup: {
-    flexDirection: 'column',
-    paddingVertical: 4,
+    flexDirection: 'row',
+    gap: 4,
   },
 });
