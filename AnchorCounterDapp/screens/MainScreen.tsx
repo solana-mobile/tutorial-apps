@@ -66,15 +66,15 @@ export default function MainScreen() {
           {selectedAccount ? (
             <>
               <Section title="1. Initialize Counter">
-                <InitializeCounterButton counterPubkey={counterPubkey} />
+                <InitializeCounterButton />
               </Section>
 
               <Section title="2. Fetch Counter Account">
-                <FetchCounterAccountButton counterPubkey={counterPubkey} />
+                <FetchCounterAccountButton />
               </Section>
 
               <Section title="3. Increment Counter">
-                <IncrementCounterButton counterPubkey={counterPubkey} />
+                <IncrementCounterButton />
               </Section>
             </>
           ) : null}
