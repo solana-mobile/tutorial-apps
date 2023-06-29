@@ -1,4 +1,4 @@
-import {PublicKey} from '@solana/web3.js';
+import {PublicKey, Transaction} from '@solana/web3.js';
 import {
   Account as AuthorizedAccount,
   AuthorizationResult,

@@ -1,6 +1,6 @@
 import {
-  Account,
   Connection,
+  PublicKey,
   Transaction,
   type ConnectionConfig,
 } from '@solana/web3.js';
@@ -16,36 +16,33 @@ import {
   transact,
   Web3MobileWallet,
 } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {
-  AuthorizeAPI,
-  ReauthorizeAPI,
-} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {AnchorProvider, Program} from '@coral-xyz/anchor';
+
 import {useAuthorization} from './AuthorizationProvider';
+import {BasicCounter as BasicCounterProgram} from '../../basic-counter/target/types/basic_counter';
+import idl from '../../basic-counter/target/idl/basic_counter.json';
 
 export const RPC_ENDPOINT = 'devnet';
 
 export interface CounterProgramProviderProps {
   children: ReactNode;
-  endpoint: string;
-  config?: ConnectionConfig;
 }
 
 export const CounterProgramProvider: FC<CounterProgramProviderProps> = ({
   children,
-  endpoint,
-  config = {commitment: 'confirmed'},
 }) => {
-  const {authorizeSession} = useAuthorization();
-  const connection = useMemo(
-    () => new Connection(endpoint, config),
-    [endpoint, config],
-  );
+  const {authorizeSession, selectedAccount} = useAuthorization();
+  const {connection} = useConnection();
 
   const anchorWallet = useMemo(() => {
+    if (!authorizeSession || !selectedAccount) {
+      return null;
+    }
+
     return {
       signTransaction: async (transaction: Transaction) => {
         return transact(async (wallet: Web3MobileWallet) => {
-          const authorizedAccount = await authorizeSession(wallet);
+          await authorizeSession(wallet);
           const signedTransactions = await wallet.signTransactions({
             transactions: [transaction],
           });
@@ -54,7 +51,7 @@ export const CounterProgramProvider: FC<CounterProgramProviderProps> = ({
       },
       signAllTransactions: async (transactions: Transaction[]) => {
         return transact(async (wallet: Web3MobileWallet) => {
-          const authorizedAccount = await authorizeSession(wallet);
+          await authorizeSession(wallet);
           const signedTransactions = await wallet.signTransactions({
             transactions: transactions,
           });
@@ -65,58 +62,57 @@ export const CounterProgramProvider: FC<CounterProgramProviderProps> = ({
         return selectedAccount.publicKey;
       },
     } as anchor.Wallet;
+  }, [authorizeSession, selectedAccount]);
+
+  const counterProgramId = useMemo(() => {
+    return new PublicKey('5tH6v5gyhxnEjyVDQFjuPrH9SzJ3Rvj1Q4zKphnZsN74');
   }, []);
 
-  const createAnchorWallet = (
-    selectedAccount: Account,
-    authorizeSession: (wallet: AuthorizeAPI & ReauthorizeAPI) => Promise<
-      Readonly<{
-        address: string;
-        label?: string | undefined;
-        publicKey: anchor.web3.PublicKey;
-      }>
-    >,
-  ) => {
-    return {
-      signTransaction: async (transaction: Transaction) => {
-        return transact(async (wallet: Web3MobileWallet) => {
-          const authorizedAccount = await authorizeSession(wallet);
-          const signedTransactions = await wallet.signTransactions({
-            transactions: [transaction],
-          });
-          return signedTransactions[0];
-        });
-      },
-      signAllTransactions: async (transactions: Transaction[]) => {
-        return transact(async (wallet: Web3MobileWallet) => {
-          const authorizedAccount = await authorizeSession(wallet);
-          const signedTransactions = await wallet.signTransactions({
-            transactions: transactions,
-          });
-          return signedTransactions;
-        });
-      },
-      get publicKey() {
-        return selectedAccount.publicKey;
-      },
-    } as anchor.Wallet;
-  };
+  const provider = useMemo(() => {
+    if (!anchorWallet) {
+      return null;
+    }
+    return new AnchorProvider(connection, anchorWallet, {
+      preflightCommitment: 'confirmed',
+      commitment: 'processed',
+    });
+  }, [anchorWallet, connection]);
+
+  const basicCounterProgram = useMemo(() => {
+    if (!provider) {
+      return null;
+    }
+    return new Program<BasicCounterProgram>(
+      idl as BasicCounterProgram,
+      counterProgramId,
+      provider,
+    );
+  }, [counterProgramId, provider]);
+
+  const value = useMemo(
+    () => ({
+      counterProgram: basicCounterProgram,
+      counterProgramId: counterProgramId,
+    }),
+    [basicCounterProgram, counterProgramId],
+  );
 
   return (
-    <ConnectionContext.Provider value={{connection}}>
+    <CounterProgramContext.Provider value={value}>
       {children}
-    </ConnectionContext.Provider>
+    </CounterProgramContext.Provider>
   );
 };
 
-export interface ConnectionContextState {
-  connection: Connection;
+export interface CounterProgramContextState {
+  counterProgram: Program<BasicCounterProgram> | null;
+  counterProgramId: PublicKey;
 }
 
-export const ConnectionContext = createContext<ConnectionContextState>(
-  {} as ConnectionContextState,
+export const CounterProgramContext = createContext<CounterProgramContextState>(
+  {} as CounterProgramContextState,
 );
 
-export function useConnection(): ConnectionContextState {
-  return useContext(ConnectionContext);
+export function useConnection(): CounterProgramContextState {
+  return useContext(CounterProgramContext);
 }
