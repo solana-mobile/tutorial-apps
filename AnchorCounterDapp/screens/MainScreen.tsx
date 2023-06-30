@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import * as anchor from '@coral-xyz/anchor';
 
 import {Section} from '../components/Section';
 import ConnectButton from '../components/ConnectButton';
@@ -12,13 +11,9 @@ import {
 import {useConnection} from '../components/providers/ConnectionProvider';
 
 import IncrementCounterButton from '../components/IncrementCounterButton';
-import {PublicKey} from '@solana/web3.js';
 import FetchCounterAccountButton from '../components/FetchCounterAccountButton';
 import CounterInfo from '../components/CounterInfo';
-import {
-  CounterAccount,
-  useCounterProgram,
-} from '../components/providers/CounterProgramProvider';
+import {CounterAccount} from '../components/providers/CounterProgramProvider';
 
 export default function MainScreen() {
   const {connection} = useConnection();

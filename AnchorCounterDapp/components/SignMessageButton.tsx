@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {Button, Alert} from 'react-native';
+import {Button} from 'react-native';
 import {fromUint8Array} from 'js-base64';
 import {
   transact,
