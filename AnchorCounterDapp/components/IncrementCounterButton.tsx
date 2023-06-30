@@ -1,50 +1,59 @@
+import {Program} from '@coral-xyz/anchor';
 import React, {useState, useCallback} from 'react';
-import {Alert, Button} from 'react-native';
+import {Button} from 'react-native';
+import {BasicCounter} from '../basic-counter/target/types/basic_counter';
 
 import {useAuthorization} from './providers/AuthorizationProvider';
-import {useCounterProgram} from './providers/CounterProgramProvider';
+import {
+  CounterAccount,
+  useCounterProgram,
+} from './providers/CounterProgramProvider';
 
-export default function IncrementCounterButton() {
+type IncrementCounterButtonProps = Readonly<{
+  onComplete: (counterAccount: CounterAccount) => void;
+}>;
+
+export default function IncrementCounterButton({
+  onComplete,
+}: IncrementCounterButtonProps) {
   const {selectedAccount} = useAuthorization();
   const [signingInProgress, setSigningInProgress] = useState(false);
   const {counterProgram, counterAccountPubkey} = useCounterProgram();
 
-  const incrementCounter = useCallback(async () => {
-    if (!counterProgram) {
-      console.warn(
-        'CounterProgram is not initialized yet. Try connecting a wallet first.',
-      );
-      return;
-    }
-    const signature = await counterProgram.methods
-      .increment()
-      .accounts({
-        counter: counterAccountPubkey,
-        authority: selectedAccount?.publicKey,
-      })
-      .rpc();
-    return signature;
-  }, [counterProgram, counterAccountPubkey, selectedAccount?.publicKey]);
+  const incrementCounter = useCallback(
+    async (program: Program<BasicCounter>) => {
+      // Call the increment function of the program.
+      const signature = await program.methods
+        .increment()
+        .accounts({
+          counter: counterAccountPubkey,
+          authority: selectedAccount?.publicKey,
+        })
+        .rpc();
+
+      return signature;
+    },
+    [counterAccountPubkey, selectedAccount?.publicKey],
+  );
 
   return (
     <Button
       title="+1 Counter"
-      disabled={signingInProgress}
+      disabled={signingInProgress || !counterProgram}
       onPress={async () => {
-        if (signingInProgress) {
+        if (signingInProgress || !counterProgram) {
           return;
         }
         setSigningInProgress(true);
         try {
-          const signature = await incrementCounter();
-          console.log(signature);
-          setTimeout(async () => {
-            Alert.alert(
-              'Counter increment successful!',
-              'Click the update button to see the new count.',
-              [{text: 'Ok', style: 'cancel'}],
-            );
-          }, 100);
+          const signature = await incrementCounter(counterProgram);
+
+          // Fetch the account info for the Counter PDA to see the new count value.
+          const counterAccount: CounterAccount =
+            await counterProgram.account.counter.fetch(counterAccountPubkey);
+
+          // Update the count value state.
+          onComplete(counterAccount);
         } finally {
           setSigningInProgress(false);
         }

@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import * as anchor from '@coral-xyz/anchor';
 
 import {Section} from '../components/Section';
 import ConnectButton from '../components/ConnectButton';
@@ -12,17 +11,19 @@ import {
 import {useConnection} from '../components/providers/ConnectionProvider';
 
 import IncrementCounterButton from '../components/IncrementCounterButton';
-import {PublicKey} from '@solana/web3.js';
-import FetchCounterAccountButton from '../components/FetchCounterAccountButton';
 import CounterInfo from '../components/CounterInfo';
 import {
   CounterAccount,
   useCounterProgram,
 } from '../components/providers/CounterProgramProvider';
+import SignIncrementTxButton from '../components/SignIncrementTxButton';
+import {BasicCounter} from '../basic-counter/target/types/basic_counter';
+import {Program} from '@coral-xyz/anchor';
 
 export default function MainScreen() {
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
+  const {counterProgram, counterAccountPubkey} = useCounterProgram();
   const [balance, setBalance] = useState<number | null>(null);
   const [counterValue, setCounterValue] = useState<string | null>(null);
 
@@ -34,6 +35,16 @@ export default function MainScreen() {
     [connection],
   );
 
+  const fetchAndUpdateCounter = useCallback(
+    async (program: Program<BasicCounter>) => {
+      const counterAccount: CounterAccount =
+        await program.account.counter.fetch(counterAccountPubkey);
+      setCounterValue(counterAccount.count.toString());
+    },
+    [counterAccountPubkey],
+  );
+
+  // Auto fetch balance on connect
   useEffect(() => {
     if (!selectedAccount) {
       return;
@@ -41,24 +52,34 @@ export default function MainScreen() {
     fetchAndUpdateBalance(selectedAccount);
   }, [fetchAndUpdateBalance, selectedAccount]);
 
+  // Auto fetch count
+  useEffect(() => {
+    if (!counterProgram) {
+      return;
+    }
+    fetchAndUpdateCounter(counterProgram);
+  }, [fetchAndUpdateCounter, counterProgram]);
+
   return (
     <>
       <View style={styles.mainContainer}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Section title="Counter Program Info">
+            <CounterInfo />
+          </Section>
           {selectedAccount ? (
             <>
-              <Section title="Counter Program Info">
-                <CounterInfo counterValue={counterValue} />
-              </Section>
-
               <Section title="Increment the counter!">
+                <Text style={styles.counter}>
+                  Count: <Text>{counterValue ?? '...'}</Text>
+                </Text>
                 <View style={styles.buttonGroup}>
-                  <IncrementCounterButton />
-                  <FetchCounterAccountButton
-                    onFetchComplete={(counterAccount: CounterAccount) => {
+                  <IncrementCounterButton
+                    onComplete={(counterAccount: CounterAccount) => {
                       setCounterValue(counterAccount.count.toString());
                     }}
                   />
+                  <SignIncrementTxButton />
                 </View>
               </Section>
             </>
@@ -91,5 +112,10 @@ const styles = StyleSheet.create({
   buttonGroup: {
     flexDirection: 'row',
     gap: 4,
+    paddingTop: 4,
+  },
+  counter: {
+    fontWeight: 'bold',
+    fontSize: 24,
   },
 });
