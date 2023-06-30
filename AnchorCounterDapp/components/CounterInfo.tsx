@@ -1,21 +1,13 @@
 import React from 'react';
-import {StyleSheet, View, Text, Button, Alert} from 'react-native';
+import {StyleSheet, View, Button, Alert} from 'react-native';
 
 import {useCounterProgram} from './providers/CounterProgramProvider';
 
-type CounterInfoProps = Readonly<{
-  counterValue: string | null;
-}>;
-
-export default function CounterInfo({counterValue}: CounterInfoProps) {
+export default function CounterInfo() {
   const {counterProgramId, counterAccountPubkey} = useCounterProgram();
   return (
     <View style={styles.container}>
-      <View style={styles.textContainer}>
-        <Text style={styles.counter}>
-          Count: <Text>{counterValue ?? '...'}</Text>
-        </Text>
-      </View>
+      <View style={styles.textContainer} />
       <View style={styles.buttonGroup}>
         <InfoButton
           title={'Program Id'}
