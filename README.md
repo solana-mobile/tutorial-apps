@@ -5,6 +5,31 @@ This repo is a collection of our tutorial apps and for each, we provide a step b
 
 ## Tutorials
 
+### [first-mobile-dapp](https://docs.solanamobile.com/react-native/hello_world_tutorial)
+
+This is an introductory tutorial that builds off the [Solana Mobile dApp Scaffold](https://github.com/solana-mobile/solana-mobile-dapp-scaffold), and walks through how to build a React Native dApp that sends a message to the Solana network.
+
+Follow the tutorial to learn:
+- How to use Mobile Wallet Adapter to connect to an installed wallet app.
+- How to connect to devnet, check your wallet balance, and request an airdrop of SOL.
+- How to use the memo program to write your message to the network
+- View your message on the Solana Explorer!
+
+### [AnchorCounterDapp](https://docs.solanamobile.com/react-native/anchor_integration)
+
+This guide will show you how to integrate an Anchor Program into your React Native dApp, using the AnchorCounterDapp as reference.
+
+Follow the tutorial to learn:
+- How to import an Anchor Program into a React Native project
+- How to create an Anchor Wallet and Provider with Mobile Wallet Adapter
+- How to sign and submit transactions with an Anchor Program IDL
+- How to generate instructions with an Anchor Program IDL
+
+### mobile-nft-minter
+
+This app and tutorial is unfinished and WIP
+
+
 ### [SolanaReactNativeTutorial](https://docs.solanamobile.com/react-native/hello_world_tutorial)
 
 This is an introductory tutorial walks through building a hello world app that teaches how to connect to a wallet, request airdrops, check wallet balance, and sign/send transactions.
