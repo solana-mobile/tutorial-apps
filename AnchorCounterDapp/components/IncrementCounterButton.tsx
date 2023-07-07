@@ -1,24 +1,44 @@
 import {Program} from '@coral-xyz/anchor';
+import {
+  AuthorizeAPI,
+  ReauthorizeAPI,
+} from '@solana-mobile/mobile-wallet-adapter-protocol';
+import {Connection, PublicKey} from '@solana/web3.js';
 import React, {useState, useCallback} from 'react';
 import {Button} from 'react-native';
-import {BasicCounter} from '../basic-counter/target/types/basic_counter';
 
-import {useAuthorization} from './providers/AuthorizationProvider';
-import {
-  CounterAccount,
-  useCounterProgram,
-} from './providers/CounterProgramProvider';
+import {BasicCounter} from '../basic-counter/target/types/basic_counter';
+import {useAnchorWallet} from './hooks/useAnchorWallet';
+import {useCounterProgram} from './hooks/useCounterProgram';
+
+import {Account} from './providers/AuthorizationProvider';
+import {CounterAccount} from './providers/CounterProgramProvider';
 
 type IncrementCounterButtonProps = Readonly<{
   onComplete: (counterAccount: CounterAccount) => void;
+  connection: Connection;
+  authorizeSession: (wallet: AuthorizeAPI & ReauthorizeAPI) => Promise<
+    Readonly<{
+      address: string;
+      label?: string | undefined;
+      publicKey: PublicKey;
+    }>
+  >;
+  selectedAccount: Account;
 }>;
 
 export default function IncrementCounterButton({
   onComplete,
+  connection,
+  authorizeSession,
+  selectedAccount,
 }: IncrementCounterButtonProps) {
-  const {selectedAccount} = useAuthorization();
   const [signingInProgress, setSigningInProgress] = useState(false);
-  const {counterProgram, counterAccountPubkey} = useCounterProgram();
+  const anchorWallet = useAnchorWallet(authorizeSession, selectedAccount);
+  const {counterProgram, counterAccountPubkey} = useCounterProgram(
+    connection,
+    anchorWallet,
+  );
 
   const incrementCounter = useCallback(
     async (program: Program<BasicCounter>) => {
