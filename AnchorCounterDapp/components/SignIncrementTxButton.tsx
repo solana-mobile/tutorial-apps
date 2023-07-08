@@ -1,26 +1,37 @@
 import React, {useCallback, useState} from 'react';
 import {Button} from 'react-native';
-import {useAuthorization} from './providers/AuthorizationProvider';
-import {useCounterProgram} from './providers/CounterProgramProvider';
 
 import {alertAndLog} from '../util/alertAndLog';
-import {Transaction} from '@solana/web3.js';
+import {PublicKey, Transaction} from '@solana/web3.js';
 import {BasicCounter} from '../basic-counter/target/types/basic_counter';
 import {Program} from '@coral-xyz/anchor';
 import {
   transact,
   Web3MobileWallet,
 } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
+import * as anchor from '@coral-xyz/anchor';
+
+import {useAuthorization} from './providers/AuthorizationProvider';
+import {useCounterProgram} from './hooks/useCounterProgram';
 import {useConnection} from './providers/ConnectionProvider';
 
-export default function SignIncrementTxButton() {
-  const {connection} = useConnection();
-  const {selectedAccount, authorizeSession} = useAuthorization();
+type SignIncrementTxProps = Readonly<{
+  anchorWallet: anchor.Wallet;
+}>;
+
+export default function IncrementCounterButton({
+  anchorWallet,
+}: SignIncrementTxProps) {
   const [genInProgress, setGenInProgress] = useState(false);
-  const {counterProgram, counterAccountPubkey} = useCounterProgram();
+  const {connection} = useConnection();
+  const {authorizeSession, selectedAccount} = useAuthorization();
+  const {counterProgram, counterAccountPubkey} = useCounterProgram(
+    connection,
+    anchorWallet,
+  );
 
   const signIncrementTransaction = useCallback(
-    async (program: Program<BasicCounter>) => {
+    async (program: Program<BasicCounter>, authoritiyPublicKey: PublicKey) => {
       return await transact(async (wallet: Web3MobileWallet) => {
         const [authorizationResult, latestBlockhash] = await Promise.all([
           authorizeSession(wallet),
@@ -32,7 +43,7 @@ export default function SignIncrementTxButton() {
           .increment()
           .accounts({
             counter: counterAccountPubkey,
-            authority: selectedAccount?.publicKey,
+            authority: authoritiyPublicKey,
           })
           .instruction();
 
@@ -50,12 +61,7 @@ export default function SignIncrementTxButton() {
         return signedTransactions[0];
       });
     },
-    [
-      authorizeSession,
-      connection,
-      counterAccountPubkey,
-      selectedAccount?.publicKey,
-    ],
+    [authorizeSession, connection, counterAccountPubkey],
   );
 
   return (
@@ -68,14 +74,15 @@ export default function SignIncrementTxButton() {
         }
         setGenInProgress(true);
         try {
-          if (!counterProgram) {
+          if (!counterProgram || !selectedAccount) {
             console.warn(
-              'CounterProgram is not initialized yet. Try connecting a wallet first.',
+              'Program/wallet is not initialized yet. Try connecting a wallet first.',
             );
             return;
           }
           const incrementTransaction = await signIncrementTransaction(
             counterProgram,
+            selectedAccount.publicKey,
           );
 
           alertAndLog(
