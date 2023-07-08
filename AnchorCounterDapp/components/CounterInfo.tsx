@@ -1,22 +1,21 @@
 import React from 'react';
 import {StyleSheet, View, Button, Alert} from 'react-native';
 
-import {useCounterProgram} from './providers/CounterProgramProvider';
+type Props = Readonly<{
+  counterProgramId: string;
+  counterAccountPubkey: string;
+}>;
 
-export default function CounterInfo() {
-  const {counterProgramId, counterAccountPubkey} = useCounterProgram();
+export default function CounterInfo({
+  counterProgramId,
+  counterAccountPubkey,
+}: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer} />
       <View style={styles.buttonGroup}>
-        <InfoButton
-          title={'Program Id'}
-          infoText={counterProgramId.toString()}
-        />
-        <InfoButton
-          title={'Counter PDA'}
-          infoText={counterAccountPubkey.toString()}
-        />
+        <InfoButton title={'Program Id'} infoText={counterProgramId} />
+        <InfoButton title={'Counter PDA'} infoText={counterAccountPubkey} />
       </View>
     </View>
   );

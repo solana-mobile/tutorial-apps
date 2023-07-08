@@ -20,9 +20,13 @@ export function useAnchorWallet(
       publicKey: PublicKey;
     }>
   >,
-  selectedAccount: Account,
+  selectedAccount: Account | null,
 ) {
   return useMemo(() => {
+    if (!selectedAccount || !authorizeSession) {
+      return null;
+    }
+
     return {
       signTransaction: async (transaction: Transaction) => {
         return transact(async (wallet: Web3MobileWallet) => {

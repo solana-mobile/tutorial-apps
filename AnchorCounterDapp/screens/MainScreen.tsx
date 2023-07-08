@@ -1,5 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import * as anchor from '@coral-xyz/anchor';
+import {Program} from '@coral-xyz/anchor';
+import {PublicKey} from '@solana/web3.js';
 
 import {Section} from '../components/Section';
 import ConnectButton from '../components/ConnectButton';
@@ -9,23 +12,27 @@ import {
   Account,
 } from '../components/providers/AuthorizationProvider';
 import {useConnection} from '../components/providers/ConnectionProvider';
-
 import IncrementCounterButton from '../components/IncrementCounterButton';
 import CounterInfo from '../components/CounterInfo';
-import {
-  CounterAccount,
-  useCounterProgram,
-} from '../components/providers/CounterProgramProvider';
 import SignIncrementTxButton from '../components/SignIncrementTxButton';
 import {BasicCounter} from '../basic-counter/target/types/basic_counter';
-import {Program} from '@coral-xyz/anchor';
+import {useCounterProgram} from '../components/hooks/useCounterProgram';
+import {useAnchorWallet} from '../components/hooks/useAnchorWallet';
+
+type CounterAccount = {
+  count: anchor.BN;
+  authority: PublicKey;
+  bump: number;
+};
 
 export default function MainScreen() {
   const {connection} = useConnection();
-  const {selectedAccount} = useAuthorization();
-  const {counterProgram, counterAccountPubkey} = useCounterProgram();
+  const {authorizeSession, selectedAccount} = useAuthorization();
   const [balance, setBalance] = useState<number | null>(null);
   const [counterValue, setCounterValue] = useState<string | null>(null);
+  const anchorWallet = useAnchorWallet(authorizeSession, selectedAccount);
+  const {counterProgram, counterAccountPubkey, counterProgramId} =
+    useCounterProgram(connection, anchorWallet);
 
   const fetchAndUpdateBalance = useCallback(
     async (account: Account) => {
@@ -65,9 +72,12 @@ export default function MainScreen() {
       <View style={styles.mainContainer}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Section title="Counter Program Info">
-            <CounterInfo />
+            <CounterInfo
+              counterAccountPubkey={counterAccountPubkey.toString()}
+              counterProgramId={counterProgramId.toString()}
+            />
           </Section>
-          {selectedAccount ? (
+          {selectedAccount && anchorWallet ? (
             <>
               <Section title="Increment the counter!">
                 <Text style={styles.counter}>
@@ -78,8 +88,9 @@ export default function MainScreen() {
                     onComplete={(counterAccount: CounterAccount) => {
                       setCounterValue(counterAccount.count.toString());
                     }}
+                    anchorWallet={anchorWallet}
                   />
-                  <SignIncrementTxButton />
+                  <SignIncrementTxButton anchorWallet={anchorWallet} />
                 </View>
               </Section>
             </>

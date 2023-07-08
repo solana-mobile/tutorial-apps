@@ -8,7 +8,7 @@ import idl from '../../basic-counter/target/idl/basic_counter.json';
 
 export function useCounterProgram(
   connection: Connection,
-  anchorWallet: anchor.Wallet,
+  anchorWallet: anchor.Wallet | null,
 ) {
   const counterProgramId = useMemo(() => {
     return new PublicKey('5tH6v5gyhxnEjyVDQFjuPrH9SzJ3Rvj1Q4zKphnZsN74');
