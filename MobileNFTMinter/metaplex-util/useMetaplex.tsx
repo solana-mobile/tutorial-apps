@@ -1,4 +1,5 @@
-import {bundlrStorage, Metaplex} from '@metaplex-foundation/js';
+import {Metaplex, bundlrStorage} from '@metaplex-foundation/js';
+
 import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {Cluster, Connection} from '@solana/web3.js';
 import {useMemo} from 'react';
@@ -15,7 +16,9 @@ const useMetaplex = (
     if (!selectedAccount && true) {
       return null;
     }
+    console.log('Begin meta: ');
 
+    // return null;
     return Metaplex.make(connection)
       .use(mobileWalletAdapterIdentity(selectedAccount, authorizeSession))
       .use(

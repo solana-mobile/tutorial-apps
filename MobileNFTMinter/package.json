@@ -10,7 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@craftzdog/react-native-buffer": "^6.0.5",
     "@metaplex-foundation/js": "^0.17.12",
     "@solana-mobile/mobile-wallet-adapter-protocol": "^2.0.0",
     "@solana-mobile/mobile-wallet-adapter-protocol-web3js": "^2.0.0",
@@ -20,10 +19,8 @@
     "react": "18.2.0",
     "react-native": "0.71.4",
     "react-native-get-random-values": "^1.8.0",
-    "react-native-quick-crypto": "^0.6.1",
     "react-native-safe-area-context": "3.4.1",
     "react-native-url-polyfill": "^1.3.0",
-    "stream-browserify": "^3.0.0",
     "text-encoding": "^0.7.0",
     "typescript": "^4.9.4"
   },

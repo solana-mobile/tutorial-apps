@@ -31,6 +31,8 @@ export default function MainScreen() {
   );
 
   useEffect(() => {
+    console.log('Begin Metaplex check');
+
     if (!selectedAccount) {
       return;
     }
