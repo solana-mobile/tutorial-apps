@@ -3,19 +3,16 @@ import {StyleSheet, View, Button, Alert} from 'react-native';
 
 type Props = Readonly<{
   counterProgramId: string;
-  counterAccountPubkey: string;
+  counterPDA: string;
 }>;
 
-export default function CounterInfo({
-  counterProgramId,
-  counterAccountPubkey,
-}: Props) {
+export default function CounterInfo({counterProgramId, counterPDA}: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer} />
       <View style={styles.buttonGroup}>
         <InfoButton title={'Program Id'} infoText={counterProgramId} />
-        <InfoButton title={'Counter PDA'} infoText={counterAccountPubkey} />
+        <InfoButton title={'Counter PDA'} infoText={counterPDA} />
       </View>
     </View>
   );

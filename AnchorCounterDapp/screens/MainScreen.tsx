@@ -31,8 +31,10 @@ export default function MainScreen() {
   const [balance, setBalance] = useState<number | null>(null);
   const [counterValue, setCounterValue] = useState<string | null>(null);
   const anchorWallet = useAnchorWallet(authorizeSession, selectedAccount);
-  const {counterProgram, counterAccountPubkey, counterProgramId} =
-    useCounterProgram(connection, anchorWallet);
+  const {counterProgram, counterPDA, counterProgramId} = useCounterProgram(
+    connection,
+    anchorWallet,
+  );
 
   const fetchAndUpdateBalance = useCallback(
     async (account: Account) => {
@@ -45,10 +47,10 @@ export default function MainScreen() {
   const fetchAndUpdateCounter = useCallback(
     async (program: Program<BasicCounter>) => {
       const counterAccount: CounterAccount =
-        await program.account.counter.fetch(counterAccountPubkey);
+        await program.account.counter.fetch(counterPDA);
       setCounterValue(counterAccount.count.toString());
     },
-    [counterAccountPubkey],
+    [counterPDA],
   );
 
   // Auto fetch balance on connect
@@ -73,7 +75,7 @@ export default function MainScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Section title="Counter Program Info">
             <CounterInfo
-              counterAccountPubkey={counterAccountPubkey.toString()}
+              counterPDA={counterPDA.toString()}
               counterProgramId={counterProgramId.toString()}
             />
           </Section>

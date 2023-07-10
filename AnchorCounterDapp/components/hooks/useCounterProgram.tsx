@@ -14,7 +14,7 @@ export function useCounterProgram(
     return new PublicKey('5tH6v5gyhxnEjyVDQFjuPrH9SzJ3Rvj1Q4zKphnZsN74');
   }, []);
 
-  const [counterAccountPubkey] = useMemo(() => {
+  const [counterPDA] = useMemo(() => {
     const counterSeed = anchor.utils.bytes.utf8.encode('counter');
     return anchor.web3.PublicKey.findProgramAddressSync(
       [counterSeed],
@@ -48,9 +48,9 @@ export function useCounterProgram(
     () => ({
       counterProgram: basicCounterProgram,
       counterProgramId: counterProgramId,
-      counterAccountPubkey: counterAccountPubkey,
+      counterPDA: counterPDA,
     }),
-    [basicCounterProgram, counterProgramId, counterAccountPubkey],
+    [basicCounterProgram, counterProgramId, counterPDA],
   );
 
   return value;

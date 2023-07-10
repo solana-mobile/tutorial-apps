@@ -28,25 +28,25 @@ export default function IncrementCounterButton({
   const [signingInProgress, setSigningInProgress] = useState(false);
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
-  const {counterProgram, counterAccountPubkey} = useCounterProgram(
+  const {counterProgram, counterPDA} = useCounterProgram(
     connection,
     anchorWallet,
   );
 
   const incrementCounter = useCallback(
-    async (program: Program<BasicCounter>, authoritiyPublicKey: PublicKey) => {
+    async (program: Program<BasicCounter>, authorityPublicKey: PublicKey) => {
       // Call the increment function of the program.
       const signature = await program.methods
         .increment()
         .accounts({
-          counter: counterAccountPubkey,
-          authority: authoritiyPublicKey,
+          counter: counterPDA,
+          authority: authorityPublicKey,
         })
         .rpc();
 
       return signature;
     },
-    [counterAccountPubkey],
+    [counterPDA],
   );
 
   return (
@@ -66,7 +66,7 @@ export default function IncrementCounterButton({
 
           // Fetch the account info for the Counter PDA to see the new count value.
           const counterAccount: CounterAccount =
-            await counterProgram.account.counter.fetch(counterAccountPubkey);
+            await counterProgram.account.counter.fetch(counterPDA);
 
           // Update the count value state.
           onComplete(counterAccount);

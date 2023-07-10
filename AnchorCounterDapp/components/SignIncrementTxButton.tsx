@@ -2,7 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {Button} from 'react-native';
 
 import {alertAndLog} from '../util/alertAndLog';
-import {PublicKey, Transaction} from '@solana/web3.js';
+import {Transaction} from '@solana/web3.js';
 import {BasicCounter} from '../basic-counter/target/types/basic_counter';
 import {Program} from '@coral-xyz/anchor';
 import {
@@ -25,13 +25,13 @@ export default function IncrementCounterButton({
   const [genInProgress, setGenInProgress] = useState(false);
   const {connection} = useConnection();
   const {authorizeSession, selectedAccount} = useAuthorization();
-  const {counterProgram, counterAccountPubkey} = useCounterProgram(
+  const {counterProgram, counterPDA} = useCounterProgram(
     connection,
     anchorWallet,
   );
 
   const signIncrementTransaction = useCallback(
-    async (program: Program<BasicCounter>, authoritiyPublicKey: PublicKey) => {
+    async (program: Program<BasicCounter>) => {
       return await transact(async (wallet: Web3MobileWallet) => {
         const [authorizationResult, latestBlockhash] = await Promise.all([
           authorizeSession(wallet),
@@ -42,8 +42,8 @@ export default function IncrementCounterButton({
         const incrementInstruction = await program.methods
           .increment()
           .accounts({
-            counter: counterAccountPubkey,
-            authority: authoritiyPublicKey,
+            counter: counterPDA,
+            authority: authorizationResult.publicKey,
           })
           .instruction();
 
@@ -61,7 +61,7 @@ export default function IncrementCounterButton({
         return signedTransactions[0];
       });
     },
-    [authorizeSession, connection, counterAccountPubkey],
+    [authorizeSession, connection, counterPDA],
   );
 
   return (
@@ -82,7 +82,6 @@ export default function IncrementCounterButton({
           }
           const incrementTransaction = await signIncrementTransaction(
             counterProgram,
-            selectedAccount.publicKey,
           );
 
           alertAndLog(
