@@ -11,6 +11,9 @@ import {Header} from './components/Header';
 import MainScreen from './screens/MainScreen';
 
 export default function App() {
+  if (!clusterApiUrl) {
+    console.log('null');
+  }
   return (
     <ConnectionProvider
       config={{commitment: 'processed'}}
