@@ -16,9 +16,6 @@ const useMetaplex = (
     if (!selectedAccount && true) {
       return null;
     }
-    console.log('Begin meta: ');
-
-    // return null;
     return Metaplex.make(connection)
       .use(mobileWalletAdapterIdentity(selectedAccount, authorizeSession))
       .use(
