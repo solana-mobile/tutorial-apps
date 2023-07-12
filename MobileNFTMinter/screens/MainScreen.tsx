@@ -1,44 +1,17 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {Section} from '../components/Section';
 import ConnectButton from '../components/ConnectButton';
 import AccountInfo from '../components/AccountInfo';
-import {
-  useAuthorization,
-  Account,
-} from '../components/providers/AuthorizationProvider';
-import {useConnection} from '../components/providers/ConnectionProvider';
-import DisconnectButton from '../components/DisconnectButton';
-import RequestAirdropButton from '../components/RequestAirdropButton';
+import {useAuthorization} from '../components/providers/AuthorizationProvider';
 import SignMessageButton from '../components/SignMessageButton';
-import SignTransactionButton from '../components/SignTransactionButton';
 import MintButton from '../components/MintButton';
+import {useConnection} from '../components/providers/ConnectionProvider';
 
 export default function MainScreen() {
-  const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
-  const [balance, setBalance] = useState<number | null>(null);
-
-  const fetchAndUpdateBalance = useCallback(
-    async (account: Account) => {
-      console.log('Fetching balance for: ' + account.publicKey);
-      const fetchedBalance = await connection.getBalance(account.publicKey);
-      console.log('Balance fetched: ' + fetchedBalance);
-      setBalance(fetchedBalance);
-    },
-    [connection],
-  );
-
-  useEffect(() => {
-    console.log('Begin Metaplex check');
-
-    if (!selectedAccount) {
-      return;
-    }
-    fetchAndUpdateBalance(selectedAccount);
-  }, [fetchAndUpdateBalance, selectedAccount]);
-
+  const {connection} = useConnection();
   return (
     <>
       <View style={styles.mainContainer}>
@@ -56,11 +29,7 @@ export default function MainScreen() {
           ) : null}
         </ScrollView>
         {selectedAccount ? (
-          <AccountInfo
-            selectedAccount={selectedAccount}
-            balance={balance}
-            fetchAndUpdateBalance={fetchAndUpdateBalance}
-          />
+          <AccountInfo selectedAccount={selectedAccount} />
         ) : (
           <ConnectButton title="Connect wallet" />
         )}

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {LAMPORTS_PER_SOL, PublicKey} from '@solana/web3.js';
 import {StyleSheet, View, Text} from 'react-native';
 import RequestAirdropButton from './RequestAirdropButton';
 import DisconnectButton from './DisconnectButton';
+import {useConnection} from './providers/ConnectionProvider';
 
 interface Account {
   address: string;
@@ -12,8 +13,6 @@ interface Account {
 
 type AccountInfoProps = Readonly<{
   selectedAccount: Account;
-  balance: number | null;
-  fetchAndUpdateBalance: (account: Account) => void;
 }>;
 
 function convertLamportsToSOL(lamports: number) {
@@ -22,11 +21,27 @@ function convertLamportsToSOL(lamports: number) {
   );
 }
 
-export default function AccountInfo({
-  balance,
-  selectedAccount,
-  fetchAndUpdateBalance,
-}: AccountInfoProps) {
+export default function AccountInfo({selectedAccount}: AccountInfoProps) {
+  const [balance, setBalance] = useState<number | null>(null);
+  const {connection} = useConnection();
+
+  const fetchAndUpdateBalance = useCallback(
+    async (account: Account) => {
+      console.log('Fetching balance for: ' + account.publicKey);
+      const fetchedBalance = await connection.getBalance(account.publicKey);
+      console.log('Balance fetched: ' + fetchedBalance);
+      setBalance(fetchedBalance);
+    },
+    [connection],
+  );
+
+  useEffect(() => {
+    if (!selectedAccount) {
+      return;
+    }
+    fetchAndUpdateBalance(selectedAccount);
+  }, [fetchAndUpdateBalance, selectedAccount]);
+
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
