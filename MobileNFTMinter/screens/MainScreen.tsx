@@ -5,9 +5,10 @@ import {Section} from '../components/Section';
 import ConnectButton from '../components/ConnectButton';
 import AccountInfo from '../components/AccountInfo';
 import {useAuthorization} from '../components/providers/AuthorizationProvider';
-import SignMessageButton from '../components/SignMessageButton';
 import MintButton from '../components/MintButton';
 import {useConnection} from '../components/providers/ConnectionProvider';
+import DisconnectButton from '../components/DisconnectButton';
+import NftMinter from '../components/NftMinter';
 
 export default function MainScreen() {
   const {selectedAccount} = useAuthorization();
@@ -18,18 +19,12 @@ export default function MainScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {selectedAccount ? (
             <>
-              <Section title="Mint an NFT">
-                <MintButton />
-              </Section>
-
-              <Section title="Sign a message">
-                <SignMessageButton />
-              </Section>
+              <NftMinter />
             </>
           ) : null}
         </ScrollView>
         {selectedAccount ? (
-          <AccountInfo selectedAccount={selectedAccount} />
+          <DisconnectButton title="Disconnect" />
         ) : (
           <ConnectButton title="Connect wallet" />
         )}

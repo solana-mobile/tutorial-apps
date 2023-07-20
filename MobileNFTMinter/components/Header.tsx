@@ -23,7 +23,7 @@ export function Header() {
       ]}
       imageStyle={styles.logo}>
       <View>
-        <Text style={styles.title}>Solana</Text>
+        <Text style={styles.title}>Solana NFT Minter</Text>
         <Text style={styles.subtitle}>React Native</Text>
       </View>
     </ImageBackground>
