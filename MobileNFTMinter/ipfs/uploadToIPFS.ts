@@ -1,8 +1,8 @@
 import RNFetchBlob from 'rn-fetch-blob';
 import getCid from './getCid';
+import {NFT_STORAGE_API_KEY} from '@env';
 
 const UPLOAD_ENDPOINT = 'https://api.nft.storage/upload';
-const NFT_STORAGE_API_KEY = 'redacted';
 
 export default async function uploadToIPFS(
   imagePath: string,
