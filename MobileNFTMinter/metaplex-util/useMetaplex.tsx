@@ -16,13 +16,14 @@ const useMetaplex = (
     if (!selectedAccount && true) {
       return null;
     }
-    return Metaplex.make(connection)
-      .use(mobileWalletAdapterIdentity(selectedAccount, authorizeSession))
-      .use(
-        bundlrStorage({
-          address: `https://${cluster}.bundlr.network`,
-        }),
-      );
+    return Metaplex.make(connection).use(
+      mobileWalletAdapterIdentity(selectedAccount, authorizeSession),
+    );
+    // .use(
+    //   bundlrStorage({
+    //     address: `https://${cluster}.bundlr.network`,
+    //   }),
+    // );
   }, [connection, selectedAccount, authorizeSession, cluster]);
 
   return {metaplex};

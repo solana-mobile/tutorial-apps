@@ -4,6 +4,8 @@
 import {Buffer} from 'buffer';
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
+global.TextEncoder = require('text-encoding').TextEncoder;
+
 
 import {AppRegistry} from 'react-native';
 import App from './App';
