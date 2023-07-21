@@ -98,8 +98,12 @@ const NftMinter = () => {
 
   return (
     <View style={styles.container}>
-      {selectedImage && (
+      {selectedImage ? (
         <Image source={{uri: selectedImage}} style={styles.image} />
+      ) : (
+        <View style={{marginBottom: 16}}>
+          <Text>Select an image from your Photo Library to get started! </Text>
+        </View>
       )}
 
       <View style={styles.buttonGroup}>
@@ -116,7 +120,7 @@ const NftMinter = () => {
               setMintProgressStep(MintingStep.SubmittingInfo);
             }}
             title="Mint NFT"
-            disabled={isLoading}
+            disabled={isLoading || !selectedImage}
           />
         </View>
       </View>
@@ -242,7 +246,7 @@ const NftMinter = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   inputContainer: {
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
   },
   buttonGroup: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    marginBottom: 16,
   },
   pickImageButton: {
     marginHorizontal: 4,
