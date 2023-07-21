@@ -37,12 +37,7 @@ const NftMinter = () => {
   const [nftDescription, setNftDescription] = useState('');
   const {selectedAccount, authorizeSession} = useAuthorization();
   const {connection} = useConnection();
-  const {metaplex} = useMetaplex(
-    connection,
-    selectedAccount,
-    authorizeSession,
-    RPC_ENDPOINT,
-  );
+  const {metaplex} = useMetaplex(connection, selectedAccount, authorizeSession);
   const [mintAddress, setMintAddress] = useState<string | null>(null);
   const [txSignature, setTxSignature] = useState<string | null>(null);
 

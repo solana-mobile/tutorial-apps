@@ -11,9 +11,6 @@
   },
   "dependencies": {
     "@metaplex-foundation/js": "^0.19.4",
-    "@metaplex-foundation/js-plugin-nft-storage": "^0.19.4",
-    "@nftstorage/metaplex-auth": "^1.2.0",
-    "@shadow-drive/sdk": "^4.0.2",
     "@solana-mobile/mobile-wallet-adapter-protocol": "^2.0.0",
     "@solana-mobile/mobile-wallet-adapter-protocol-web3js": "^2.0.0",
     "@solana/spl-token": "^0.3.8",
