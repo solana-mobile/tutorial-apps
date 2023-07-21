@@ -7,14 +7,27 @@ import {
   Modal,
   Text,
   StyleSheet,
+  TouchableWithoutFeedback,
+  TextInput,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
+
+enum MintingStep {
+  None = 'None',
+  SubmittingInfo = 'Submit',
+  UploadingImage = 'UploadingImage',
+  MintingMetadata = 'MintingMetadata',
+}
 
 const NftMinter = () => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [mintProgressStep, setMintProgressStep] = useState<string>('none');
+  const [mintProgressStep, setMintProgressStep] = useState<MintingStep>(
+    MintingStep.None,
+  );
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleSelectImage = async () => {
     const photo = await launchImageLibrary({
@@ -30,11 +43,9 @@ const NftMinter = () => {
   };
 
   const handleMintNft = async () => {
-    setLoading(true);
-    setModalVisible(true);
+    setMintProgressStep(MintingStep.UploadingImage);
 
     try {
-      setTimeout(() => {}, 5000);
       //   await mintNft(selectedImage); // replace this with your actual minting function
       // Do whatever you need to do after successful minting
     } catch (error) {
@@ -45,6 +56,10 @@ const NftMinter = () => {
     }
   };
 
+  const isLoading =
+    mintProgressStep === MintingStep.MintingMetadata ||
+    mintProgressStep === MintingStep.UploadingImage;
+  console.log(mintProgressStep);
   return (
     <View style={styles.container}>
       {selectedImage && (
@@ -60,23 +75,57 @@ const NftMinter = () => {
           />
         </View>
         <View style={styles.mintButton}>
-          <Button onPress={handleMintNft} title="Mint NFT" disabled={loading} />
+          <Button
+            onPress={() => {
+              setMintProgressStep(MintingStep.SubmittingInfo);
+            }}
+            title="Mint NFT"
+            disabled={loading}
+          />
         </View>
       </View>
 
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-
       <Modal
-        onDismiss={() => {}}
         animationType="slide"
         transparent={true}
-        visible={modalVisible}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Minting in progress...</Text>
-            <ActivityIndicator size="large" color="#0000ff" />
+        visible={mintProgressStep !== MintingStep.None}>
+        <TouchableWithoutFeedback
+          onPress={() => setMintProgressStep(MintingStep.None)}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              {isLoading ? (
+                <>
+                  <Text style={styles.modalText}>
+                    {mintProgressStep === MintingStep.MintingMetadata
+                      ? 'Minting NFT...'
+                      : 'Uploading to IPFS...'}
+                  </Text>
+                  <ActivityIndicator size="large" color="#0000ff" />
+                </>
+              ) : (
+                <View style={styles.inputContainer}>
+                  <Text>Name: </Text>
+                  <TextInput
+                    style={styles.input}
+                    autoCorrect={false}
+                    placeholder="Enter text"
+                    onChangeText={text => setName(text)}
+                    value={name}
+                  />
+                  <Text>Description: </Text>
+                  <TextInput
+                    style={styles.input}
+                    autoCorrect={false}
+                    placeholder="Enter text"
+                    onChangeText={text => setDescription(text)}
+                    value={description}
+                  />
+                  <Button title="Mint NFT!" onPress={handleMintNft} />
+                </View>
+              )}
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
@@ -87,6 +136,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  inputContainer: {
+    width: 200,
   },
   buttonGroup: {
     flexDirection: 'row',
@@ -110,6 +162,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+  },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    marginBottom: 10,
+    padding: 10,
   },
   modalView: {
     margin: 20,
