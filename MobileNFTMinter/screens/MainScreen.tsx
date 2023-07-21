@@ -1,11 +1,8 @@
 import React from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
-import {Section} from '../components/Section';
 import ConnectButton from '../components/ConnectButton';
-import AccountInfo from '../components/AccountInfo';
 import {useAuthorization} from '../components/providers/AuthorizationProvider';
-import MintButton from '../components/MintButton';
 import {useConnection} from '../components/providers/ConnectionProvider';
 import DisconnectButton from '../components/DisconnectButton';
 import NftMinter from '../components/NftMinter';

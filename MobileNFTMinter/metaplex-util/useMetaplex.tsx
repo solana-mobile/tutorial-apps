@@ -19,11 +19,6 @@ const useMetaplex = (
     return Metaplex.make(connection).use(
       mobileWalletAdapterIdentity(selectedAccount, authorizeSession),
     );
-    // .use(
-    //   bundlrStorage({
-    //     address: `https://${cluster}.bundlr.network`,
-    //   }),
-    // );
   }, [connection, selectedAccount, authorizeSession, cluster]);
 
   return {metaplex};
