@@ -1,0 +1,59 @@
+{
+  "name": "MobileNFTMinter",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "lint": "eslint .",
+    "start": "react-native start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@metaplex-foundation/js": "^0.19.4",
+    "@solana-mobile/mobile-wallet-adapter-protocol": "^2.0.0",
+    "@solana-mobile/mobile-wallet-adapter-protocol-web3js": "^2.0.0",
+    "@solana/spl-token": "^0.3.8",
+    "@solana/web3.js": "^1.78.0",
+    "assert": "^2.0.0",
+    "browserify-zlib": "^0.2.0",
+    "crypto-browserify": "^3.12.0",
+    "multiformats": "10.0.0-pre.4",
+    "path-browserify": "^1.0.1",
+    "react": "18.2.0",
+    "react-native": "0.71.4",
+    "react-native-config": "^1.5.1",
+    "react-native-get-random-values": "^1.8.0",
+    "react-native-image-picker": "^5.6.0",
+    "react-native-quick-crypto": "^0.6.1",
+    "react-native-safe-area-context": "3.4.1",
+    "react-native-url-polyfill": "^1.3.0",
+    "readable-stream": "^4.4.2",
+    "rn-fetch-blob": "^0.12.0",
+    "text-encoding": "^0.7.0",
+    "typescript": "^4.9.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.20.0",
+    "@babel/runtime": "^7.20.0",
+    "@react-native-community/eslint-config": "^3.2.0",
+    "@tsconfig/react-native": "^2.0.2",
+    "@types/jest": "^29.2.1",
+    "@types/react": "^18.0.24",
+    "@types/react-test-renderer": "^18.0.0",
+    "babel-jest": "^29.2.1",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "eslint": "^8.19.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "jest": "^29.2.1",
+    "metro-react-native-babel-preset": "0.73.9",
+    "prettier": "^2.4.1",
+    "react-test-renderer": "18.2.0",
+    "typescript": "4.8.4"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
