@@ -94,7 +94,7 @@ const NftMinter = () => {
       });
       return [nft.address.toBase58(), response.signature];
     },
-    [connection],
+    [nftName, nftDescription, selectedAccount?.publicKey],
   );
 
   const isLoading =
@@ -213,18 +213,18 @@ const NftMinter = () => {
                               );
                               return;
                             }
-                            let mintAddress, txSignature;
+                            let mint, signature;
                             try {
-                              [mintAddress, txSignature] = await mintNft(
+                              [mint, signature] = await mintNft(
                                 metaplex,
                                 selectedImage,
                               );
                               console.log(`Mint Successful
-                              Mint Address: ${mintAddress}
-                              Signature: ${txSignature}`);
+                              Mint Address: ${mint}
+                              Tx Signature: ${signature}`);
                               setMintProgressStep(MintingStep.Success);
-                              setMintAddress(mintAddress);
-                              setTxSignature(txSignature);
+                              setMintAddress(mint);
+                              setTxSignature(signature);
                             } catch (error) {
                               setMintProgressStep(MintingStep.Error);
                               console.error(error);
