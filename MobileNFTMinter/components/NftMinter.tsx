@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Image,
@@ -11,6 +11,13 @@ import {
   TextInput,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {Metaplex} from '@metaplex-foundation/js';
+
+import uploadToIPFS from '../ipfs/uploadToIPFS';
+import useMetaplex from '../metaplex-util/useMetaplex';
+import {MWAWallet, useMWAWallet} from './hooks/useMWAWallet';
+import {useAuthorization} from './providers/AuthorizationProvider';
+import {RPC_ENDPOINT, useConnection} from './providers/ConnectionProvider';
 
 enum MintingStep {
   None = 'None',
@@ -20,14 +27,21 @@ enum MintingStep {
 }
 
 const NftMinter = () => {
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [mintProgressStep, setMintProgressStep] = useState<MintingStep>(
     MintingStep.None,
   );
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const {selectedAccount, authorizeSession} = useAuthorization();
+  const {connection} = useConnection();
+  const {metaplex} = useMetaplex(
+    connection,
+    selectedAccount,
+    authorizeSession,
+    RPC_ENDPOINT,
+  );
+  const mwaWallet = useMWAWallet(authorizeSession, selectedAccount);
 
   const handleSelectImage = async () => {
     const photo = await launchImageLibrary({
@@ -42,19 +56,33 @@ const NftMinter = () => {
     setSelectedImage(selectedPhoto.uri);
   };
 
-  const handleMintNft = async () => {
-    setMintProgressStep(MintingStep.UploadingImage);
+  const mintNft = useCallback(
+    async (
+      metaplexInstance: Metaplex,
+      mwaWallet: MWAWallet,
+      imagePath: string,
+    ) => {
+      setMintProgressStep(MintingStep.UploadingImage);
 
-    try {
-      //   await mintNft(selectedImage); // replace this with your actual minting function
-      // Do whatever you need to do after successful minting
-    } catch (error) {
-      console.error('Failed to mint NFT:', error);
-    } finally {
-      setLoading(false);
-      setModalVisible(false);
-    }
-  };
+      const [imageUploadData, metadataUploadData] = await uploadToIPFS(
+        imagePath,
+        'NFT NAME',
+        'DESCRIPTION',
+      );
+
+      setMintProgressStep(MintingStep.MintingMetadata);
+
+      const {nft, response} = await metaplexInstance.nfts().create({
+        name: 'Test NFT 1',
+        symbol: 'sym',
+        uri: `https://ipfs.io/ipfs/${metadataUploadData.value.cid}`,
+        sellerFeeBasisPoints: 0,
+        tokenOwner: selectedAccount?.publicKey,
+      });
+      return [nft.address.toBase58(), response.signature];
+    },
+    [connection],
+  );
 
   const isLoading =
     mintProgressStep === MintingStep.MintingMetadata ||
@@ -71,7 +99,7 @@ const NftMinter = () => {
           <Button
             onPress={handleSelectImage}
             title="Pick an image"
-            disabled={loading}
+            disabled={isLoading}
           />
         </View>
         <View style={styles.mintButton}>
@@ -80,7 +108,7 @@ const NftMinter = () => {
               setMintProgressStep(MintingStep.SubmittingInfo);
             }}
             title="Mint NFT"
-            disabled={loading}
+            disabled={isLoading}
           />
         </View>
       </View>
@@ -104,6 +132,9 @@ const NftMinter = () => {
                 </>
               ) : (
                 <View style={styles.inputContainer}>
+                  <Text style={{fontWeight: 'bold', textAlign: 'center'}}>
+                    NFT Metadata
+                  </Text>
                   <Text>Name: </Text>
                   <TextInput
                     style={styles.input}
@@ -120,7 +151,29 @@ const NftMinter = () => {
                     onChangeText={text => setDescription(text)}
                     value={description}
                   />
-                  <Button title="Mint NFT!" onPress={handleMintNft} />
+                  <Button
+                    title="Mint NFT!"
+                    onPress={async () => {
+                      if (!metaplex || !mwaWallet || !selectedImage) {
+                        console.warn(
+                          'Metaplex/MWA not initialized or Image not selected.',
+                        );
+                        return;
+                      }
+                      try {
+                        const [mintAddress, txSignature] = await mintNft(
+                          metaplex,
+                          mwaWallet,
+                          selectedImage,
+                        );
+                      } catch (error) {
+                        console.error('Error occured during minting');
+                        console.error(error);
+                      } finally {
+                        setMintProgressStep(MintingStep.None);
+                      }
+                    }}
+                  />
                 </View>
               )}
             </View>
