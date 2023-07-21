@@ -1,6 +1,6 @@
 import RNFetchBlob from 'rn-fetch-blob';
 import getCid from './getCid';
-import {NFT_STORAGE_API_KEY} from '@env';
+import Config from 'react-native-config';
 
 const UPLOAD_ENDPOINT = 'https://api.nft.storage/upload';
 
@@ -19,7 +19,7 @@ export default async function uploadToIPFS(
 
   const headers = {
     Accept: 'application/json',
-    Authorization: `Bearer ${NFT_STORAGE_API_KEY}`,
+    Authorization: `Bearer ${Config.NFT_STORAGE_API_KEY}`,
   };
 
   // Upload the image to IPFS

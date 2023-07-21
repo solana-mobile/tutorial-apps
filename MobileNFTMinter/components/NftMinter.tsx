@@ -69,6 +69,21 @@ const NftMinter = () => {
         nftDescription,
       );
 
+      if (imageUploadData.error || metadataUploadData.error) {
+        if (imageUploadData.error) {
+          console.error(imageUploadData.error);
+        }
+        if (metadataUploadData.error) {
+          console.error(metadataUploadData.error);
+        }
+
+        setMintProgressStep(MintingStep.Error);
+        throw new Error('An error occurred during IPFS upload');
+      }
+
+      console.log(imageUploadData);
+      console.log(metadataUploadData);
+
       setMintProgressStep(MintingStep.MintingMetadata);
 
       const {nft, response} = await metaplexInstance.nfts().create({
