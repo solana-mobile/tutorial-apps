@@ -1,20 +1,13 @@
-import {Metaplex, MetaplexPlugin} from '@metaplex-foundation/js';
-import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {MobileWalletAdapterIdentityDriver} from './mwaIdentityDriver';
-import {Account} from '../components/providers/AuthorizationProvider';
+import {
+  IdentitySigner,
+  Metaplex,
+  MetaplexPlugin,
+} from '@metaplex-foundation/js';
 
 export const mobileWalletAdapterIdentity = (
-  selectedAccount: Account,
-  authorizeSession: (wallet: Web3MobileWallet) => Promise<Account>,
+  mwaIdentitySigner: IdentitySigner,
 ): MetaplexPlugin => ({
   install(metaplex: Metaplex) {
-    metaplex
-      .identity()
-      .setDriver(
-        new MobileWalletAdapterIdentityDriver(
-          selectedAccount,
-          authorizeSession,
-        ),
-      );
+    metaplex.identity().setDriver(mwaIdentitySigner);
   },
 });
