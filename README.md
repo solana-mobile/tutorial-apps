@@ -25,10 +25,15 @@ Follow the tutorial to learn:
 - How to sign and submit transactions with an Anchor Program IDL
 - How to generate instructions with an Anchor Program IDL
 
-### mobile-nft-minter
+### [MobileNFTMinter](https://docs.solanamobile.com//react-native/mobile_nft_minter_tutorial)
 
-This app and tutorial is unfinished and WIP
+This a more advanced tutorial app that walks through building a React Native app that can mint NFTs from your phone photos.
 
+Follow the tutorial to learn:
+- Integrate the Metaplex JS in a React Native project.
+- How to read image files from the OS file system.
+- How to upload image and metadata files to IPFS, through NFT.storage.
+- Create and mint a Metaplex NFT on-chain.
 
 ### [SolanaReactNativeTutorial](https://docs.solanamobile.com/react-native/hello_world_tutorial)
 
