@@ -9,7 +9,6 @@ import {AuthorizationProvider} from './components/providers/AuthorizationProvide
 import {Header} from './components/Header';
 
 import MainScreen from './screens/MainScreen';
-import {CounterProgramProvider} from './components/providers/CounterProgramProvider';
 
 export default function App() {
   return (
@@ -17,12 +16,10 @@ export default function App() {
       config={{commitment: 'processed'}}
       endpoint={clusterApiUrl(RPC_ENDPOINT)}>
       <AuthorizationProvider>
-        <CounterProgramProvider>
-          <SafeAreaView style={styles.shell}>
-            <Header />
-            <MainScreen />
-          </SafeAreaView>
-        </CounterProgramProvider>
+        <SafeAreaView style={styles.shell}>
+          <Header />
+          <MainScreen />
+        </SafeAreaView>
       </AuthorizationProvider>
     </ConnectionProvider>
   );
