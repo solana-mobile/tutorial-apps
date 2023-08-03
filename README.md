@@ -5,7 +5,7 @@ This repo is a collection of our tutorial apps and for each, we provide a step b
 
 ## Tutorials
 
-### [first-mobile-dapp](https://docs.solanamobile.com/react-native/hello_world_tutorial)
+### [first-mobile-dapp](https://docs.solanamobile.com/react-native/first_app_tutorial)
 
 This is an introductory tutorial that builds off the [Solana Mobile dApp Scaffold](https://github.com/solana-mobile/solana-mobile-dapp-scaffold), and walks through how to build a React Native dApp that sends a message to the Solana network.
 
