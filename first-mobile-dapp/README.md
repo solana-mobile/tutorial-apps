@@ -1,27 +1,20 @@
-# Solana Mobile dApp Scaffold
+# FirstMobileDapp
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/18451967/236514721-936e747c-52e3-4f7c-805a-314a2ae55c1d.png" alt="Scaffold dApp Screenshot"/>
-</p>
-A ready-to-go template Solana Mobile React Native dApp with dependencies installed and basic React UI components.
-It provides an interface to connect to locally installed wallet apps (that are MWA-compatible), view your account balance on devnet, and request an airdrop of SOL.
+An introductory React Native Solana dApp that showcases basic Mobile Wallet Adapter usage and submitting transaction to the Solana network. 
+This dApp also introduces and builds off of the [Solana Mobile Scaffold dApp](https://github.com/solana-mobile/solana-mobile-dapp-scaffold) template.
 
-This React Native dApp is only fully functional on Android.
+## Featured Libraries/Technology
+- [Mobile Wallet Adapter](https://github.com/solana-mobile/mobile-wallet-adapter/tree/main/js/packages/mobile-wallet-adapter-protocol) for connecting to wallets and signing transactions/messages.
+- [web3.js](https://solana-labs.github.io/solana-web3.js/) for constructing transactions and submitting to the network with an RPC `connection` client.
 
-The app showcases basic usage of the Solana Mobile Javascript SDK including:
-- Mobile Wallet Adapter (@solana-mobile/mobile-wallet-adapter-protocol)
-- web3.js
-- @solana/wallet-adapter-react
+## Prerequisites
 
+If you haven't setup a React Native development environment for Android, you'll need to do that first. Follow the [Prerequisite Setup Guide](https://docs.solanamobile.com/getting-started/development-setup).
 
-# Installation
+Follow the guide to make sure you:
+- setup your Android and React Native development environment.
+- have an Android device or emulator.
+   
+## Tutorial
 
-1. Clone the repo
-- `git clone https://github.com/solana-mobile/SolanaMobileDAppScaffold.git` then `cd SolanaMobileDAppScaffold`
-2. Install dependencies
-- `yarn install` or `npm install`
-
-3. Launch the app on your Android device/emulator
-- `npx react-native run-android`
-
-
+See the [full walkthrough tutorial](https://docs.solanamobile.com/react-native/first_app_tutorial) to learn how to build the app.
