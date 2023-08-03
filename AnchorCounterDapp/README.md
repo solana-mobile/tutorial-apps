@@ -10,13 +10,13 @@ A reference React Native dApp that shows how to use and call Anchor Programs in 
 <table>
   <tr>
     <td align="center">
-      <img src="https://docs.solanamobile.com/tutorial_imgs/nftminter1.png" alt="NFT Minter Screenshot 1" width=300 />
+      <img src="https://github.com/solana-mobile/tutorial-apps/assets/18451967/8589ccbb-a959-44fc-80c3-b642a8a8f712" alt="AnchorDapp Screenshot 1" width=300 />
     </td>
     <td align="center">
-      <img src="https://docs.solanamobile.com/tutorial_imgs/nftminter2.gif" alt="NFT Minter Screenshot 2" width=300 />
+      <img src="https://github.com/solana-mobile/tutorial-apps/assets/18451967/0b9fa5b7-a23c-44e8-b387-9289ade03eac" alt="AnchorDapp Screenshot 3" width=300 />
     </td>
     <td align="center">
-      <img src="https://docs.solanamobile.com/tutorial_imgs/nftminter3.png" alt="NFT Minter Screenshot 3" width=300 />
+      <img src="https://github.com/solana-mobile/tutorial-apps/assets/18451967/d44e703f-01b4-419c-8d2a-0d0a9c6c1cc3" alt="AnchorDapp Screenshot 2" width=300 />
     </td>
   </tr>
 </table>
