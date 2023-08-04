@@ -1,13 +1,14 @@
-# Solana Mobile dApp Scaffold
+# Simple Storage dApp
 
-A ready-to-go template Solana React Native dApp with dependencies installed and basic React UI components.
-It provides an interface to connect to locally installed wallet apps (that are MWA-compatible), view your account balance on devnet, and request an airdrop of SOL.
+This is a reference app that demonstrates MWA authToken persistent storage, using `AsyncStorage`. Caching the authToken allows
+a priorly authorized user to resume "connection" to wallets even after closing the app.
 
-This React Native dApp is only fully functional on Android.
+It is an exact clone of the scaffold dApp, with the only difference in `AuthorizationProvider`, where the `AsyncStorage` solution is added.
 
 ## Featured Libarires
 - [Mobile Wallet Adapter](https://github.com/solana-mobile/mobile-wallet-adapter/tree/main/js/packages/mobile-wallet-adapter-protocol) for connecting to wallets and signing transactions/messages
 - [web3.js](https://solana-labs.github.io/solana-web3.js/) for constructing transactions and an RPC `connection` client.
+- [async-storage](https://github.com/react-native-async-storage/async-storage) for caching Mobile Wallet Adapter authorization information.
 
 <table>
   <tr>
@@ -32,22 +33,8 @@ Follow the guide to make sure you:
 - have an Android device or emulator.
 - install an MWA compliant wallet app on your device/emulator.
    
-## Usage
-1. Initialize project template
-```
-npx react-native init MySolanaDapp --template https://github.com/solana-mobile/solana-mobile-dapp-scaffold.git
-```
-2. Install dependencies
-- `yarn install` or `npm install`
-3. Launch the app on your Android device/emulator
-- `npx react-native run-android`
+## Tutorial
 
-## Troubleshooting
-  
-- `TypeError: cli.init is not a function`: This during template initialization means you have an old version of React Native CLI.
-This template only works with the new CLI. You can uninstall and reinstall it as directed [here](https://stackoverflow.com/questions/72768245/typeerror-cli-init-is-not-a-function-for-react-native).
-
-- `Looks like your iOS environment is not properly set`: You can ignore this during template initialization and build the Android app as normal. This template is only compatible with Android.
-
+WIP
 
 
