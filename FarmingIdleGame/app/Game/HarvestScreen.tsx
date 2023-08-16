@@ -1,24 +1,12 @@
 import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol";
 
 import { StatusBar } from "expo-status-bar";
-import { useCallback } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
-export default function App() {
+export default function ConnectScreen() {
   return (
     <View style={styles.container}>
-      <Button
-        onPress={() => {
-          transact(async (mobileWallet) => {
-            const authorization = await mobileWallet.authorize({
-              cluster: "devnet",
-              identity: { name: "My Expo App" },
-            });
-            console.log(authorization);
-          });
-        }}
-        title="Authorize"
-      />
+      <Text>In Harvest Screen</Text>
       <StatusBar style="auto" />
     </View>
   );

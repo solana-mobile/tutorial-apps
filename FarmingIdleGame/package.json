@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
+    "ts:check": "tsc",
+    "build": "npx eas build --profile development --platform android --local",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
