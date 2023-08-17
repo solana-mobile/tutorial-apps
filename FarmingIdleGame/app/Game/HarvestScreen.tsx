@@ -1,4 +1,4 @@
-import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol";
+import { transact, Web3MobileWallet } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 
 import { StatusBar } from "expo-status-bar";
 import { Button, StyleSheet, Text, View } from "react-native";
