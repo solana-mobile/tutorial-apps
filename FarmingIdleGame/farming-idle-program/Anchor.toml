@@ -8,7 +8,7 @@ farming_idle_program = "RkoKjJ7UVatbVegugEjq11Q5agPynBAZV2VhPrNp5kH"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "/Users/mikesulistio/.config/solana/id.json"
 
 [scripts]
