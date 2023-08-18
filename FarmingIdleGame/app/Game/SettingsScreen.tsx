@@ -1,9 +1,8 @@
-import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol";
+import {StatusBar} from 'expo-status-bar';
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 
-import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View } from "react-native";
-
-export default function ConnectScreen() {
+export default function SettingsScreen() {
   return (
     <View style={styles.container}>
       <Text>In Settings Screen</Text>
@@ -15,8 +14,8 @@ export default function ConnectScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

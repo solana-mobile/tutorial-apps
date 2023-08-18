@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "FarmingIdleGame",
+    "scheme": ["farmingidlegame"],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
