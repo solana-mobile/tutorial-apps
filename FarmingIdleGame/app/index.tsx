@@ -1,11 +1,7 @@
-// import '../crypto-shim';
-
-console.log('index');
-import {Keypair} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {router} from 'expo-router';
 import {StatusBar} from 'expo-status-bar';
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Button, StyleSheet, View} from 'react-native';
 
 export const APP_IDENTITY = {
@@ -24,16 +20,12 @@ export default function ConnectScreen() {
     }
   }, [owner]);
 
-  const createBurnerWallet = useCallback(() => {
-    console.log(global.crypto);
-    const burnerKeypair = Keypair.generate();
-    console.log(burnerKeypair);
-  }, []);
-
   return (
     <View style={styles.container}>
       <Button
-        onPress={createBurnerWallet}
+        onPress={() => {
+          router.replace('Game/HarvestScreen');
+        }}
         // onPress={async () => {
         //   const connectedAccount = await transact(async wallet => {
         //     const auth = await wallet.authorize({

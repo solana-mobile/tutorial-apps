@@ -1,6 +1,11 @@
 import {Slot} from 'expo-router';
-console.log('layout');
+
+import {AuthorizationProvider} from '../authorization/AuthorizationProvider';
 
 export default function ConnectLayout() {
-  return <Slot />;
+  return (
+    <AuthorizationProvider>
+      <Slot />
+    </AuthorizationProvider>
+  );
 }

@@ -1,8 +1,14 @@
 console.log('farming program');
 
 import {Program} from '@coral-xyz/anchor';
-import {PublicKey, SystemProgram} from '@solana/web3.js';
-import {useMemo} from 'react';
+import {
+  clusterApiUrl,
+  Connection,
+  Keypair,
+  PublicKey,
+  SystemProgram,
+} from '@solana/web3.js';
+import {useCallback, useMemo} from 'react';
 
 import {
   FarmingIdleProgram as FarmingGameProgram,
@@ -12,36 +18,47 @@ import {
 const FARMING_GAME_PROGRAM_ID = 'RkoKjJ7UVatbVegugEjq11Q5agPynBAZV2VhPrNp5kH';
 const FARM_SEED = 'farm';
 
-const useFarmingGameProgram = async (owner: PublicKey, player: PublicKey) => {
+const useFarmingGameProgram = () => {
   const farmingProgram = useMemo(() => {
+    const MockWallet = {
+      signTransaction: () => Promise.reject(),
+      signAllTransactions: () => Promise.reject(),
+      connection: new Connection(clusterApiUrl('devnet')),
+      publicKey: undefined,
+    };
+
     return new Program<FarmingGameProgram>(
       IDL as FarmingGameProgram,
       FARMING_GAME_PROGRAM_ID,
+      MockWallet,
     );
   }, []);
 
-  const [farmPDA, bump] = useMemo(() => {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from(FARM_SEED), owner.toBuffer(), player.toBuffer()],
-      new PublicKey(FARMING_GAME_PROGRAM_ID),
-    );
-  }, [owner, player]);
+  const getInitializeFarmInstruction = useCallback(
+    async (owner: PublicKey, player: PublicKey) => {
+      console.log(owner.toString());
+      console.log(player.toString());
+      const [farmPDA, bump] = PublicKey.findProgramAddressSync(
+        [Buffer.from(FARM_SEED), player.toBuffer(), owner.toBuffer()],
+        new PublicKey(FARMING_GAME_PROGRAM_ID),
+      );
 
-  const initializeFarmInstruction = useMemo(async () => {
-    return await farmingProgram.methods
-      .initialize(bump)
-      .accounts({
-        farm: farmPDA,
-        owner: owner,
-        player: player,
-        systemProgram: SystemProgram.programId,
-      })
-      .instruction();
-  }, [bump, farmPDA, farmingProgram, owner, player]);
+      const initializeFarmInstruction = await farmingProgram.methods
+        .initialize(bump)
+        .accounts({
+          farm: farmPDA,
+          owner: owner,
+          player: player,
+          systemProgram: SystemProgram.programId,
+        })
+        .instruction();
 
-  return useMemo(() => {
-    initializeFarmInstruction;
-  }, [initializeFarmInstruction]);
+      return initializeFarmInstruction;
+    },
+    [farmingProgram],
+  );
+
+  return {getInitializeFarmInstruction};
 };
 
 export default useFarmingGameProgram;
