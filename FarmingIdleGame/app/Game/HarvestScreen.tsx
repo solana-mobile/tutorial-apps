@@ -11,7 +11,7 @@ import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {useCallback, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 
-import {useAuthorization} from '../../authorization/AuthorizationProvider';
+import {useAuthorization} from '../../storage/AuthorizationProvider';
 import useFarmingGameProgram from '../../hooks/useFarmingGameProgram';
 import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
 
@@ -22,7 +22,6 @@ export const APP_IDENTITY = {
 };
 
 export default function HarvestScreen() {
-  // const onDeposit =
   const {authorizeSession, selectedAccount} = useAuthorization();
   const [burner, setBurner] = useState<Keypair | null>(null);
 

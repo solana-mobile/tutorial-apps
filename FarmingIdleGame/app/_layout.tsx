@@ -1,6 +1,6 @@
 import {Slot} from 'expo-router';
 
-import {AuthorizationProvider} from '../authorization/AuthorizationProvider';
+import {AuthorizationProvider} from '../storage/AuthorizationProvider';
 
 export default function ConnectLayout() {
   return (
