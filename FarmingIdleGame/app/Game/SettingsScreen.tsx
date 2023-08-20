@@ -56,12 +56,11 @@ export default function SettingsScreen() {
         subtitle={burnerKeypair?.publicKey.toString()}
         balance={playerBalance}
       />
-
       <Pressable
         style={styles.button}
         android_ripple={{color: 'rgba(255, 255, 255, 0.3)', borderless: false}}
         onPress={generateNewBurnerKeypair}>
-        <Text style={styles.text}>Create Burner Wallet</Text>
+        <Text style={styles.text}>Reset Burner Wallet</Text>
       </Pressable>
       {/* <Pressable
         style={styles.button}
@@ -84,8 +83,10 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: 300,
     paddingVertical: 12,
     paddingHorizontal: 32,
+    marginVertical: 8,
     borderRadius: 4,
     elevation: 3,
     backgroundColor: 'black',

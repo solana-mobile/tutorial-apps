@@ -18,6 +18,7 @@ import {
 const FARMING_GAME_PROGRAM_ID = 'RkoKjJ7UVatbVegugEjq11Q5agPynBAZV2VhPrNp5kH';
 const FARM_SEED = 'farm';
 
+// TODO: Refactor out of custom hook
 const useFarmingGameProgram = () => {
   const farmingProgram = useMemo(() => {
     const MockWallet = {
@@ -34,14 +35,25 @@ const useFarmingGameProgram = () => {
     );
   }, []);
 
+  const getFarmPDA = useCallback((owner: PublicKey, player: PublicKey) => {
+    const [farmPDA, bump] = PublicKey.findProgramAddressSync(
+      [Buffer.from(FARM_SEED), player.toBuffer(), owner.toBuffer()],
+      new PublicKey(FARMING_GAME_PROGRAM_ID),
+    );
+    return {farmPDA, bump};
+  }, []);
+
+  const fetchFarmAccount = useCallback(
+    async (owner: PublicKey, player: PublicKey) => {
+      const {farmPDA} = getFarmPDA(owner, player);
+      return await farmingProgram.account.farm.fetch(farmPDA);
+    },
+    [farmingProgram, getFarmPDA],
+  );
+
   const getInitializeFarmInstruction = useCallback(
     async (owner: PublicKey, player: PublicKey) => {
-      console.log(owner.toString());
-      console.log(player.toString());
-      const [farmPDA, bump] = PublicKey.findProgramAddressSync(
-        [Buffer.from(FARM_SEED), player.toBuffer(), owner.toBuffer()],
-        new PublicKey(FARMING_GAME_PROGRAM_ID),
-      );
+      const {farmPDA, bump} = getFarmPDA(owner, player);
 
       const initializeFarmInstruction = await farmingProgram.methods
         .initialize(bump)
@@ -55,10 +67,10 @@ const useFarmingGameProgram = () => {
 
       return initializeFarmInstruction;
     },
-    [farmingProgram],
+    [farmingProgram, getFarmPDA],
   );
 
-  return {getInitializeFarmInstruction};
+  return {getInitializeFarmInstruction, getFarmPDA, fetchFarmAccount};
 };
 
 export default useFarmingGameProgram;

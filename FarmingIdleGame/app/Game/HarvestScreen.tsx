@@ -1,3 +1,4 @@
+import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
 import {
   clusterApiUrl,
   Connection,
@@ -8,12 +9,11 @@ import {
   VersionedTransaction,
 } from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 
-import {useAuthorization} from '../../storage/AuthorizationProvider';
 import useFarmingGameProgram from '../../hooks/useFarmingGameProgram';
-import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
+import {useAuthorization} from '../../storage/AuthorizationProvider';
 import useBurnerWallet from '../../storage/useBurnerWallet';
 
 export const APP_IDENTITY = {
@@ -24,8 +24,17 @@ export const APP_IDENTITY = {
 
 export default function HarvestScreen() {
   const {authorizeSession, selectedAccount} = useAuthorization();
-  const {burnerKeypair, generateNewBurnerKeypair} = useBurnerWallet();
-  const {getInitializeFarmInstruction} = useFarmingGameProgram();
+  const {burnerKeypair} = useBurnerWallet();
+  const {getInitializeFarmInstruction, fetchFarmAccount} =
+    useFarmingGameProgram();
+
+  // useEffect(() => {
+  //   const farmAccount = await fetchFarmAccount(
+  //     selectedAccount.publicKey,
+  //     burnerKeypair.publicKey,
+  //   );
+  //   console.log(farmAccount);
+  // }, [burnerKeypair.publicKey, fetchFarmAccount, selectedAccount.publicKey]);
 
   return (
     <View style={styles.container}>
@@ -34,13 +43,13 @@ export default function HarvestScreen() {
         style={styles.button}
         android_ripple={{color: 'rgba(255, 255, 255, 0.3)', borderless: false}}
         onPress={async () => {
-          await transact(async wallet => {
-            const auth = await authorizeSession(wallet);
-            console.log(auth);
-            return auth.publicKey;
-          });
+          const farmAccount = await fetchFarmAccount(
+            selectedAccount.publicKey,
+            burnerKeypair.publicKey,
+          );
+          console.log(farmAccount);
         }}>
-        <Text style={styles.text}>Connect Owner Wallet</Text>
+        <Text style={styles.text}>Fetch Farm PDA</Text>
       </Pressable>
       <Pressable
         style={styles.button}
@@ -69,7 +78,9 @@ export default function HarvestScreen() {
             const ownerSignedTx = signedTransactions[0];
 
             // Then sign with the player/burner wallet
-            ownerSignedTx.partialSign(burner);
+            console.log(burnerKeypair);
+
+            ownerSignedTx.partialSign(burnerKeypair);
 
             const rawTransaction = ownerSignedTx.serialize();
             const txSig = await connection.sendRawTransaction(rawTransaction, {

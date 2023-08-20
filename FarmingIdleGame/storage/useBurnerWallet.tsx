@@ -1,12 +1,16 @@
 import {Keypair, PublicKey, PublicKeyInitData} from '@solana/web3.js';
+import {base58_to_binary, binary_to_base58} from 'base58-js';
 import * as SecureStore from 'expo-secure-store';
 import {useCallback, useEffect, useState} from 'react';
 
+const bs58 = require('bs58');
 const BURNER_CACHE_KEY = 'burner-cache-key';
 
 function cacheReviver(key: string, value: any) {
   if (key === 'publicKey') {
     return new PublicKey(value as PublicKeyInitData); // the PublicKeyInitData should match the actual data structure stored in AsyncStorage
+  } else if (key === 'secretKey') {
+    return bs58.decode(value);
   } else {
     return value;
   }
@@ -39,7 +43,7 @@ const useBurnerWallet = () => {
       BURNER_CACHE_KEY,
       JSON.stringify({
         publicKey: newBurnerKeypair.publicKey,
-        secretKey: newBurnerKeypair.secretKey,
+        secretKey: bs58.encode(newBurnerKeypair.secretKey),
       }),
     );
     setBurnerKeypair(newBurnerKeypair);
