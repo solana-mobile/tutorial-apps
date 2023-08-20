@@ -14,6 +14,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {useAuthorization} from '../../storage/AuthorizationProvider';
 import useFarmingGameProgram from '../../hooks/useFarmingGameProgram';
 import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
+import useBurnerWallet from '../../storage/useBurnerWallet';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
@@ -23,25 +24,12 @@ export const APP_IDENTITY = {
 
 export default function HarvestScreen() {
   const {authorizeSession, selectedAccount} = useAuthorization();
-  const [burner, setBurner] = useState<Keypair | null>(null);
-
+  const {burnerKeypair, generateNewBurnerKeypair} = useBurnerWallet();
   const {getInitializeFarmInstruction} = useFarmingGameProgram();
-
-  const createBurnerWallet = useCallback(() => {
-    const burnerKeypair = Keypair.generate();
-    setBurner(burnerKeypair);
-    console.log(burnerKeypair);
-  }, []);
 
   return (
     <View style={styles.container}>
       <Text>In Harvest Screen</Text>
-      <Pressable
-        style={styles.button}
-        android_ripple={{color: 'rgba(255, 255, 255, 0.3)', borderless: false}}
-        onPress={createBurnerWallet}>
-        <Text style={styles.text}>Create Burner Wallet</Text>
-      </Pressable>
       <Pressable
         style={styles.button}
         android_ripple={{color: 'rgba(255, 255, 255, 0.3)', borderless: false}}
@@ -64,7 +52,7 @@ export default function HarvestScreen() {
               authorizeSession(wallet),
               getInitializeFarmInstruction(
                 selectedAccount.publicKey,
-                burner.publicKey,
+                burnerKeypair.publicKey,
               ),
               connection.getLatestBlockhash(),
             ]);

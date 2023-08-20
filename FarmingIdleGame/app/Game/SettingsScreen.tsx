@@ -16,9 +16,10 @@ function convertLamportsToSOL(lamports: number) {
   );
 }
 
-const BalanceCard = ({title, balance}) => (
+const BalanceCard = ({title, subtitle, balance}) => (
   <View style={styles.card}>
     <Text style={styles.cardTitle}>{title}</Text>
+    <Text style={styles.cardSubtitle}>{subtitle}</Text>
     <Text style={styles.cardBalance}>{convertLamportsToSOL(balance)} SOL</Text>
   </View>
 );
@@ -45,8 +46,16 @@ export default function SettingsScreen() {
   return (
     <View style={styles.container}>
       <Text>In Settings Screen</Text>
-      <BalanceCard title="Main Wallet (Owner)" balance={mainBalance} />
-      <BalanceCard title="Player Wallet (Burner)" balance={playerBalance} />
+      <BalanceCard
+        title="Main Wallet (Owner)"
+        subtitle={selectedAccount?.publicKey.toString()}
+        balance={mainBalance}
+      />
+      <BalanceCard
+        title="Player Wallet (Burner)"
+        subtitle={burnerKeypair?.publicKey.toString()}
+        balance={playerBalance}
+      />
 
       <Pressable
         style={styles.button}
@@ -106,6 +115,10 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: '600',
+  },
+  cardSubtitle: {
+    fontSize: 12,
+    fontWeight: '300',
     marginBottom: 10,
   },
   cardBalance: {
