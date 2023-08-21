@@ -3,6 +3,7 @@ import {router} from 'expo-router';
 import {StatusBar} from 'expo-status-bar';
 import {useEffect, useState} from 'react';
 import {Button, StyleSheet, View} from 'react-native';
+import {Account, useAuthorization} from '../storage/AuthorizationProvider';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
@@ -11,36 +12,33 @@ export const APP_IDENTITY = {
 };
 
 export default function ConnectScreen() {
-  const [owner, setOwner] = useState(undefined);
+  const {authorizeSession, selectedAccount} = useAuthorization();
 
   useEffect(() => {
-    if (owner) {
-      console.log('Route to crops screen');
+    if (selectedAccount) {
       router.replace('Game/HarvestScreen');
     }
-  }, [owner]);
+  }, [selectedAccount]);
 
   return (
     <View style={styles.container}>
-      <Button
-        onPress={() => {
-          router.replace('Game/HarvestScreen');
-        }}
-        // onPress={async () => {
-        //   const connectedAccount = await transact(async wallet => {
-        //     const auth = await wallet.authorize({
-        //       cluster: 'devnet',
-        //       identity: APP_IDENTITY,
-        //     });
-
-        //     return auth.accounts[0];
-        //   });
-        //   console.log('Setting owner');
-        //   console.log(connectedAccount);
-        //   setOwner(connectedAccount);
-        // }}
-        title="Connect"
-      />
+      {selectedAccount ? (
+        <Button
+          onPress={() => {
+            router.replace('Game/HarvestScreen');
+          }}
+          title="Play"
+        />
+      ) : (
+        <Button
+          onPress={async () => {
+            await transact(async wallet => {
+              await authorizeSession(wallet);
+            });
+          }}
+          title="Connect"
+        />
+      )}
       <StatusBar style="auto" />
     </View>
   );

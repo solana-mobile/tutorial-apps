@@ -113,6 +113,7 @@ function AuthorizationProvider(props: {children: ReactNode}) {
     (async () => {
       try {
         const cacheFetchResult = await AsyncStorage.getItem(STORAGE_KEY);
+        console.log('Authorization cache attempt');
         if (cacheFetchResult !== null) {
           // We have data!!
           console.log(

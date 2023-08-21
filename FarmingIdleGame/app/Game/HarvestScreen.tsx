@@ -1,18 +1,27 @@
-import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
+import {Program} from '@coral-xyz/anchor';
 import {
   clusterApiUrl,
   Connection,
-  Keypair,
   PublicKey,
   Transaction,
-  TransactionMessage,
-  VersionedTransaction,
 } from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {useCallback, useEffect, useState} from 'react';
+import {useMemo} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 
-import useFarmingGameProgram from '../../hooks/useFarmingGameProgram';
+import FarmAccountInfo from '../../components/FarmAccountInfo';
+import GameButton from '../../components/GameButton';
+import {FarmingIdleProgram} from '../../farming-idle-program/target/types/farming_idle_program';
+import {FarmAccount} from '../../farming-program-utils/accountTypes';
+import {
+  fetchFarmAccount,
+  getFarmingGameProgram,
+  getFarmPDA,
+  getHarvestIx,
+  getInitializeFarmIx,
+  signSendAndConfirmBurnerIx,
+} from '../../farming-program-utils/farmingProgram';
 import {useAuthorization} from '../../storage/AuthorizationProvider';
 import useBurnerWallet from '../../storage/useBurnerWallet';
 
@@ -22,76 +31,161 @@ export const APP_IDENTITY = {
   icon: 'favicon.ico',
 };
 
+enum GameState {
+  Loading = 'Loading',
+  Uninitialized = 'Uninitialized',
+  Initialized = 'Initialized',
+}
+
 export default function HarvestScreen() {
   const {authorizeSession, selectedAccount} = useAuthorization();
   const {burnerKeypair} = useBurnerWallet();
-  const {getInitializeFarmInstruction, fetchFarmAccount} =
-    useFarmingGameProgram();
+  const [farmAccount, setFarmAccount] = useState<FarmAccount | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
+  const [gameState, setGameState] = useState<GameState>(GameState.Loading);
+  const connection = useMemo(() => {
+    return new Connection(clusterApiUrl('devnet'));
+  }, []);
+  const farmingGameProgram = useMemo(() => {
+    return getFarmingGameProgram(connection);
+  }, [connection]);
 
-  // useEffect(() => {
-  //   const farmAccount = await fetchFarmAccount(
-  //     selectedAccount.publicKey,
-  //     burnerKeypair.publicKey,
-  //   );
-  //   console.log(farmAccount);
-  // }, [burnerKeypair.publicKey, fetchFarmAccount, selectedAccount.publicKey]);
+  const fetchAndUpdateFarmAccount = useCallback(
+    async (
+      program: Program<FarmingIdleProgram>,
+      owner: PublicKey,
+      player: PublicKey,
+    ) => {
+      const [farmPDA] = getFarmPDA(farmingGameProgram, owner, player);
+      const fetchedFarmAccount = await fetchFarmAccount(program, farmPDA);
+      setFarmAccount(fetchedFarmAccount);
+      setGameState(GameState.Initialized);
+    },
+    [farmingGameProgram],
+  );
+
+  useEffect(() => {
+    if (burnerKeypair && selectedAccount) {
+      fetchAndUpdateFarmAccount(
+        farmingGameProgram,
+        selectedAccount.publicKey,
+        burnerKeypair.publicKey,
+      );
+    }
+  }, [
+    farmingGameProgram,
+    burnerKeypair,
+    selectedAccount,
+    fetchAndUpdateFarmAccount,
+  ]);
 
   return (
     <View style={styles.container}>
       <Text>In Harvest Screen</Text>
-      <Pressable
-        style={styles.button}
-        android_ripple={{color: 'rgba(255, 255, 255, 0.3)', borderless: false}}
-        onPress={async () => {
-          const farmAccount = await fetchFarmAccount(
-            selectedAccount.publicKey,
-            burnerKeypair.publicKey,
-          );
-          console.log(farmAccount);
-        }}>
-        <Text style={styles.text}>Fetch Farm PDA</Text>
-      </Pressable>
-      <Pressable
-        style={styles.button}
-        android_ripple={{color: 'rgba(255, 255, 255, 0.3)', borderless: false}}
-        onPress={async () => {
-          const connection = new Connection(clusterApiUrl('devnet'));
-          await transact(async wallet => {
-            const [authResult, initIx, latestBlockhash] = await Promise.all([
-              authorizeSession(wallet),
-              getInitializeFarmInstruction(
+
+      {farmAccount ? (
+        <>
+          <FarmAccountInfo farmAccount={farmAccount} />
+          <GameButton
+            text="Harvest!"
+            disabled={isFetching}
+            onPress={async () => {
+              if (!farmAccount || !burnerKeypair || !selectedAccount) {
+                throw Error('Farm Account is uninitialized');
+              }
+              setIsFetching(true);
+
+              const [farmPDA] = getFarmPDA(
+                farmingGameProgram,
                 selectedAccount.publicKey,
                 burnerKeypair.publicKey,
-              ),
-              connection.getLatestBlockhash(),
-            ]);
+              );
+              const harvestIx = await getHarvestIx(
+                farmingGameProgram,
+                farmPDA,
+                burnerKeypair.publicKey,
+              );
+              try {
+                const txSig = await signSendAndConfirmBurnerIx(
+                  connection,
+                  burnerKeypair,
+                  harvestIx,
+                );
 
-            const initTx = new Transaction({
-              ...latestBlockhash,
-              feePayer: authResult.publicKey,
-            }).add(initIx);
+                console.log(txSig);
+                await fetchAndUpdateFarmAccount(
+                  farmingGameProgram,
+                  selectedAccount.publicKey,
+                  burnerKeypair.publicKey,
+                );
+              } catch (error: any) {
+                console.error('Failed to harvest');
+                console.error(error);
+                throw error;
+              } finally {
+                setIsFetching(false);
+              }
+            }}
+          />
+        </>
+      ) : (
+        <Pressable
+          style={styles.button}
+          android_ripple={{
+            color: 'rgba(255, 255, 255, 0.3)',
+            borderless: false,
+          }}
+          onPress={async () => {
+            if (!selectedAccount || !burnerKeypair) {
+              throw new Error('Farm Account is uninitialized');
+            }
 
-            // Sign the initTx first with the owner wallet
-            const signedTransactions = await wallet.signTransactions({
-              transactions: [initTx],
+            const [farmPDA, bump] = getFarmPDA(
+              farmingGameProgram,
+              selectedAccount.publicKey,
+              burnerKeypair.publicKey,
+            );
+            await transact(async wallet => {
+              const [authResult, initIx, latestBlockhash] = await Promise.all([
+                authorizeSession(wallet),
+                getInitializeFarmIx(
+                  farmingGameProgram,
+                  farmPDA,
+                  bump,
+                  selectedAccount.publicKey,
+                  burnerKeypair.publicKey,
+                ),
+                connection.getLatestBlockhash(),
+              ]);
+
+              const initTx = new Transaction({
+                ...latestBlockhash,
+                feePayer: authResult.publicKey,
+              }).add(initIx);
+
+              // Sign the initTx first with the owner wallet
+              const signedTransactions = await wallet.signTransactions({
+                transactions: [initTx],
+              });
+              const ownerSignedTx = signedTransactions[0];
+
+              // Then sign with the player/burner wallet
+              ownerSignedTx.partialSign(burnerKeypair);
+
+              const rawTransaction = ownerSignedTx.serialize();
+              const txSig = await connection.sendRawTransaction(
+                rawTransaction,
+                {
+                  skipPreflight: true,
+                },
+              );
+
+              console.log(txSig);
             });
-            const ownerSignedTx = signedTransactions[0];
-
-            // Then sign with the player/burner wallet
-            console.log(burnerKeypair);
-
-            ownerSignedTx.partialSign(burnerKeypair);
-
-            const rawTransaction = ownerSignedTx.serialize();
-            const txSig = await connection.sendRawTransaction(rawTransaction, {
-              skipPreflight: true,
-            });
-
-            console.log(txSig);
-          });
-        }}>
-        <Text style={styles.text}>Deposit</Text>
-      </Pressable>
+          }}>
+          <Text style={styles.text}>Deposit</Text>
+        </Pressable>
+      )}
     </View>
   );
 }

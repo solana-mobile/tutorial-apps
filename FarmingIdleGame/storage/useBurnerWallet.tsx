@@ -1,7 +1,6 @@
 import {Keypair, PublicKey, PublicKeyInitData} from '@solana/web3.js';
-import {base58_to_binary, binary_to_base58} from 'base58-js';
 import * as SecureStore from 'expo-secure-store';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
 const bs58 = require('bs58');
 const BURNER_CACHE_KEY = 'burner-cache-key';
@@ -49,10 +48,13 @@ const useBurnerWallet = () => {
     setBurnerKeypair(newBurnerKeypair);
   }, []);
 
-  return {
-    burnerKeypair,
-    generateNewBurnerKeypair,
-  };
+  return useMemo(() => {
+    console.log('in burner memo');
+    return {
+      burnerKeypair,
+      generateNewBurnerKeypair,
+    };
+  }, [burnerKeypair, generateNewBurnerKeypair]);
 };
 
 export default useBurnerWallet;
