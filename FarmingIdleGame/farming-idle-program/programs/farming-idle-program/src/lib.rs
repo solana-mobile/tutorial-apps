@@ -6,6 +6,9 @@ use instructions::initialize_farm_instruction::*;
 
 declare_id!("RkoKjJ7UVatbVegugEjq11Q5agPynBAZV2VhPrNp5kH");
 
+// Globals
+mod globals;
+
 // Instructions
 mod instructions;
 

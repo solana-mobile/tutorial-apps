@@ -9,4 +9,5 @@ pub struct Farm {
     pub date_created: i64,
     pub last_harvested: i64,
     pub harvest_points: u64,
+    pub farm_upgrades: [u16; 16],
 }
