@@ -58,6 +58,7 @@ export default function HarvestScreen() {
     ) => {
       const [farmPDA] = getFarmPDA(farmingGameProgram, owner, player);
       const fetchedFarmAccount = await fetchFarmAccount(program, farmPDA);
+
       setFarmAccount(fetchedFarmAccount);
       setGameState(GameState.Initialized);
     },

@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::{transfer, Transfer};
 
+use crate::globals::constants::FARM_SEED;
 use crate::pdas::farm_account::Farm;
 
 #[derive(Accounts)]
@@ -9,7 +10,7 @@ pub struct InitializeFarm<'info> {
         init,
         payer = owner,
         space = std::mem::size_of::<Farm>() + 8,
-        seeds = [b"farm", player.key().as_ref(), owner.key().as_ref()],
+        seeds = [FARM_SEED, player.key().as_ref(), owner.key().as_ref()],
         bump
     )]
     farm: Account<'info, Farm>,

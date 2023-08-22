@@ -1,4 +1,4 @@
-use crate::globals::constants::{BASE_COSTS, BASE_POINTS};
+use crate::globals::constants::BASE_POINTS;
 use anchor_lang::prelude::*;
 
 use crate::pdas::farm_account::Farm;

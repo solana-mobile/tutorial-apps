@@ -8,4 +8,5 @@ export type FarmAccount = {
   lastHarvested: anchor.BN;
   owner: PublicKey;
   player: PublicKey;
+  farm_upgrades: number[];
 };
