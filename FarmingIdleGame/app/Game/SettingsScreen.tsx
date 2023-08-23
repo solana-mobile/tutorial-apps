@@ -3,7 +3,9 @@ import {
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
+  Transaction,
 } from '@solana/web3.js';
+import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {SetStateAction, useCallback, useEffect, useMemo, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 
@@ -15,13 +17,14 @@ import {
   getFarmingGameProgram,
   getWithdrawIx,
   signSendAndConfirmBurnerIx,
+  signSendAndConfirmBurnerTx,
 } from '../../program-utils/farmingProgram';
 
 export default function SettingsScreen() {
   const connection = useMemo(() => {
     return new Connection(clusterApiUrl('devnet'));
   }, []);
-  const {selectedAccount} = useAuthorization();
+  const {selectedAccount, authorizeSession} = useAuthorization();
   const {burnerKeypair, generateNewBurnerKeypair} = useBurnerWallet();
   const [ownerBalance, setOwnerBalance] = useState<number | null>(null);
   const [playerBalance, setPlayerBalance] = useState<number | null>(null);
@@ -92,13 +95,31 @@ export default function SettingsScreen() {
 
           setIsWithdrawing(true);
           try {
-            await signSendAndConfirmBurnerIx(
+            const ownerSignedWithdrawTx = await transact(async wallet => {
+              const [authResult, latestBlockhash] = await Promise.all([
+                authorizeSession(wallet),
+                connection.getLatestBlockhash(),
+              ]);
+
+              const tx = new Transaction({
+                ...latestBlockhash,
+                feePayer: authResult.publicKey,
+              }).add(withdrawIx);
+
+              const signedTxs = await wallet.signTransactions({
+                transactions: [tx],
+              });
+
+              return signedTxs[0];
+            });
+
+            await signSendAndConfirmBurnerTx(
               connection,
               burnerKeypair,
-              withdrawIx,
+              ownerSignedWithdrawTx,
             );
 
-            fetchAndUpdateBalances(
+            await fetchAndUpdateBalances(
               connection,
               selectedAccount?.publicKey,
               burnerKeypair?.publicKey,

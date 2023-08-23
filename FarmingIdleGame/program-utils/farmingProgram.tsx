@@ -19,6 +19,7 @@ import {
   FarmingIdleProgram as FarmingGameProgram,
   IDL,
 } from '../farming-idle-program/target/types/farming_idle_program';
+import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 
 export type FarmAccount = IdlAccounts<FarmingGameProgram>['farm'];
 
@@ -109,6 +110,7 @@ export async function getWithdrawIx(
 ) {
   // Currently, this is a simple transfer from player wallet to owner wallet.
   const playerBalance = await program.provider.connection.getBalance(player);
+  console.log(playerBalance);
   return SystemProgram.transfer({
     fromPubkey: player,
     toPubkey: owner,
@@ -128,18 +130,39 @@ export async function signSendAndConfirmBurnerIx(
     feePayer: burnerKeypair.publicKey,
   }).add(instruction);
 
+  return signSendAndConfirmBurnerTx(
+    connection,
+    burnerKeypair,
+    tx,
+    latestBlockhash,
+  );
+}
+
+export async function signSendAndConfirmBurnerTx(
+  connection: Connection,
+  burnerKeypair: Keypair,
+  tx: Transaction,
+  latestBlockhash?: Readonly<{
+    blockhash: string;
+    lastValidBlockHeight: number;
+  }>,
+) {
+  const _latestBlockhash =
+    latestBlockhash ?? (await connection.getLatestBlockhash());
+
   // Sign with local burner keypair
-  tx.sign(burnerKeypair);
+  tx.partialSign(burnerKeypair);
 
   const rawTransaction = tx.serialize();
+  console.log('after serialize');
   const txSig = await connection.sendRawTransaction(rawTransaction, {
     skipPreflight: true,
   });
 
   const result = await connection.confirmTransaction(
     {
-      blockhash: latestBlockhash.blockhash,
-      lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+      blockhash: _latestBlockhash.blockhash,
+      lastValidBlockHeight: _latestBlockhash.lastValidBlockHeight,
       signature: txSig,
     },
     'finalized',
