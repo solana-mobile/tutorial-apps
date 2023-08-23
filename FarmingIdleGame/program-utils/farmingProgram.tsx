@@ -118,6 +118,24 @@ export async function getWithdrawIx(
   });
 }
 
+export async function getUpgradeFarmIx(
+  program: Program<FarmingGameProgram>,
+  farmPDA: PublicKey,
+  player: PublicKey,
+  upgradeIndex: number,
+  amount: number,
+) {
+  const upgradeFarmInstruction = await program.methods
+    .upgradeFarm(upgradeIndex, amount)
+    .accounts({
+      farm: farmPDA,
+      player: player,
+    })
+    .instruction();
+
+  return upgradeFarmInstruction;
+}
+
 export async function signSendAndConfirmBurnerIx(
   connection: Connection,
   burnerKeypair: Keypair,
