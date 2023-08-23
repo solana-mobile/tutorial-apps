@@ -2,8 +2,8 @@ import {GestureResponderEvent, Pressable, StyleSheet, Text} from 'react-native';
 
 type Props = Readonly<{
   text: string;
-  disabled: boolean;
   onPress: (event: GestureResponderEvent) => void;
+  disabled?: boolean;
 }>;
 
 export default function GameButton({text, disabled, onPress}: Props) {
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: 300,
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,

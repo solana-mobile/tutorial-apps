@@ -102,6 +102,20 @@ export async function getHarvestIx(
   return initializeFarmInstruction;
 }
 
+export async function getWithdrawIx(
+  program: Program<FarmingGameProgram>,
+  owner: PublicKey,
+  player: PublicKey,
+) {
+  // Currently, this is a simple transfer from player wallet to owner wallet.
+  const playerBalance = await program.provider.connection.getBalance(player);
+  return SystemProgram.transfer({
+    fromPubkey: player,
+    toPubkey: owner,
+    lamports: playerBalance,
+  });
+}
+
 export async function signSendAndConfirmBurnerIx(
   connection: Connection,
   burnerKeypair: Keypair,

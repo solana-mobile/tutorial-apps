@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 
-import {FarmAccount} from '../farming-program-utils/accountTypes';
+import {FarmAccount} from '../program-utils/accountTypes';
 
 type Props = Readonly<{
   farmAccount: FarmAccount;

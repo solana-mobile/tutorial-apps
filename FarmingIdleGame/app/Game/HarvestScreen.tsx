@@ -13,7 +13,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import FarmAccountInfo from '../../components/FarmAccountInfo';
 import GameButton from '../../components/GameButton';
 import {FarmingIdleProgram} from '../../farming-idle-program/target/types/farming_idle_program';
-import {FarmAccount} from '../../farming-program-utils/accountTypes';
+import {FarmAccount} from '../../program-utils/accountTypes';
 import {
   fetchFarmAccount,
   getFarmingGameProgram,
@@ -21,9 +21,9 @@ import {
   getHarvestIx,
   getInitializeFarmIx,
   signSendAndConfirmBurnerIx,
-} from '../../farming-program-utils/farmingProgram';
-import {useAuthorization} from '../../storage/AuthorizationProvider';
-import useBurnerWallet from '../../storage/useBurnerWallet';
+} from '../../program-utils/farmingProgram';
+import {useAuthorization} from '../../hooks/AuthorizationProvider';
+import useBurnerWallet from '../../hooks/useBurnerWallet';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',

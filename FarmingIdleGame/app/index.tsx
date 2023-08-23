@@ -3,7 +3,7 @@ import {router} from 'expo-router';
 import {StatusBar} from 'expo-status-bar';
 import {useEffect, useState} from 'react';
 import {Button, StyleSheet, View} from 'react-native';
-import {Account, useAuthorization} from '../storage/AuthorizationProvider';
+import {Account, useAuthorization} from '../hooks/AuthorizationProvider';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
