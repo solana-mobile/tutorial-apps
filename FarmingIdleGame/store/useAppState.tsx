@@ -51,7 +51,7 @@ interface GameStore {
   resetPlayer: () => void;
 }
 
-export const gameStore = create<GameStore>()((set, get) => {
+export const useAppState = create<GameStore>()((set, get) => {
   const setupProgramState = async (
     owner: PublicKey,
     playerKeypair: Keypair,

@@ -6,7 +6,7 @@ import {useEffect} from 'react';
 import {Button, StyleSheet, View} from 'react-native';
 
 import {useAuthorization} from '../hooks/AuthorizationProvider';
-import {gameStore} from '../store/gameStore';
+import {useAppState} from '../store/useAppState';
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
   uri: 'https://solanamobile.com',
@@ -15,7 +15,7 @@ export const APP_IDENTITY = {
 
 export default function ConnectScreen() {
   const {authorizeSession, selectedAccount} = useAuthorization();
-  const onConnect = gameStore(state => state.onConnect);
+  const {onConnect, gameState} = useAppState();
 
   useEffect(() => {
     if (selectedAccount) {
