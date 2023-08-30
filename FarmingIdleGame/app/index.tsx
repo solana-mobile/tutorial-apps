@@ -1,10 +1,12 @@
+import {clusterApiUrl, Connection} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {router} from 'expo-router';
 import {StatusBar} from 'expo-status-bar';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {Button, StyleSheet, View} from 'react-native';
-import {Account, useAuthorization} from '../hooks/AuthorizationProvider';
 
+import {useAuthorization} from '../hooks/AuthorizationProvider';
+import {gameStore} from '../store/gameStore';
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
   uri: 'https://solanamobile.com',
@@ -13,12 +15,17 @@ export const APP_IDENTITY = {
 
 export default function ConnectScreen() {
   const {authorizeSession, selectedAccount} = useAuthorization();
+  const onConnect = gameStore(state => state.onConnect);
 
   useEffect(() => {
     if (selectedAccount) {
+      onConnect(
+        selectedAccount.publicKey,
+        new Connection(clusterApiUrl('devnet')),
+      );
       router.replace('Game/HarvestScreen');
     }
-  }, [selectedAccount]);
+  }, [onConnect, selectedAccount]);
 
   return (
     <View style={styles.container}>

@@ -5,7 +5,6 @@ import {
   Wallet as AnchorWallet,
 } from '@coral-xyz/anchor';
 import {
-  clusterApiUrl,
   Connection,
   Keypair,
   PublicKey,
@@ -13,13 +12,12 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
-import {useCallback, useMemo} from 'react';
+import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 
 import {
   FarmingIdleProgram as FarmingGameProgram,
   IDL,
 } from '../farming-idle-program/target/types/farming_idle_program';
-import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 
 export type FarmAccount = IdlAccounts<FarmingGameProgram>['farm'];
 
@@ -65,7 +63,13 @@ export async function fetchFarmAccount(
   program: Program<FarmingGameProgram>,
   farmPDA: PublicKey,
 ) {
-  return await program.account.farm.fetch(farmPDA);
+  try {
+    return await program.account.farm.fetch(farmPDA);
+  } catch (e) {
+    // farmAccount has not been initialized
+    console.error(e);
+    return null;
+  }
 }
 export async function getInitializeFarmIx(
   program: Program<FarmingGameProgram>,
@@ -110,7 +114,6 @@ export async function getWithdrawIx(
 ) {
   // Currently, this is a simple transfer from player wallet to owner wallet.
   const playerBalance = await program.provider.connection.getBalance(player);
-  console.log(playerBalance);
   return SystemProgram.transfer({
     fromPubkey: player,
     toPubkey: owner,
@@ -156,6 +159,39 @@ export async function signSendAndConfirmBurnerIx(
   );
 }
 
+export async function signSendAndConfirmOwnerBurnerIx(
+  connection: Connection,
+  ownerWallet: Web3MobileWallet,
+  ownerKey: PublicKey,
+  playerKeypair: Keypair,
+  ix: TransactionInstruction,
+  latestBlockhash?: Readonly<{
+    blockhash: string;
+    lastValidBlockHeight: number;
+  }>,
+) {
+  const _latestBlockhash =
+    latestBlockhash ?? (await connection.getLatestBlockhash());
+
+  const tx = new Transaction({
+    ..._latestBlockhash,
+    feePayer: ownerKey,
+  }).add(ix);
+
+  // Sign the tx first with the owner wallet
+  const signedTransactions = await ownerWallet.signTransactions({
+    transactions: [tx],
+  });
+  const ownerSignedTx = signedTransactions[0];
+
+  return signSendAndConfirmBurnerTx(
+    connection,
+    playerKeypair,
+    ownerSignedTx,
+    latestBlockhash,
+  );
+}
+
 export async function signSendAndConfirmBurnerTx(
   connection: Connection,
   burnerKeypair: Keypair,
@@ -172,7 +208,6 @@ export async function signSendAndConfirmBurnerTx(
   tx.partialSign(burnerKeypair);
 
   const rawTransaction = tx.serialize();
-  console.log('after serialize');
   const txSig = await connection.sendRawTransaction(rawTransaction, {
     skipPreflight: true,
   });

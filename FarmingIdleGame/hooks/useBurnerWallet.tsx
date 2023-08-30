@@ -49,7 +49,6 @@ const useBurnerWallet = () => {
   }, []);
 
   return useMemo(() => {
-    console.log('in burner memo');
     return {
       burnerKeypair,
       generateNewBurnerKeypair,

@@ -15,6 +15,7 @@ import GameButton from '../../components/GameButton';
 import {FarmingIdleProgram} from '../../farming-idle-program/target/types/farming_idle_program';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import useBurnerWallet from '../../hooks/useBurnerWallet';
+import {useGameState} from '../../store/gameStore';
 import {FarmAccount} from '../../program-utils/accountTypes';
 import {
   fetchFarmAccount,
@@ -31,24 +32,21 @@ export const APP_IDENTITY = {
   icon: 'favicon.ico',
 };
 
-enum GameState {
-  Loading = 'Loading',
-  Uninitialized = 'Uninitialized',
-  Initialized = 'Initialized',
-}
-
 export default function HarvestScreen() {
   const {authorizeSession, selectedAccount} = useAuthorization();
   const {burnerKeypair} = useBurnerWallet();
   const [farmAccount, setFarmAccount] = useState<FarmAccount | null>(null);
   const [isFetching, setIsFetching] = useState(false);
-  const [gameState, setGameState] = useState<GameState>(GameState.Loading);
+
   const connection = useMemo(() => {
     return new Connection(clusterApiUrl('devnet'));
   }, []);
   const farmingGameProgram = useMemo(() => {
     return getFarmingGameProgram(connection);
   }, [connection]);
+
+  // onMount check if farm already exists
+  useEffect(() => {}, []);
 
   const fetchAndUpdateFarmAccount = useCallback(
     async (
@@ -60,7 +58,6 @@ export default function HarvestScreen() {
       const fetchedFarmAccount = await fetchFarmAccount(program, farmPDA);
 
       setFarmAccount(fetchedFarmAccount);
-      setGameState(GameState.Initialized);
     },
     [farmingGameProgram],
   );
