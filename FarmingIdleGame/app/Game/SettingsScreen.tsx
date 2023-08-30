@@ -1,34 +1,22 @@
-import {
-  clusterApiUrl,
-  Connection,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  Transaction,
-} from '@solana/web3.js';
+import {Connection, PublicKey} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {SetStateAction, useCallback, useEffect, useMemo, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 
 import GameButton from '../../components/GameButton';
 import WalletBalanceCard from '../../components/WalletBalanceCard';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
-import useBurnerWallet from '../../hooks/useBurnerWallet';
-import {
-  getFarmingGameProgram,
-  getWithdrawIx,
-  signSendAndConfirmBurnerIx,
-  signSendAndConfirmBurnerTx,
-} from '../../program-utils/farmingProgram';
+import {useAppState} from '../../store/useAppState';
 
 export default function SettingsScreen() {
-  const connection = useMemo(() => {
-    return new Connection(clusterApiUrl('devnet'));
-  }, []);
   const {selectedAccount, authorizeSession} = useAuthorization();
-  const {burnerKeypair, generateNewBurnerKeypair} = useBurnerWallet();
   const [ownerBalance, setOwnerBalance] = useState<number | null>(null);
   const [playerBalance, setPlayerBalance] = useState<number | null>(null);
-  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {owner, playerKeypair, connection, withdrawPlayerBalance, resetPlayer} =
+    useAppState();
+
   const fetchAndUpdateBalances = useCallback(
     async (
       _connection: Connection,
@@ -51,20 +39,17 @@ export default function SettingsScreen() {
     [],
   );
   useEffect(() => {
-    console.log('fetching balance');
-    fetchAndUpdateBalances(
-      connection,
-      selectedAccount?.publicKey,
-      burnerKeypair?.publicKey,
-      setOwnerBalance,
-      setPlayerBalance,
-    );
-  }, [
-    burnerKeypair?.publicKey,
-    connection,
-    fetchAndUpdateBalances,
-    selectedAccount?.publicKey,
-  ]);
+    if (connection && playerKeypair) {
+      console.log('fetching balance');
+      fetchAndUpdateBalances(
+        connection,
+        owner,
+        playerKeypair.publicKey,
+        setOwnerBalance,
+        setPlayerBalance,
+      );
+    }
+  }, [owner, connection, fetchAndUpdateBalances, playerKeypair]);
 
   return (
     <View style={styles.container}>
@@ -76,68 +61,51 @@ export default function SettingsScreen() {
       />
       <WalletBalanceCard
         title="Player Wallet (Burner)"
-        subtitle={burnerKeypair?.publicKey.toString()}
+        subtitle={playerKeypair?.publicKey.toString()}
         balance={playerBalance}
       />
       <GameButton
         text="Withdraw Player balance"
-        disabled={!selectedAccount || !burnerKeypair || isWithdrawing}
+        disabled={!selectedAccount || !playerKeypair || isLoading}
         onPress={async () => {
-          if (!selectedAccount || !burnerKeypair) {
-            throw new Error('Wallets not initialized');
+          if (!selectedAccount || !playerKeypair) {
+            throw new Error('Wallet is not initialized');
           }
-          const farmProgram = getFarmingGameProgram(connection);
-          const withdrawIx = await getWithdrawIx(
-            farmProgram,
-            selectedAccount?.publicKey,
-            burnerKeypair.publicKey,
-          );
 
-          setIsWithdrawing(true);
+          setIsLoading(true);
           try {
-            const ownerSignedWithdrawTx = await transact(async wallet => {
-              const [authResult, latestBlockhash] = await Promise.all([
-                authorizeSession(wallet),
-                connection.getLatestBlockhash(),
-              ]);
+            await transact(async wallet => {
+              const authResult = await authorizeSession(wallet);
+              if (authResult.publicKey.toString() !== owner?.toString()) {
+                throw Error('Incorrect wallet authorized for owner signing');
+              }
 
-              const tx = new Transaction({
-                ...latestBlockhash,
-                feePayer: authResult.publicKey,
-              }).add(withdrawIx);
-
-              const signedTxs = await wallet.signTransactions({
-                transactions: [tx],
-              });
-
-              return signedTxs[0];
+              await withdrawPlayerBalance(wallet);
             });
-
-            await signSendAndConfirmBurnerTx(
-              connection,
-              burnerKeypair,
-              ownerSignedWithdrawTx,
-            );
-
-            await fetchAndUpdateBalances(
-              connection,
-              selectedAccount?.publicKey,
-              burnerKeypair?.publicKey,
-              setOwnerBalance,
-              setPlayerBalance,
-            );
           } catch (error: any) {
-            console.error('Failed to withdraw');
+            console.error('Failed to initialize farm');
             console.error(error);
             throw error;
           } finally {
-            setIsWithdrawing(false);
+            setIsLoading(false);
           }
         }}
       />
       <GameButton
         text="Reset Player Wallet"
-        onPress={generateNewBurnerKeypair}
+        disabled={!selectedAccount || !playerKeypair || isLoading}
+        onPress={async () => {
+          setIsLoading(true);
+          try {
+            await resetPlayer();
+          } catch (error: any) {
+            console.error('Failed to reset player');
+            console.error(error);
+            throw error;
+          } finally {
+            setIsLoading(false);
+          }
+        }}
       />
     </View>
   );
