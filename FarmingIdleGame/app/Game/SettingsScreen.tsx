@@ -85,7 +85,6 @@ export default function SettingsScreen() {
           } catch (error: any) {
             console.error('Failed to initialize farm');
             console.error(error);
-            throw error;
           } finally {
             setIsLoading(false);
           }
@@ -101,7 +100,6 @@ export default function SettingsScreen() {
           } catch (error: any) {
             console.error('Failed to reset player');
             console.error(error);
-            throw error;
           } finally {
             setIsLoading(false);
           }

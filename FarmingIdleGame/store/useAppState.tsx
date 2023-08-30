@@ -44,11 +44,11 @@ interface GameStore {
   gameState: GameState;
 
   // Actions
-  onConnect: (owner: PublicKey, connection: Connection) => void;
-  initializeFarm: (mwaWallet: Web3MobileWallet) => void;
-  harvestFarm: () => void;
-  withdrawPlayerBalance: (mwaWallet: Web3MobileWallet) => void;
-  resetPlayer: () => void;
+  onConnect: (owner: PublicKey, connection: Connection) => Promise<void>;
+  initializeFarm: (mwaWallet: Web3MobileWallet) => Promise<void>;
+  harvestFarm: () => Promise<void>;
+  withdrawPlayerBalance: (mwaWallet: Web3MobileWallet) => Promise<void>;
+  resetPlayer: () => Promise<void>;
 }
 
 export const useAppState = create<GameStore>()((set, get) => {
@@ -65,7 +65,10 @@ export const useAppState = create<GameStore>()((set, get) => {
     );
     set({owner, playerKeypair, farmPDA, bump, connection});
 
-    const farmAccount = await fetchFarmAccount(farmProgram, farmPDA);
+    const farmAccount = (await connection.getAccountInfo(farmPDA))
+      ? await fetchFarmAccount(farmProgram, farmPDA)
+      : null;
+
     set({
       farmAccount,
       gameState: farmAccount ? GameState.Initialized : GameState.Uninitialized,
@@ -122,6 +125,8 @@ export const useAppState = create<GameStore>()((set, get) => {
       }
     },
     harvestFarm: async () => {
+      const startTime = performance.now(); // Start timing the entire action
+
       const {owner, playerKeypair, farmPDA, bump, connection, gameState} =
         get();
       if (gameState !== GameState.Initialized) {
@@ -131,20 +136,21 @@ export const useAppState = create<GameStore>()((set, get) => {
       }
       if (owner && playerKeypair && farmPDA && bump && connection) {
         const farmProgram = getFarmingGameProgram(connection);
-        const harvestIx = await getHarvestIx(
-          farmProgram,
-          farmPDA,
-          playerKeypair.publicKey,
-        );
+        const [harvestIx, latestBlockhash] = await Promise.all([
+          getHarvestIx(farmProgram, farmPDA, playerKeypair.publicKey),
+          connection.getLatestBlockhash(),
+        ]);
+
         try {
           await signSendAndConfirmBurnerIx(
             connection,
             playerKeypair,
             harvestIx,
+            latestBlockhash,
           );
 
-          // TODO: Optimistic update to harvest points
           const farmAccount = await fetchFarmAccount(farmProgram, farmPDA);
+
           set({
             farmAccount,
           });
@@ -152,6 +158,9 @@ export const useAppState = create<GameStore>()((set, get) => {
           console.error(e);
         }
       }
+
+      const endTime = performance.now(); // End timing the entire action
+      console.log(`Total execution time: ${endTime - startTime}ms`);
     },
     upgradeFarm: async (upgradeIndex: number, amount: number) => {
       const {owner, playerKeypair, farmPDA, bump, connection, gameState} =

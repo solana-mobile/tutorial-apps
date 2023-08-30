@@ -34,9 +34,9 @@ export default function HarvestScreen() {
               try {
                 await harvestFarm();
               } catch (error: any) {
-                console.error('Failed to harvest');
-                console.error(error);
-                throw error;
+                if (error instanceof Error) {
+                  console.error(`Failed to harvest: ${error.message}`);
+                }
               } finally {
                 setIsFetching(false);
               }
@@ -59,9 +59,9 @@ export default function HarvestScreen() {
                 await initializeFarm(wallet);
               });
             } catch (error: any) {
-              console.error('Failed to initialize farm');
-              console.error(error);
-              throw error;
+              if (error instanceof Error) {
+                console.error(`Failed to initialize farm: ${error.message}`);
+              }
             } finally {
               setIsFetching(false);
             }

@@ -64,9 +64,16 @@ export async function fetchFarmAccount(
   farmPDA: PublicKey,
 ) {
   try {
-    return await program.account.farm.fetch(farmPDA);
-  } catch (e) {
-    // farmAccount has not been initialized
+    return await program.account.farm.fetch(farmPDA, 'confirmed');
+  } catch (e: any) {
+    // Check for the specific uninitialized account error message
+    if (
+      typeof e?.message === 'string' &&
+      e.message.startsWith('Account does not exist or has no data')
+    ) {
+      console.log('Farm account has not been initialized.');
+      return null;
+    }
     console.error(e);
     return null;
   }
@@ -143,11 +150,16 @@ export async function signSendAndConfirmBurnerIx(
   connection: Connection,
   burnerKeypair: Keypair,
   instruction: TransactionInstruction,
+  latestBlockhash?: Readonly<{
+    blockhash: string;
+    lastValidBlockHeight: number;
+  }>,
 ) {
-  const latestBlockhash = await connection.getLatestBlockhash();
+  const _latestBlockhash =
+    latestBlockhash ?? (await connection.getLatestBlockhash());
 
   const tx = new Transaction({
-    ...latestBlockhash,
+    ..._latestBlockhash,
     feePayer: burnerKeypair.publicKey,
   }).add(instruction);
 
@@ -155,7 +167,7 @@ export async function signSendAndConfirmBurnerIx(
     connection,
     burnerKeypair,
     tx,
-    latestBlockhash,
+    _latestBlockhash,
   );
 }
 
@@ -218,7 +230,7 @@ export async function signSendAndConfirmBurnerTx(
       lastValidBlockHeight: _latestBlockhash.lastValidBlockHeight,
       signature: txSig,
     },
-    'finalized',
+    'confirmed',
   );
 
   if (result.value.err) {
