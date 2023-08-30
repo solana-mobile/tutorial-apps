@@ -23,7 +23,7 @@ import {
 } from './burnerWalletUtils';
 
 // Game State
-enum GameState {
+export enum GameState {
   // App is still fetching/loading accounts
   Loading = 'Loading',
   // Farm PDA has not been initialized and account is not found
@@ -47,6 +47,7 @@ interface GameStore {
   onConnect: (owner: PublicKey, connection: Connection) => Promise<void>;
   initializeFarm: (mwaWallet: Web3MobileWallet) => Promise<void>;
   harvestFarm: () => Promise<void>;
+  upgradeFarm: (upgradeIndex: number, amount: number) => Promise<void>;
   withdrawPlayerBalance: (mwaWallet: Web3MobileWallet) => Promise<void>;
   resetPlayer: () => Promise<void>;
 }
@@ -84,10 +85,12 @@ export const useAppState = create<GameStore>()((set, get) => {
     farmAccount: null,
     gameState: GameState.Loading,
     onConnect: async (owner: PublicKey, connection: Connection) => {
+      console.log('=Game=: Connecting and setting up game state');
       const playerKeypair = await fetchBurnerKeypair();
       await setupProgramState(owner, playerKeypair, connection);
     },
     initializeFarm: async (mwaWallet: Web3MobileWallet) => {
+      console.log('=Game=: Initializing farm');
       const {owner, playerKeypair, farmPDA, bump, connection, gameState} =
         get();
       if (gameState !== GameState.Uninitialized) {
@@ -125,7 +128,7 @@ export const useAppState = create<GameStore>()((set, get) => {
       }
     },
     harvestFarm: async () => {
-      const startTime = performance.now(); // Start timing the entire action
+      console.log('=Game=: Harvesting farm');
 
       const {owner, playerKeypair, farmPDA, bump, connection, gameState} =
         get();
@@ -158,11 +161,9 @@ export const useAppState = create<GameStore>()((set, get) => {
           console.error(e);
         }
       }
-
-      const endTime = performance.now(); // End timing the entire action
-      console.log(`Total execution time: ${endTime - startTime}ms`);
     },
     upgradeFarm: async (upgradeIndex: number, amount: number) => {
+      console.log('=Game=: Upgrading farm');
       const {owner, playerKeypair, farmPDA, bump, connection, gameState} =
         get();
       if (gameState !== GameState.Initialized) {
@@ -194,6 +195,7 @@ export const useAppState = create<GameStore>()((set, get) => {
       }
     },
     withdrawPlayerBalance: async (mwaWallet: Web3MobileWallet) => {
+      console.log('=Game=: Withdrawing player balance');
       const {owner, playerKeypair, farmPDA, bump, connection} = get();
       if (owner && playerKeypair && farmPDA && bump && connection) {
         const farmProgram = getFarmingGameProgram(connection);
@@ -218,6 +220,7 @@ export const useAppState = create<GameStore>()((set, get) => {
       }
     },
     resetPlayer: async () => {
+      console.log('=Game=: Resetting player and game state');
       const {owner, connection} = get();
       if (owner && connection) {
         const newPlayerKeypair = await generateNewBurnerKeypair();
