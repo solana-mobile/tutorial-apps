@@ -1,6 +1,8 @@
 import {StyleSheet, Text, View} from 'react-native';
 
 import {FarmAccount} from '../program-utils/accountTypes';
+import {useState, useEffect} from 'react';
+import {getCpS} from '../program-utils/cropUpgrades';
 
 type Props = Readonly<{
   farmAccount: FarmAccount;
@@ -19,12 +21,31 @@ function unixTimestampToFormattedDate(unixTimestamp) {
 }
 
 export default function FarmAccountInfo({farmAccount}: Props) {
-  const dateHarvested = new Date(farmAccount.lastHarvested.toNumber());
+  const [currentTime, setCurrentTime] = useState(Date.now() / 1000);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTime(Date.now() / 1000);
+    }, 100);
+
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []); // Empty array ensures effect is only run on mount and unmount
+
+  // Calculate the elapsed time in seconds
+  const elapsedSeconds = farmAccount
+    ? currentTime - farmAccount.lastHarvested.toNumber()
+    : 0;
+
+  // Calculate the accumulated coins
+  const availableHarvest = farmAccount
+    ? elapsedSeconds * getCpS(farmAccount)
+    : 0;
 
   return (
     <View>
       <Text>Harvested: {farmAccount.harvestPoints.toString()}</Text>
-      <Text>Available harvest: {0}</Text>
+      <Text>Available harvest: {availableHarvest}</Text>
       <Text>
         Last Harvested:{' '}
         {unixTimestampToFormattedDate(farmAccount.lastHarvested.toNumber())}

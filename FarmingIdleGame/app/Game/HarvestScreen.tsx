@@ -1,11 +1,12 @@
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import FarmAccountInfo from '../../components/FarmAccountInfo';
 import GameButton from '../../components/GameButton';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {useAppState} from '../../store/useAppState';
+import {getCpS} from '../../program-utils/cropUpgrades';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
