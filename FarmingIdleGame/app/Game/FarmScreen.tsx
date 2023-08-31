@@ -6,6 +6,7 @@ import FarmView from '../../components/FarmView';
 import GameButton from '../../components/GameButton';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {GameState, useAppState} from '../../store/useAppState';
+import FarmView2 from '../../components/FarmView2';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
@@ -52,7 +53,7 @@ export default function HarvestScreen() {
       ) : null}
       {gameState === GameState.Initialized && farmAccount ? (
         <>
-          <FarmView farmAccount={farmAccount} />
+          <FarmView2 farmAccount={farmAccount} />
         </>
       ) : null}
     </View>
