@@ -1,7 +1,7 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {useEffect, useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
 import {FarmAccount} from '../program-utils/accountTypes';
-import {useState, useEffect} from 'react';
 import {getCpS} from '../program-utils/cropUpgrades';
 
 type Props = Readonly<{
@@ -43,10 +43,24 @@ export default function FarmAccountInfo({farmAccount}: Props) {
     : 0;
 
   return (
-    <View>
-      <Text>Harvested: {farmAccount.harvestPoints.toString()}</Text>
-      <Text>Available harvest: {availableHarvest}</Text>
-      <Text>
+    <View style={styles.container}>
+      <View style={styles.infoRow}>
+        <Image
+          source={require('../assets/harvestpointicon.png')}
+          style={styles.icon}
+        />
+        <Text style={styles.text}>
+          {farmAccount.harvestPoints.toString()} Harvest points
+        </Text>
+      </View>
+      <View style={styles.infoRow}>
+        <Image
+          source={require('../assets/harvestpointicon.png')}
+          style={styles.icon}
+        />
+        <Text style={styles.text}>{availableHarvest}</Text>
+      </View>
+      <Text style={styles.text}>
         Last Harvested:{' '}
         {unixTimestampToFormattedDate(farmAccount.lastHarvested.toNumber())}
       </Text>
@@ -55,20 +69,25 @@ export default function FarmAccountInfo({farmAccount}: Props) {
 }
 
 const styles = StyleSheet.create({
-  button: {
+  container: {
+    width: '95%',
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: '#f7f7f7', // Light gray
+    borderWidth: 1,
+    borderColor: '#e0e0e0', // Slightly darker gray
+  },
+  infoRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-    backgroundColor: 'black',
+    marginBottom: 8,
+  },
+  icon: {
+    width: 50,
+    height: 50,
   },
   text: {
     fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'white',
+    color: '#333', // Dark gray text color
   },
 });

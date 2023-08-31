@@ -23,7 +23,7 @@ export default function ConnectScreen() {
         selectedAccount.publicKey,
         new Connection(clusterApiUrl('devnet')),
       );
-      router.replace('Game/HarvestScreen');
+      router.replace('Game/FarmScreen');
     }
   }, [onConnect, selectedAccount]);
 
@@ -32,7 +32,7 @@ export default function ConnectScreen() {
       {selectedAccount ? (
         <Button
           onPress={() => {
-            router.replace('Game/HarvestScreen');
+            router.replace('Game/FarmScreen');
           }}
           title="Play"
         />

@@ -1,75 +1,78 @@
-import {useEffect, useRef} from 'react';
-import {Animated, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {useCallback, useEffect, useState} from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
-const HOVER_DURATION = 2000;
+import useAvailableHarvest from '../hooks/useAvailableHarvest';
+import {FarmAccount} from '../program-utils/farmingProgram';
+import {useAppState} from '../store/useAppState';
+import FarmImage from './FarmImage';
+import {getCpS} from '../program-utils/cropUpgrades';
 
-function FarmView() {
-  const translateY = useRef(new Animated.Value(0)).current;
-  const scale = useRef(new Animated.Value(1)).current;
+type Props = Readonly<{
+  farmAccount: FarmAccount;
+}>;
 
-  useEffect(() => {
-    const animate = Animated.loop(
-      Animated.sequence([
-        Animated.timing(translateY, {
-          toValue: 7,
-          duration: HOVER_DURATION,
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateY, {
-          toValue: 0,
-          duration: HOVER_DURATION,
-          useNativeDriver: true,
-        }),
-      ]),
-    );
+export default function FarmView({farmAccount}: Props) {
+  const {harvestFarm} = useAppState();
+  const [isHarvesting, setIsHarvesting] = useState(false);
+  const {availableHarvest} = useAvailableHarvest({farmAccount});
 
-    animate.start();
-
-    return () => animate.stop();
-  }, [translateY]);
-
-  const handlePressIn = () => {
-    Animated.timing(scale, {
-      toValue: 0.95,
-      duration: 100,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.timing(scale, {
-      toValue: 1,
-      duration: 100,
-      useNativeDriver: true,
-    }).start();
-  };
+  const handleHarvest = useCallback(async () => {
+    setIsHarvesting(true);
+    try {
+      await harvestFarm();
+    } catch (error: any) {
+      if (error instanceof Error) {
+        console.error(`Failed to harvest: ${error.message}`);
+      }
+    } finally {
+      setIsHarvesting(false);
+    }
+  }, [harvestFarm]);
 
   return (
-    <TouchableWithoutFeedback
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      // TODO: Add the harvest action here if needed, for example: onPress={harvestAction}
-    >
-      <Animated.Image
-        source={require('../assets/farm2.png')}
-        style={[
-          styles.image,
-          {
-            transform: [{translateY: translateY}, {scale: scale}],
-          },
-        ]}
-      />
-    </TouchableWithoutFeedback>
+    <View style={styles.container}>
+      <View style={styles.textSection}>
+        <Text style={styles.harvestedText}>
+          🌾 {farmAccount.harvestPoints.toString()} 🌾
+        </Text>
+        <Text> crops harvested </Text>
+      </View>
+      <FarmImage isHarvesting={isHarvesting} onPress={handleHarvest} />
+      <View style={styles.textSection}>
+        <Text style={styles.text}>
+          👨‍🌾 Press to harvest {Math.floor(availableHarvest)} crops! 👨‍🌾
+        </Text>
+        <Text style={styles.text}>
+          (+{Math.floor(getCpS(farmAccount))} crops per second)
+        </Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  image: {
-    width: 250,
-    height: 250,
-    borderRadius: 8,
-    marginRight: 10,
+  container: {
+    alignItems: 'center',
+    textAlign: 'left',
+  },
+  textSection: {
+    alignItems: 'center',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  icon: {
+    width: 50,
+    height: 50,
+  },
+  harvestedText: {
+    fontSize: 32,
+    color: '#333', // Dark gray text color
+  },
+  text: {
+    fontSize: 16,
+    color: '#333', // Dark gray text color
   },
 });
-
-export default FarmView;

@@ -18,9 +18,9 @@ export default function GameLayout() {
     <Tabs>
       <Tabs.Screen
         // Name of the route to hide.
-        name="HarvestScreen"
+        name="FarmScreen"
         options={{
-          title: 'Harvest',
+          title: 'Farm',
           tabBarIcon: ({color}) => <TabBarIcon name="home" color={color} />,
         }}
       />

@@ -1,13 +1,11 @@
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 
-import FarmAccountInfo from '../../components/FarmAccountInfo';
 import FarmView from '../../components/FarmView';
 import GameButton from '../../components/GameButton';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
-import {getCpS} from '../../program-utils/cropUpgrades';
-import {useAppState} from '../../store/useAppState';
+import {GameState, useAppState} from '../../store/useAppState';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
@@ -19,34 +17,10 @@ export default function HarvestScreen() {
   const {authorizeSession} = useAuthorization();
   const [isFetching, setIsFetching] = useState(false);
 
-  const {owner, farmAccount, initializeFarm, harvestFarm} = useAppState();
-
+  const {owner, initializeFarm, farmAccount, gameState} = useAppState();
   return (
     <View style={styles.container}>
-      <Text>In Harvest Screen</Text>
-
-      {farmAccount ? (
-        <>
-          <FarmView />
-          <FarmAccountInfo farmAccount={farmAccount} />
-          <GameButton
-            text="Harvest!"
-            disabled={isFetching}
-            onPress={async () => {
-              setIsFetching(true);
-              try {
-                await harvestFarm();
-              } catch (error: any) {
-                if (error instanceof Error) {
-                  console.error(`Failed to harvest: ${error.message}`);
-                }
-              } finally {
-                setIsFetching(false);
-              }
-            }}
-          />
-        </>
-      ) : (
+      {gameState === GameState.Loading ? (
         <GameButton
           text="Deposit"
           disabled={isFetching}
@@ -70,7 +44,17 @@ export default function HarvestScreen() {
             }
           }}
         />
-      )}
+      ) : null}
+      {gameState === GameState.Uninitialized ? (
+        <View>
+          <Text>uninitialized</Text>
+        </View>
+      ) : null}
+      {gameState === GameState.Initialized && farmAccount ? (
+        <>
+          <FarmView farmAccount={farmAccount} />
+        </>
+      ) : null}
     </View>
   );
 }
