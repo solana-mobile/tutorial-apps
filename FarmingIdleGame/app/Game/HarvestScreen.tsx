@@ -1,12 +1,13 @@
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
 import FarmAccountInfo from '../../components/FarmAccountInfo';
+import FarmView from '../../components/FarmView';
 import GameButton from '../../components/GameButton';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
-import {useAppState} from '../../store/useAppState';
 import {getCpS} from '../../program-utils/cropUpgrades';
+import {useAppState} from '../../store/useAppState';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
@@ -26,6 +27,7 @@ export default function HarvestScreen() {
 
       {farmAccount ? (
         <>
+          <FarmView />
           <FarmAccountInfo farmAccount={farmAccount} />
           <GameButton
             text="Harvest!"
@@ -79,6 +81,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  image: {
+    width: 400,
+    height: 400,
+    borderRadius: 8,
+    marginRight: 10,
   },
   button: {
     alignItems: 'center',
