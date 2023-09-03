@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
 
 import {
   formatNumber,
@@ -38,23 +38,22 @@ function CropCard({
   //   ? farmAccount.farmUpgrades[upgradeIndex] > 0 || buyEnabled
   //   : false;
   return (
-    <View style={styles.card}>
-      <Image source={upgrade.image} style={styles.image} />
+    <ImageBackground
+      source={upgrade.image}
+      style={styles.card}
+      blurRadius={10}
+      resizeMode="cover">
+      <View style={styles.overlay} />
       <View style={styles.infoSection}>
-        <Text style={styles.cardTitle}>
-          {upgrade.name}{' '}
-          <Text
-            style={
-              styles.cardSubtitle
-            }>{` (+${upgrade.coinPerUpgrade} 🌾/sec)`}</Text>
+        <Text style={styles.cardTitle}>{upgrade.name} </Text>
+        <Text style={styles.description}>
+          Yield: {` (+${upgrade.coinPerUpgrade} 🌾/sec)`}
         </Text>
-
         <Text style={styles.description}>Owned: {ownedAmount}</Text>
         <Text style={styles.description}>Cost: -{costString} 🌾</Text>
       </View>
-      <View style={styles.divider} />
       <GameButton text={`Purchase (-${costString}🌾)`} onPress={onPurchase} />
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -65,6 +64,14 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     borderRadius: 10,
     borderWidth: 1,
+    overflow: 'hidden',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)', // This gives a 50% black overlay. Adjust the alpha value as needed.
+  },
+  infoSection: {
+    marginBottom: 24,
   },
   divider: {
     height: 1, // or 2 if you want a thicker line
@@ -73,17 +80,11 @@ const styles = StyleSheet.create({
     marginLeft: -20, // Assuming the card's padding is 20
     marginRight: -20, // Assuming the card's padding is 20
   },
-  name: {
-    fontSize: 16,
-  },
   image: {
     width: 50,
     height: 50,
     borderRadius: 8,
     marginRight: 10,
-  },
-  infoSection: {
-    flex: 1,
   },
   cardHeader: {
     flex: 1,
@@ -95,14 +96,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 5,
-  },
-  cardSubtitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'gray',
-    marginBottom: 5,
+    color: 'white',
   },
   description: {
+    color: 'white',
     fontSize: 18,
     marginBottom: 5,
     fontWeight: '400',

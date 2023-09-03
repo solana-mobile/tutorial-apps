@@ -1,19 +1,13 @@
-import {StatusBar} from 'expo-status-bar';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 
-import CropCard from '../../components/CropCard'; // Assuming CropCard is in the same directory
-import GameButton from '../../components/GameButton';
-import {
-  formatNumber,
-  getCpS,
-  getNextCost,
-  UPGRADES,
-} from '../../program-utils/cropUpgrades';
+import CropCard from '../../components/CropCard';
+import {UPGRADES} from '../../program-utils/cropUpgrades';
 import {GameState, useAppState} from '../../store/useAppState';
+import CropCard2 from '../../components/CropCard2';
 
 export default function CropsScreen() {
   const {farmAccount, gameState, upgradeFarm} = useAppState();
-  const upgradeEnabled = gameState === GameState.Initialized;
+  const upgradeEnabled = gameState === GameState.Initialized && !farmAccount;
 
   return (
     <View style={styles.container}>
@@ -21,43 +15,20 @@ export default function CropsScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.list}>
         {UPGRADES.map((upgrade, i) => {
-          const ownedAmount = farmAccount ? farmAccount.farmUpgrades[i] : 0;
-          const owned: string = farmAccount
-            ? formatNumber(farmAccount.farmUpgrades[i])
-            : 'X';
-          const cost: number = farmAccount
-            ? getNextCost(upgrade.baseCost, farmAccount.farmUpgrades[i])
-            : upgrade.baseCost;
-          const costString = formatNumber(cost);
-          const buyEnabled: boolean = farmAccount
-            ? farmAccount.harvestPoints.toNumber() >= cost && upgradeEnabled
-            : false;
-          const shouldShow: boolean = farmAccount
-            ? farmAccount.farmUpgrades[i] > 0 || buyEnabled
-            : false;
-
           return (
-            <View key={i} style={cardStyles.card}>
-              <Image source={{uri: upgrade.image}} style={cardStyles.image} />
-              <View style={cardStyles.infoSection}>
-                <Text style={cardStyles.description}>{upgrade.name}</Text>
-                <Text style={cardStyles.price}>Price: ${costString}</Text>
-                <Text style={cardStyles.amount}>Owned: {owned}</Text>
-                <Text style={cardStyles.amount}>
-                  Yield per Second: {ownedAmount * upgrade.coinPerUpgrade}
-                </Text>
-                <GameButton
-                  text="Purchase"
-                  onPress={async () => {
-                    await upgradeFarm(i, 1);
-                  }}
-                />
-              </View>
-            </View>
+            <CropCard2
+              key={i}
+              upgrade={upgrade}
+              upgradeIndex={i}
+              farmAccount={farmAccount}
+              upgradeEnabled={upgradeEnabled}
+              onPurchase={async () => {
+                await upgradeFarm(i, 1);
+              }}
+            />
           );
         })}
       </ScrollView>
-      <StatusBar style="auto" />
     </View>
   );
 }
@@ -81,6 +52,16 @@ const cardStyles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
+  divider: {
+    height: 1, // or 2 if you want a thicker line
+    backgroundColor: 'black', // change this to any color you like
+    marginVertical: 20, // to give some spacing above and below the line
+    marginLeft: -20, // Assuming the card's padding is 20
+    marginRight: -20, // Assuming the card's padding is 20
+  },
+  name: {
+    fontSize: 16,
+  },
   image: {
     width: 50,
     height: 50,
@@ -90,17 +71,26 @@ const cardStyles = StyleSheet.create({
   infoSection: {
     flex: 1,
   },
-  description: {
-    fontSize: 18,
+  cardHeader: {
+    flex: 1,
+    flexDirection: 'row',
+    textAlignVertical: 'center',
+    alignItems: 'center',
+  },
+  cardTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 5,
   },
-  price: {
-    fontSize: 16,
+  cardSubtitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'gray',
     marginBottom: 5,
   },
-  amount: {
-    fontSize: 16,
+  description: {
+    fontSize: 18,
     marginBottom: 5,
+    fontWeight: '400',
   },
 });
