@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 300,
+    width: 300,
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   disabled: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: 300,
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,
