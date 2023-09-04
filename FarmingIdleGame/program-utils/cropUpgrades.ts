@@ -4,7 +4,6 @@ import {FarmAccount} from '../program-utils/farmingProgram';
 
 export interface UpgradeType {
   name: string;
-  description: string;
   image: ImageSourcePropType;
 
   upgradeIndex: number;
@@ -38,90 +37,61 @@ export interface UpgradeType {
 
 export const UPGRADES: UpgradeType[] = [
   {
-    name: 'Tomato Garden',
-    description:
-      'These little 8-bit scallywags will help you click your coin at 1 Coin per Second!',
-    image: require('../assets/tomatoes.png'),
+    name: 'Cabbage Patch',
+    image: require('../assets/cabbages2.png'),
     upgradeIndex: 0,
     baseCost: 15,
     coinPerUpgrade: 1,
   },
   {
-    name: 'Corn Field',
-    description:
-      'Watch out! These Fractals will click your coin at 3 Coins per Second!',
-    image: require('../assets/corns.png'),
-
+    name: 'Tomato Garden',
+    image: require('../assets/tomatoes.png'),
     upgradeIndex: 1,
     baseCost: 100,
     coinPerUpgrade: 3,
   },
-  // {
-  //   name: 'Pesky Penguins',
-  //   description:
-  //     "NOOT NOOT - These cute little guys are gonna NOOT your coin so hard it'll get you +8 CpS",
-  //   image:
-  //     'https://shdw-drive.genesysgo.net/5WRCJEgy7c1Wy3ewWdfJcAePMCaUq4asyuP8sRgTQZYq/pesky.png',
-
-  //   upgradeIndex: 2,
-  //   baseCost: 1100,
-  //   coinPerUpgrade: 8,
-  // },
-  // {
-  //   name: 'Shadowy Super Coder',
-  //   description:
-  //     "Don't ask how they're netting you +47 CpS... They won't even tell me!",
-  //   image:
-  //     'https://shdw-drive.genesysgo.net/5WRCJEgy7c1Wy3ewWdfJcAePMCaUq4asyuP8sRgTQZYq/ssc.png',
-
-  //   upgradeIndex: 3,
-  //   baseCost: 12_000,
-  //   coinPerUpgrade: 47,
-  // },
-  // {
-  //   name: 'NEC',
-  //   description:
-  //     "These robots from Portals are great at automating! You'll get +260 CpS",
-  //   image:
-  //     'https://shdw-drive.genesysgo.net/5WRCJEgy7c1Wy3ewWdfJcAePMCaUq4asyuP8sRgTQZYq/nec.png',
-
-  //   upgradeIndex: 4,
-  //   baseCost: 130_000,
-  //   coinPerUpgrade: 260,
-  // },
-  // {
-  //   name: 'Claynos',
-  //   description:
-  //     'RAWR! Look at these cutties! All full of clay and adorable! Each adorable dino gives you +1400 CpS',
-  //   image:
-  //     'https://shdw-drive.genesysgo.net/5WRCJEgy7c1Wy3ewWdfJcAePMCaUq4asyuP8sRgTQZYq/claynos.png',
-
-  //   upgradeIndex: 5,
-  //   baseCost: 1_400_000,
-  //   coinPerUpgrade: 1400,
-  // },
-  // {
-  //   name: 'Dronies',
-  //   description:
-  //     "I'm starting to suspect these birds aren't real... And they seem to be... Always Watching... Anyways +7800 CpS",
-  //   image:
-  //     'https://shdw-drive.genesysgo.net/5WRCJEgy7c1Wy3ewWdfJcAePMCaUq4asyuP8sRgTQZYq/dronies.png',
-
-  //   upgradeIndex: 6,
-  //   baseCost: 20_000_000,
-  //   coinPerUpgrade: 7800,
-  // },
-  // {
-  //   name: 'Coach',
-  //   description:
-  //     "IT'S ME, COACH! I'll use my almighty power to give you +44000 CpS for each purchase!",
-  //   image:
-  //     'https://shdw-drive.genesysgo.net/5WRCJEgy7c1Wy3ewWdfJcAePMCaUq4asyuP8sRgTQZYq/coach.png',
-
-  //   upgradeIndex: 7,
-  //   baseCost: 330_000_000,
-  //   coinPerUpgrade: 44_000,
-  // },
+  {
+    name: 'Strawberry Patch',
+    image: require('../assets/strawberries.png'),
+    upgradeIndex: 2,
+    baseCost: 1100,
+    coinPerUpgrade: 8,
+  },
+  {
+    name: 'Corn Field',
+    image: require('../assets/corns.png'),
+    upgradeIndex: 3,
+    baseCost: 12_000,
+    coinPerUpgrade: 47,
+  },
+  {
+    name: 'Apple Orchard',
+    image: require('../assets/apples.png'),
+    upgradeIndex: 4,
+    baseCost: 130_000,
+    coinPerUpgrade: 260,
+  },
+  {
+    name: 'Exotic Fruit Farm',
+    image: require('../assets/exoticfruits.png'),
+    upgradeIndex: 5,
+    baseCost: 1_400_000,
+    coinPerUpgrade: 1400,
+  },
+  {
+    name: 'Mushroom Cavern Groves',
+    image: require('../assets/mushroomgrove.png'),
+    upgradeIndex: 6,
+    baseCost: 20_000_000,
+    coinPerUpgrade: 7800,
+  },
+  {
+    name: 'Golden Grains Greenhouse',
+    image: require('../assets/greenhouse3.png'),
+    upgradeIndex: 7,
+    baseCost: 330_000_000,
+    coinPerUpgrade: 44_000,
+  },
 ];
 
 export function getNextCost(baseCost: number, owned: number) {

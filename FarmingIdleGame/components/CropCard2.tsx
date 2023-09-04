@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.3)', // This gives a 50% black overlay. Adjust the alpha value as needed.
+    backgroundColor: 'rgba(0,0,0,0.4)', // This gives a 50% black overlay. Adjust the alpha value as needed.
   },
   infoSection: {
     marginBottom: 24,

@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 
 import useAvailableHarvest from '../hooks/useAvailableHarvest';
-import {getCpS} from '../program-utils/cropUpgrades';
+import {formatNumber, getCpS} from '../program-utils/cropUpgrades';
 import {FarmAccount} from '../program-utils/farmingProgram';
 import {useAppState} from '../store/useAppState';
 import FarmImage from './FarmImage';
@@ -34,7 +34,7 @@ export default function FarmView2({farmAccount}: Props) {
     <View style={styles.container}>
       <View style={styles.textSection}>
         <Text style={styles.harvestedText}>
-          🌾 {farmAccount.harvestPoints.toString()} 🌾
+          🌾 {formatNumber(farmAccount.harvestPoints.toString())} 🌾
         </Text>
         <Text> crops harvested </Text>
       </View>
