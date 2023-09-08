@@ -23,10 +23,9 @@ function CropCard({
   upgradeEnabled,
   onPurchase,
 }: Props) {
-  const ownedAmount = farmAccount ? farmAccount.farmUpgrades[upgradeIndex] : 0;
   const owned: string = farmAccount
     ? formatNumber(farmAccount.farmUpgrades[upgradeIndex])
-    : 'X';
+    : '0';
   const cost: number = farmAccount
     ? getNextCost(upgrade.baseCost, farmAccount.farmUpgrades[upgradeIndex])
     : upgrade.baseCost;
@@ -34,14 +33,11 @@ function CropCard({
   const buyEnabled: boolean = farmAccount
     ? farmAccount.harvestPoints.toNumber() >= cost && upgradeEnabled
     : false;
-  // const shouldShow: boolean = farmAccount
-  //   ? farmAccount.farmUpgrades[upgradeIndex] > 0 || buyEnabled
-  //   : false;
   return (
     <ImageBackground
       source={upgrade.image}
       style={styles.card}
-      blurRadius={10}
+      blurRadius={2}
       resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.infoSection}>
@@ -49,10 +45,14 @@ function CropCard({
         <Text style={styles.description}>
           Yield: {` (+${upgrade.coinPerUpgrade} 🌾/sec)`}
         </Text>
-        <Text style={styles.description}>Owned: {ownedAmount}</Text>
+        <Text style={styles.description}>Owned: {owned}</Text>
         <Text style={styles.description}>Cost: -{costString} 🌾</Text>
       </View>
-      <GameButton text={`Purchase (-${costString}🌾)`} onPress={onPurchase} />
+      <GameButton
+        text={`Purchase (-${costString}🌾)`}
+        onPress={onPurchase}
+        disabled={!buyEnabled}
+      />
     </ImageBackground>
   );
 }

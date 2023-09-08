@@ -9,11 +9,11 @@ type Props = Readonly<{
 export default function GameButton({text, disabled, onPress}: Props) {
   return (
     <Pressable
-      style={disabled ? styles.disabled : styles.button}
+      style={[styles.button, disabled && styles.disabled]}
       disabled={disabled}
       android_ripple={{color: 'rgba(255, 255, 255, 0.3)', borderless: false}}
       onPress={onPress}>
-      <Text style={styles.text}>{text}</Text>
+      <Text style={[styles.text, disabled && styles.disabledText]}>{text}</Text>
     </Pressable>
   );
 }
@@ -30,14 +30,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   disabled: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 300,
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-    backgroundColor: 'gray',
+    backgroundColor: '#2E2E2E', // slightly lighter than black
+    elevation: 0, // no shadow
+    opacity: 0.6,
   },
   text: {
     fontSize: 16,
@@ -45,5 +40,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.25,
     color: 'white',
+  },
+  disabledText: {
+    color: '#B0B0B0', // a grayish tone
   },
 });
