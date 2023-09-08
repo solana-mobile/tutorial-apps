@@ -65,7 +65,7 @@ function getPublicKeyFromAddress(address: Base64EncodedAddress): PublicKey {
 }
 
 export const APP_IDENTITY = {
-  name: 'React Native dApp',
+  name: 'Farming Idle Game',
   uri: 'https://solanamobile.com',
   icon: 'favicon.ico',
 };
@@ -74,8 +74,8 @@ export interface AuthorizationProviderContext {
   accounts: Account[] | null;
   authorizeSession: (wallet: AuthorizeAPI & ReauthorizeAPI) => Promise<Account>;
   deauthorizeSession: (wallet: DeauthorizeAPI) => void;
-  onChangeAccount: (nextSelectedAccount: Account) => void;
   selectedAccount: Account | null;
+  isFetchingAuthorization: boolean;
 }
 
 const AuthorizationContext = React.createContext<AuthorizationProviderContext>({
@@ -86,10 +86,8 @@ const AuthorizationContext = React.createContext<AuthorizationProviderContext>({
   deauthorizeSession: (_wallet: DeauthorizeAPI) => {
     throw new Error('AuthorizationProvider not initialized');
   },
-  onChangeAccount: (_nextSelectedAccount: Account) => {
-    throw new Error('AuthorizationProvider not initialized');
-  },
   selectedAccount: null,
+  isFetchingAuthorization: false,
 });
 
 function cacheReviver(key: string, value: any) {
@@ -107,15 +105,17 @@ function AuthorizationProvider(props: {children: ReactNode}) {
   const [authorization, setAuthorization] = useState<Authorization | null>(
     null,
   );
+  const [isFetchingAuthorization, setIsFetchingAuthorization] =
+    useState<boolean>(true);
 
   useEffect(() => {
     // On initial load, get the prior authorization from AsyncStorage.
     (async () => {
       try {
+        setIsFetchingAuthorization(true);
         const cacheFetchResult = await AsyncStorage.getItem(STORAGE_KEY);
         console.log('Authorization cache attempt');
         if (cacheFetchResult !== null) {
-          // We have data!!
           console.log(
             'Retrieving auth ' + JSON.parse(cacheFetchResult, cacheReviver),
           );
@@ -123,24 +123,30 @@ function AuthorizationProvider(props: {children: ReactNode}) {
           setAuthorization(priorAuthorization);
         }
       } catch (error) {
-        // There was an error while getting the authorization
         console.error(error);
+      } finally {
+        setIsFetchingAuthorization(false);
       }
     })();
   }, []);
 
-  useEffect(() => {
-    // Whenever the authorization updates, cache the new value.
-    (async () => {
-      try {
-        console.log('Caching auth: ' + JSON.stringify(authorization));
-        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(authorization));
-      } catch (error) {
-        // There was an error while caching the authorization.
-        console.error(error);
-      }
-    })();
-  }, [authorization]);
+  const cacheAuthResult = useCallback(async (auth: Authorization) => {
+    try {
+      console.log('Caching auth: ' + JSON.stringify(auth));
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(auth));
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const clearAuthCache = useCallback(async () => {
+    try {
+      console.log('Clearing auth cache');
+      AsyncStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const handleAuthorizationResult = useCallback(
     async (
@@ -150,10 +156,11 @@ function AuthorizationProvider(props: {children: ReactNode}) {
         authorizationResult,
         authorization?.selectedAccount,
       );
-      await setAuthorization(nextAuthorization);
+      setAuthorization(nextAuthorization);
+      await cacheAuthResult(nextAuthorization);
       return nextAuthorization;
     },
-    [authorization, setAuthorization],
+    [authorization, cacheAuthResult],
   );
   const authorizeSession = useCallback(
     async (wallet: AuthorizeAPI & ReauthorizeAPI) => {
@@ -178,38 +185,24 @@ function AuthorizationProvider(props: {children: ReactNode}) {
       }
       await wallet.deauthorize({auth_token: authorization.authToken});
       setAuthorization(null);
+      await clearAuthCache();
     },
-    [authorization, setAuthorization],
-  );
-  const onChangeAccount = useCallback(
-    (nextSelectedAccount: Account) => {
-      setAuthorization(currentAuthorization => {
-        if (
-          !currentAuthorization?.accounts.some(
-            ({address}) => address === nextSelectedAccount.address,
-          )
-        ) {
-          throw new Error(
-            `${nextSelectedAccount.address} is not one of the available addresses`,
-          );
-        }
-        return {
-          ...currentAuthorization,
-          selectedAccount: nextSelectedAccount,
-        };
-      });
-    },
-    [setAuthorization],
+    [authorization, setAuthorization, clearAuthCache],
   );
   const value = useMemo(
     () => ({
       accounts: authorization?.accounts ?? null,
       authorizeSession,
       deauthorizeSession,
-      onChangeAccount,
       selectedAccount: authorization?.selectedAccount ?? null,
+      isFetchingAuthorization,
     }),
-    [authorization, authorizeSession, deauthorizeSession, onChangeAccount],
+    [
+      authorization,
+      authorizeSession,
+      deauthorizeSession,
+      isFetchingAuthorization,
+    ],
   );
 
   return (

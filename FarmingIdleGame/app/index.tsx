@@ -3,7 +3,7 @@ import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {router} from 'expo-router';
 import {StatusBar} from 'expo-status-bar';
 import {useEffect} from 'react';
-import {Button, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, Button, StyleSheet, View} from 'react-native';
 
 import {useAuthorization} from '../hooks/AuthorizationProvider';
 import {useAppState} from '../store/useAppState';
@@ -14,8 +14,9 @@ export const APP_IDENTITY = {
 };
 
 export default function ConnectScreen() {
-  const {authorizeSession, selectedAccount} = useAuthorization();
-  const {onConnect, gameState} = useAppState();
+  const {authorizeSession, selectedAccount, isFetchingAuthorization} =
+    useAuthorization();
+  const {onConnect} = useAppState();
 
   useEffect(() => {
     if (selectedAccount) {
@@ -29,13 +30,8 @@ export default function ConnectScreen() {
 
   return (
     <View style={styles.container}>
-      {selectedAccount ? (
-        <Button
-          onPress={() => {
-            router.replace('Game/FarmScreen');
-          }}
-          title="Play"
-        />
+      {isFetchingAuthorization ? (
+        <ActivityIndicator />
       ) : (
         <Button
           onPress={async () => {
@@ -46,6 +42,7 @@ export default function ConnectScreen() {
           title="Connect"
         />
       )}
+
       <StatusBar style="auto" />
     </View>
   );
