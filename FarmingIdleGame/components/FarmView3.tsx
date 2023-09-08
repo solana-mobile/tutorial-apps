@@ -12,7 +12,7 @@ type Props = Readonly<{
   farmAccount: FarmAccount;
 }>;
 
-export default function FarmView2({farmAccount}: Props) {
+export default function FarmView3({farmAccount}: Props) {
   const {harvestFarm} = useAppState();
   const [isHarvesting, setIsHarvesting] = useState(false);
   const {availableHarvest} = useAvailableHarvest({farmAccount});
@@ -34,14 +34,18 @@ export default function FarmView2({farmAccount}: Props) {
     <View style={styles.container}>
       <View style={styles.textSection}>
         <Text style={styles.harvestedText}>
-          🌾 {formatNumber(farmAccount.harvestPoints.toString())} 🌾
+          🌾 {formatNumber(farmAccount.harvestPoints.toNumber())} 🌾
         </Text>
         <Text> crops harvested </Text>
       </View>
       <FarmImage isHarvesting={isHarvesting} onPress={handleHarvest} />
       <View style={styles.textSection}>
         <GameButton
-          text={`Harvest! (${Math.floor(availableHarvest)} crops)`}
+          text={`Harvest! (+${
+            availableHarvest === 0
+              ? '1 crop)'
+              : Math.floor(availableHarvest) + ' crops)'
+          }`}
           disabled={isHarvesting}
           onPress={handleHarvest}
         />

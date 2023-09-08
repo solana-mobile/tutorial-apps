@@ -1,13 +1,11 @@
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 
-import FarmView from '../../components/FarmView';
+import FarmView3 from '../../components/FarmView3';
 import GameButton from '../../components/GameButton';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {GameState, useAppState} from '../../store/useAppState';
-import FarmView2 from '../../components/FarmView2';
-import FarmView3 from '../../components/FarmView3';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
@@ -23,6 +21,11 @@ export default function HarvestScreen() {
   return (
     <View style={styles.container}>
       {gameState === GameState.Loading ? (
+        <View>
+          <ActivityIndicator />
+        </View>
+      ) : null}
+      {gameState === GameState.Uninitialized ? (
         <GameButton
           text="Deposit"
           disabled={isFetching}
@@ -46,11 +49,6 @@ export default function HarvestScreen() {
             }
           }}
         />
-      ) : null}
-      {gameState === GameState.Uninitialized ? (
-        <View>
-          <Text>uninitialized</Text>
-        </View>
       ) : null}
       {gameState === GameState.Initialized && farmAccount ? (
         <>

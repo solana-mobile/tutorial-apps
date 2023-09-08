@@ -111,6 +111,7 @@ export function getCpS(farmAccount: FarmAccount) {
 }
 
 export function formatNumber(number: number) {
+  console.log(number);
   if (number >= 1000000000000000) {
     return (number / 1000000000000000).toFixed(1).replace(/\.0$/, '') + 'q';
   }
