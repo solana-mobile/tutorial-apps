@@ -1,9 +1,9 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 
 import CropCard from '../../components/CropCard';
+import CropCard2 from '../../components/CropCard2';
 import {UPGRADES} from '../../program-utils/cropUpgrades';
 import {GameState, useAppState} from '../../store/useAppState';
-import CropCard2 from '../../components/CropCard2';
 
 export default function CropsScreen() {
   const {farmAccount, gameState, upgradeFarm} = useAppState();
@@ -11,24 +11,23 @@ export default function CropsScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView
+      <FlatList
+        data={UPGRADES}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.list}>
-        {UPGRADES.map((upgrade, i) => {
-          return (
-            <CropCard2
-              key={i}
-              upgrade={upgrade}
-              upgradeIndex={i}
-              farmAccount={farmAccount}
-              upgradeEnabled={upgradeEnabled}
-              onPurchase={async () => {
-                await upgradeFarm(i, 1);
-              }}
-            />
-          );
-        })}
-      </ScrollView>
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item: upgrade, index: i}) => (
+          <CropCard2
+            upgrade={upgrade}
+            upgradeIndex={i}
+            farmAccount={farmAccount}
+            upgradeEnabled={upgradeEnabled}
+            onPurchase={async () => {
+              await upgradeFarm(i, 1);
+            }}
+          />
+        )}
+        contentContainerStyle={styles.list}
+      />
     </View>
   );
 }

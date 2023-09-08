@@ -30,9 +30,13 @@ export default function FarmView3({farmAccount}: Props) {
     }
   }, [harvestFarm]);
 
+  useEffect(() => {
+    console.log('MOUNTING');
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View style={styles.textSection}>
+      <View style={styles.pointsHeader}>
         <Text style={styles.harvestedText}>
           🌾 {formatNumber(farmAccount.harvestPoints.toNumber())} 🌾
         </Text>
@@ -61,6 +65,14 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     textAlign: 'left',
+    width: '100%',
+  },
+  pointsHeader: {
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: 'rgba(111, 111, 111, 0.2)',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   textSection: {
     alignItems: 'center',
