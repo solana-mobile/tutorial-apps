@@ -30,10 +30,6 @@ export default function FarmView3({farmAccount}: Props) {
     }
   }, [harvestFarm]);
 
-  useEffect(() => {
-    console.log('MOUNTING');
-  }, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.pointsHeader}>

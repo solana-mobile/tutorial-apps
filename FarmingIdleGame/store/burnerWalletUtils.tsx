@@ -14,10 +14,10 @@ function cacheReviver(key: string, value: any) {
   }
 }
 
-export const generateNewBurnerKeypair = async () => {
+export const generateNewBurnerKeypair = async (owner: PublicKey) => {
   const newBurnerKeypair = Keypair.generate();
   await SecureStore.setItemAsync(
-    BURNER_CACHE_KEY,
+    BURNER_CACHE_KEY + owner.toBase58(),
     JSON.stringify({
       publicKey: newBurnerKeypair.publicKey,
       secretKey: bs58.encode(newBurnerKeypair.secretKey),
@@ -26,12 +26,14 @@ export const generateNewBurnerKeypair = async () => {
   return newBurnerKeypair;
 };
 
-export const fetchBurnerKeypair = async () => {
-  const result = await SecureStore.getItemAsync(BURNER_CACHE_KEY);
+export const fetchBurnerKeypair = async (owner: PublicKey) => {
+  const result = await SecureStore.getItemAsync(
+    BURNER_CACHE_KEY + owner.toBase58(),
+  );
   if (result) {
     const parsedResult = JSON.parse(result, cacheReviver);
     return new Keypair(parsedResult);
   } else {
-    return await generateNewBurnerKeypair();
+    return await generateNewBurnerKeypair(owner);
   }
 };

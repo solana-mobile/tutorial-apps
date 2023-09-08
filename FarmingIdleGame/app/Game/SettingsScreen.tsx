@@ -1,5 +1,6 @@
 import {Connection, PublicKey} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
+import {router} from 'expo-router';
 import {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
@@ -9,13 +10,20 @@ import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {useAppState} from '../../store/useAppState';
 
 export default function SettingsScreen() {
-  const {selectedAccount, authorizeSession} = useAuthorization();
+  const {selectedAccount, authorizeSession, deauthorizeSession} =
+    useAuthorization();
   const [ownerBalance, setOwnerBalance] = useState<number | null>(null);
   const [playerBalance, setPlayerBalance] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {owner, playerKeypair, connection, withdrawPlayerBalance, resetPlayer} =
-    useAppState();
+  const {
+    owner,
+    playerKeypair,
+    connection,
+    withdrawPlayerBalance,
+    resetPlayer,
+    clearAppState,
+  } = useAppState();
 
   const fetchAndUpdateBalances = useCallback(
     async (
@@ -63,6 +71,25 @@ export default function SettingsScreen() {
         title="Player Wallet (Burner)"
         subtitle={playerKeypair?.publicKey.toString()}
         balance={playerBalance}
+      />
+      <GameButton
+        text="Disconnect Owner Wallet"
+        disabled={!selectedAccount || !playerKeypair || isLoading}
+        onPress={async () => {
+          setIsLoading(true);
+          try {
+            await transact(async wallet => {
+              await deauthorizeSession(wallet);
+            });
+            await clearAppState();
+            router.replace('/');
+          } catch (error: any) {
+            console.error('Failed to disconnect wallet');
+            console.error(error);
+          } finally {
+            setIsLoading(false);
+          }
+        }}
       />
       <GameButton
         text="Withdraw Player balance"

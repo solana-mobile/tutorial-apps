@@ -1,8 +1,5 @@
-import {Connection, Keypair, PublicKey, Transaction} from '@solana/web3.js';
-import {
-  transact,
-  Web3MobileWallet,
-} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
+import {Connection, Keypair, PublicKey} from '@solana/web3.js';
+import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {create} from 'zustand';
 
 import {
@@ -50,6 +47,7 @@ interface GameStore {
   upgradeFarm: (upgradeIndex: number, amount: number) => Promise<void>;
   withdrawPlayerBalance: (mwaWallet: Web3MobileWallet) => Promise<void>;
   resetPlayer: () => Promise<void>;
+  clearAppState: () => Promise<void>;
 }
 
 export const useAppState = create<GameStore>()((set, get) => {
@@ -86,7 +84,7 @@ export const useAppState = create<GameStore>()((set, get) => {
     gameState: GameState.Loading,
     onConnect: async (owner: PublicKey, connection: Connection) => {
       console.log('=Game=: Connecting and setting up game state');
-      const playerKeypair = await fetchBurnerKeypair();
+      const playerKeypair = await fetchBurnerKeypair(owner);
       await setupProgramState(owner, playerKeypair, connection);
     },
     initializeFarm: async (mwaWallet: Web3MobileWallet) => {
@@ -223,9 +221,21 @@ export const useAppState = create<GameStore>()((set, get) => {
       console.log('=Game=: Resetting player and game state');
       const {owner, connection} = get();
       if (owner && connection) {
-        const newPlayerKeypair = await generateNewBurnerKeypair();
+        const newPlayerKeypair = await generateNewBurnerKeypair(owner);
         await setupProgramState(owner, newPlayerKeypair, connection);
       }
+    },
+    clearAppState: async () => {
+      set({
+        owner: null,
+        playerKeypair: null,
+        connection: null,
+        harvestPoints: null,
+        farmPDA: null,
+        bump: null,
+        farmAccount: null,
+        gameState: GameState.Loading,
+      });
     },
   };
 });
