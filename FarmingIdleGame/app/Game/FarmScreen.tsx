@@ -1,10 +1,7 @@
-import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {useState} from 'react';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 
+import EmptyFarmView from '../../components/EmptyFarmView';
 import FarmView3 from '../../components/FarmView3';
-import GameButton from '../../components/GameButton';
-import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {GameState, useAppState} from '../../store/useAppState';
 
 export const APP_IDENTITY = {
@@ -14,10 +11,7 @@ export const APP_IDENTITY = {
 };
 
 export default function HarvestScreen() {
-  const {authorizeSession} = useAuthorization();
-  const [isFetching, setIsFetching] = useState(false);
-
-  const {owner, initializeFarm, farmAccount, gameState} = useAppState();
+  const {farmAccount, gameState} = useAppState();
   return (
     <View style={styles.container}>
       {gameState === GameState.Loading ? (
@@ -25,31 +19,7 @@ export default function HarvestScreen() {
           <ActivityIndicator />
         </View>
       ) : null}
-      {gameState === GameState.Uninitialized ? (
-        <GameButton
-          text="Deposit"
-          disabled={isFetching}
-          onPress={async () => {
-            setIsFetching(true);
-            try {
-              await transact(async wallet => {
-                const authResult = await authorizeSession(wallet);
-                if (authResult.publicKey.toString() !== owner?.toString()) {
-                  throw Error('Incorrect wallet authorized for owner signing');
-                }
-
-                await initializeFarm(wallet);
-              });
-            } catch (error: any) {
-              if (error instanceof Error) {
-                console.error(`Failed to initialize farm: ${error.message}`);
-              }
-            } finally {
-              setIsFetching(false);
-            }
-          }}
-        />
-      ) : null}
+      {gameState === GameState.Uninitialized ? <EmptyFarmView /> : null}
       {gameState === GameState.Initialized && farmAccount ? (
         <>
           <FarmView3 farmAccount={farmAccount} />

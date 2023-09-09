@@ -1,8 +1,7 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef} from 'react';
 import {
   Animated,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -11,7 +10,7 @@ const HOVER_DURATION = 2000;
 
 type Props = Readonly<{
   isHarvesting: boolean;
-  onPress: () => Promise<void>;
+  onPress?: () => Promise<void>;
 }>;
 
 function FarmImage({isHarvesting, onPress}: Props) {
