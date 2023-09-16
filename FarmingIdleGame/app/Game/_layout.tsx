@@ -1,7 +1,10 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {Tabs} from 'expo-router/tabs';
 import React from 'react';
-import {View, Text} from 'react-native';
+import {Text} from 'react-native';
+
+import HowToPlay from '../../components/HowToPlay';
+import NavBarInfoButton from '../../components/NavBarInfoButton';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -22,6 +25,11 @@ export default function GameLayout() {
         options={{
           title: 'Farm',
           tabBarIcon: ({color}) => <TabBarIcon name="home" color={color} />,
+          headerRight: () => (
+            <NavBarInfoButton>
+              <HowToPlay />
+            </NavBarInfoButton>
+          ),
         }}
       />
       <Tabs.Screen
@@ -31,6 +39,11 @@ export default function GameLayout() {
           title: 'Crops',
           tabBarIcon: ({color}) => (
             <TabBarIcon name="plus-circle" color={color} />
+          ),
+          headerRight: () => (
+            <NavBarInfoButton>
+              <Text>Hello</Text>
+            </NavBarInfoButton>
           ),
         }}
       />

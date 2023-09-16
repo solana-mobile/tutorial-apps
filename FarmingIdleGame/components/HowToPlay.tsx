@@ -2,7 +2,7 @@ import {StyleSheet, Text} from 'react-native';
 
 export default function HowToPlay() {
   return (
-    <Text style={styles.instructionsContainer}>
+    <Text>
       <Text style={styles.boldedText}>How to play:{'\n'}</Text>
       <Text>
         1. Deposit <Text style={styles.boldedText}>0.001</Text> SOL to a
@@ -25,8 +25,5 @@ export default function HowToPlay() {
 }
 
 const styles = StyleSheet.create({
-  instructionsContainer: {
-    marginBottom: 20,
-  },
   boldedText: {fontWeight: 'bold'},
 });
