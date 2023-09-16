@@ -5,6 +5,7 @@ import {useAppState} from '../hooks/useAppState';
 import useAvailableHarvest from '../hooks/useAvailableHarvest';
 import {formatNumber, getCpS} from '../program-utils/cropUpgrades';
 import {FarmAccount} from '../program-utils/farmingProgram';
+import BalanceHeaderBar from './BalanceHeaderBar';
 import FarmImage from './FarmImage';
 import GameButton from './GameButton';
 
@@ -31,29 +32,32 @@ export default function FarmView({farmAccount}: Props) {
   }, [harvestFarm]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.pointsHeader}>
-        <Text style={styles.harvestedText}>
-          🌾 {formatNumber(farmAccount.harvestPoints.toNumber())} 🌾
-        </Text>
-        <Text> crops harvested </Text>
+    <>
+      <View style={styles.container}>
+        <BalanceHeaderBar balance={'123'} />
+        <View style={styles.pointsHeader}>
+          <Text style={styles.harvestedText}>
+            🌾 {formatNumber(farmAccount.harvestPoints.toNumber())} 🌾
+          </Text>
+          <Text> crops harvested </Text>
+        </View>
+        <FarmImage isHarvesting={isHarvesting} onPress={handleHarvest} />
+        <View style={styles.textSection}>
+          <GameButton
+            text={`Harvest! (+${
+              availableHarvest === 0
+                ? '1 crop)'
+                : Math.floor(availableHarvest) + ' crops)'
+            }`}
+            disabled={isHarvesting}
+            onPress={handleHarvest}
+          />
+          <Text style={styles.text}>
+            (+{Math.floor(getCpS(farmAccount))} 🌾 per second)
+          </Text>
+        </View>
       </View>
-      <FarmImage isHarvesting={isHarvesting} onPress={handleHarvest} />
-      <View style={styles.textSection}>
-        <GameButton
-          text={`Harvest! (+${
-            availableHarvest === 0
-              ? '1 crop)'
-              : Math.floor(availableHarvest) + ' crops)'
-          }`}
-          disabled={isHarvesting}
-          onPress={handleHarvest}
-        />
-        <Text style={styles.text}>
-          (+{Math.floor(getCpS(farmAccount))} 🌾 per second)
-        </Text>
-      </View>
-    </View>
+    </>
   );
 }
 

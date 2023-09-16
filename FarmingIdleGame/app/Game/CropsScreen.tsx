@@ -1,5 +1,6 @@
 import {FlatList, StyleSheet, View} from 'react-native';
 
+import BalanceHeaderBar from '../../components/BalanceHeaderBar';
 import CropCard from '../../components/CropCard';
 import {GameState, useAppState} from '../../hooks/useAppState';
 import {UPGRADES} from '../../program-utils/cropUpgrades';
@@ -11,6 +12,7 @@ export default function CropsScreen() {
 
   return (
     <View style={styles.container}>
+      <BalanceHeaderBar balance={'123'} />
       <FlatList
         data={UPGRADES}
         showsVerticalScrollIndicator={false}
