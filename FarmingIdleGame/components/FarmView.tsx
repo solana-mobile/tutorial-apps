@@ -1,11 +1,12 @@
-import {useCallback, useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {useCallback, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 
+import {useAppState} from '../hooks/useAppState';
 import useAvailableHarvest from '../hooks/useAvailableHarvest';
+import {formatNumber, getCpS} from '../program-utils/cropUpgrades';
 import {FarmAccount} from '../program-utils/farmingProgram';
-import {useAppState} from '../store/useAppState';
 import FarmImage from './FarmImage';
-import {getCpS} from '../program-utils/cropUpgrades';
+import GameButton from './GameButton';
 
 type Props = Readonly<{
   farmAccount: FarmAccount;
@@ -31,19 +32,25 @@ export default function FarmView({farmAccount}: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.textSection}>
+      <View style={styles.pointsHeader}>
         <Text style={styles.harvestedText}>
-          🌾 {farmAccount.harvestPoints.toString()} 🌾
+          🌾 {formatNumber(farmAccount.harvestPoints.toNumber())} 🌾
         </Text>
         <Text> crops harvested </Text>
       </View>
       <FarmImage isHarvesting={isHarvesting} onPress={handleHarvest} />
       <View style={styles.textSection}>
+        <GameButton
+          text={`Harvest! (+${
+            availableHarvest === 0
+              ? '1 crop)'
+              : Math.floor(availableHarvest) + ' crops)'
+          }`}
+          disabled={isHarvesting}
+          onPress={handleHarvest}
+        />
         <Text style={styles.text}>
-          👨‍🌾 Press to harvest {Math.floor(availableHarvest)} crops! 👨‍🌾
-        </Text>
-        <Text style={styles.text}>
-          (+{Math.floor(getCpS(farmAccount))} crops per second)
+          (+{Math.floor(getCpS(farmAccount))} 🌾 per second)
         </Text>
       </View>
     </View>
@@ -54,6 +61,14 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     textAlign: 'left',
+    width: '100%',
+  },
+  pointsHeader: {
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: 'rgba(111, 111, 111, 0.2)',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   textSection: {
     alignItems: 'center',

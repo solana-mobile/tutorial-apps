@@ -1,8 +1,8 @@
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 
 import EmptyFarmView from '../../components/EmptyFarmView';
-import FarmView3 from '../../components/FarmView3';
-import {GameState, useAppState} from '../../store/useAppState';
+import FarmView from '../../components/FarmView';
+import {GameState, useAppState} from '../../hooks/useAppState';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
@@ -22,7 +22,7 @@ export default function HarvestScreen() {
       {gameState === GameState.Uninitialized ? <EmptyFarmView /> : null}
       {gameState === GameState.Initialized && farmAccount ? (
         <>
-          <FarmView3 farmAccount={farmAccount} />
+          <FarmView farmAccount={farmAccount} />
         </>
       ) : null}
     </View>

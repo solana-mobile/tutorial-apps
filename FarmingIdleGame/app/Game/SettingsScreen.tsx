@@ -7,13 +7,11 @@ import {StyleSheet, Text, View} from 'react-native';
 import GameButton from '../../components/GameButton';
 import WalletBalanceCard from '../../components/WalletBalanceCard';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
-import {useAppState} from '../../store/useAppState';
+import {useAppState} from '../../hooks/useAppState';
 
 export default function SettingsScreen() {
   const {selectedAccount, authorizeSession, deauthorizeSession} =
     useAuthorization();
-  const [ownerBalance, setOwnerBalance] = useState<number | null>(null);
-  const [playerBalance, setPlayerBalance] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -23,41 +21,9 @@ export default function SettingsScreen() {
     withdrawPlayerBalance,
     resetPlayer,
     clearAppState,
+    playerBalance,
+    ownerBalance,
   } = useAppState();
-
-  const fetchAndUpdateBalances = useCallback(
-    async (
-      _connection: Connection,
-      ownerPubkey: PublicKey | undefined | null,
-      playerPubkey: PublicKey | undefined | null,
-      ownerSetter: (balance: number) => void,
-      playerSetter: (balance: number) => void,
-    ) => {
-      const fetchBalance = (pubKey: PublicKey | null | undefined) =>
-        pubKey ? _connection.getBalance(pubKey) : Promise.resolve(null);
-
-      const [ownerBal, playerBal] = await Promise.all([
-        fetchBalance(ownerPubkey),
-        fetchBalance(playerPubkey),
-      ]);
-
-      ownerBal && ownerSetter(ownerBal);
-      playerBal && playerSetter(playerBal);
-    },
-    [],
-  );
-  useEffect(() => {
-    if (connection && playerKeypair) {
-      console.log('fetching balance');
-      fetchAndUpdateBalances(
-        connection,
-        owner,
-        playerKeypair.publicKey,
-        setOwnerBalance,
-        setPlayerBalance,
-      );
-    }
-  }, [owner, connection, fetchAndUpdateBalances, playerKeypair]);
 
   return (
     <View style={styles.container}>

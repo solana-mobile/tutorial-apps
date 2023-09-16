@@ -6,7 +6,7 @@ import {useEffect} from 'react';
 import {ActivityIndicator, Button, StyleSheet, View} from 'react-native';
 
 import {useAuthorization} from '../hooks/AuthorizationProvider';
-import {useAppState} from '../store/useAppState';
+import {useAppState} from '../hooks/useAppState';
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',
   uri: 'https://solanamobile.com',

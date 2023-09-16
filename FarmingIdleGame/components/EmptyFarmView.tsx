@@ -3,9 +3,10 @@ import {useCallback, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import {useAuthorization} from '../hooks/AuthorizationProvider';
-import {useAppState} from '../store/useAppState';
-import GameButton from './GameButton';
+import {useAppState} from '../hooks/useAppState';
 import FarmImage from './FarmImage';
+import GameButton from './GameButton';
+import HowToPlay from './HowToPlay';
 
 type EmptyFarmViewProps = {
   // Any other prop types you might need
@@ -38,9 +39,8 @@ export default function EmptyFarmView({}: EmptyFarmViewProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.instructionText}>
-        Welcome to the Solana Mobile Farming Idle Game
-      </Text>
+      <Text style={styles.header}>Welcome to your farm!</Text>
+      <HowToPlay />
       <FarmImage isHarvesting={false} />
       <GameButton
         text="Deposit"
@@ -55,11 +55,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
+    alignItems: 'center',
   },
-  instructionText: {
-    fontSize: 18,
-    color: '#333', // Dark gray text color
-    textAlign: 'left',
+  header: {
+    fontSize: 24,
+    color: 'black', // Dark gray text color
+    textAlign: 'center',
+    fontWeight: 'bold',
     marginBottom: 20,
   },
 });

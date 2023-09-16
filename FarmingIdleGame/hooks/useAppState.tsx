@@ -1,4 +1,9 @@
-import {Connection, Keypair, PublicKey} from '@solana/web3.js';
+import {
+  Connection,
+  Keypair,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+} from '@solana/web3.js';
 import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {create} from 'zustand';
 
@@ -17,7 +22,7 @@ import {
 import {
   fetchBurnerKeypair,
   generateNewBurnerKeypair,
-} from './burnerWalletUtils';
+} from '../store/burnerWalletUtils';
 
 // Game State
 export enum GameState {
@@ -30,7 +35,7 @@ export enum GameState {
 }
 
 interface GameStore {
-  // State
+  // Program Model
   owner: PublicKey | null;
   playerKeypair: Keypair | null;
   connection: Connection | null;
@@ -39,6 +44,14 @@ interface GameStore {
   bump: number | null;
   farmAccount: FarmAccount | null;
   gameState: GameState;
+
+  // Balance
+  ownerBalance: number | null;
+  playerBalance: number | null;
+
+  // Account Listeners
+  ownerListener: number | null;
+  playerListener: number | null;
 
   // Actions
   onConnect: (owner: PublicKey, connection: Connection) => Promise<void>;
@@ -62,7 +75,45 @@ export const useAppState = create<GameStore>()((set, get) => {
       owner,
       playerKeypair.publicKey,
     );
-    set({owner, playerKeypair, farmPDA, bump, connection});
+
+    const ownerListener = connection.onAccountChange(owner, ownerAccount => {
+      set({
+        ownerBalance: ownerAccount.lamports / LAMPORTS_PER_SOL,
+      });
+    });
+
+    const playerListener = connection.onAccountChange(
+      playerKeypair.publicKey,
+      playerAccount => {
+        set({
+          playerBalance: playerAccount.lamports / LAMPORTS_PER_SOL,
+        });
+      },
+    );
+
+    // connection
+    //   .getBalance(wallet.publicKey)
+    //   .then(balance => {
+    //     set({
+    //       walletBalance: balance / LAMPORTS_PER_SOL,
+    //     });
+    //   })
+    //   .catch(err => {
+    //     set({
+    //       walletBalance: null,
+    //     });
+    //     console.log(`Error getting balance [${err}]`);
+    //   });
+
+    set({
+      owner,
+      playerKeypair,
+      farmPDA,
+      bump,
+      connection,
+      ownerListener,
+      playerListener,
+    });
 
     const farmAccount = (await connection.getAccountInfo(farmPDA))
       ? await fetchFarmAccount(farmProgram, farmPDA)
@@ -82,6 +133,10 @@ export const useAppState = create<GameStore>()((set, get) => {
     bump: null,
     farmAccount: null,
     gameState: GameState.Loading,
+    ownerBalance: null,
+    playerBalance: null,
+    ownerListener: null,
+    playerListener: null,
     onConnect: async (owner: PublicKey, connection: Connection) => {
       console.log('=Game=: Connecting and setting up game state');
       const playerKeypair = await fetchBurnerKeypair(owner);
@@ -235,6 +290,10 @@ export const useAppState = create<GameStore>()((set, get) => {
         bump: null,
         farmAccount: null,
         gameState: GameState.Loading,
+        ownerBalance: null,
+        playerBalance: null,
+        ownerListener: null,
+        playerListener: null,
       });
     },
   };

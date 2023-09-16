@@ -53,7 +53,9 @@ function FarmImage({isHarvesting, onPress}: Props) {
       useNativeDriver: true,
     }).start();
 
-    await onPress();
+    if (onPress) {
+      await onPress();
+    }
   };
 
   return (
