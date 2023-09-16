@@ -5,6 +5,7 @@ import {Text} from 'react-native';
 
 import HowToPlay from '../../components/HowToPlay';
 import NavBarInfoButton from '../../components/NavBarInfoButton';
+import HowToCrops from '../../components/HowToCrops';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -20,7 +21,6 @@ export default function GameLayout() {
   return (
     <Tabs>
       <Tabs.Screen
-        // Name of the route to hide.
         name="FarmScreen"
         options={{
           title: 'Farm',
@@ -33,7 +33,6 @@ export default function GameLayout() {
         }}
       />
       <Tabs.Screen
-        // Name of the route to hide.
         name="CropsScreen"
         options={{
           title: 'Crops',
@@ -42,13 +41,12 @@ export default function GameLayout() {
           ),
           headerRight: () => (
             <NavBarInfoButton>
-              <Text>Hello</Text>
+              <HowToCrops />
             </NavBarInfoButton>
           ),
         }}
       />
       <Tabs.Screen
-        // Name of the route to hide.
         name="SettingsScreen"
         options={{
           title: 'Settings',

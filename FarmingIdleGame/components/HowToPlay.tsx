@@ -6,19 +6,26 @@ export default function HowToPlay() {
       <Text style={styles.boldedText}>How to play:{'\n'}</Text>
       <Text>
         1. Deposit <Text style={styles.boldedText}>0.001</Text> SOL to a
-        temporary burner wallet<Text style={styles.boldedText}>**</Text>.
+        <Text style={styles.boldedText}> temporary burner wallet</Text> to start
+        the game.
       </Text>
       {'\n'}
-      <Text>2. Collect harvest points by clicking the harvest button</Text>
+      <Text>
+        2. Collect harvest points (🌾) by clicking the harvest button.{'\n'}
+      </Text>
+      <Text>
+        3. Each 'harvest' is an on-chain transaction signed/paid with the burner
+        wallet!
+      </Text>
       {'\n'}
-      <Text>3. Upgrade your farm to increase your harvest yields</Text>
+      <Text>4. Upgrade your farm to increase your harvest yields.</Text>
       {'\n'}
-      <Text>4. Trade your farm to receive an NFT of your game score.</Text>
+      <Text>5. Trade your farm to receive an NFT of your game score.</Text>
       {'\n'}
       {'\n'}
       <Text style={styles.boldedText}>
         **The burner wallet is unsafe and stored locally on your device. If you
-        uninstall the app, you will not have access to the burner wallet!
+        uninstall the app, you will lose access to the burner wallet!
       </Text>
     </Text>
   );
