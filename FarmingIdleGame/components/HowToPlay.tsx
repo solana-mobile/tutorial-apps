@@ -5,7 +5,7 @@ export default function HowToPlay() {
     <Text>
       <Text style={styles.boldedText}>How to play:{'\n'}</Text>
       <Text>
-        1. Deposit <Text style={styles.boldedText}>0.001</Text> SOL to a
+        1. Deposit <Text style={styles.boldedText}>0.01</Text> SOL to a
         <Text style={styles.boldedText}> temporary burner wallet</Text> to start
         the game.
       </Text>

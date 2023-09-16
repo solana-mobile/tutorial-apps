@@ -1,9 +1,4 @@
-import {
-  Connection,
-  Keypair,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-} from '@solana/web3.js';
+import {Connection, Keypair, PublicKey} from '@solana/web3.js';
 import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {create} from 'zustand';
 
@@ -76,34 +71,51 @@ export const useAppState = create<GameStore>()((set, get) => {
       playerKeypair.publicKey,
     );
 
+    // Initialize account listeners
     const ownerListener = connection.onAccountChange(owner, ownerAccount => {
       set({
-        ownerBalance: ownerAccount.lamports / LAMPORTS_PER_SOL,
+        ownerBalance: ownerAccount.lamports,
       });
     });
-
     const playerListener = connection.onAccountChange(
       playerKeypair.publicKey,
       playerAccount => {
         set({
-          playerBalance: playerAccount.lamports / LAMPORTS_PER_SOL,
+          playerBalance: playerAccount.lamports,
         });
       },
     );
 
-    // connection
-    //   .getBalance(wallet.publicKey)
-    //   .then(balance => {
-    //     set({
-    //       walletBalance: balance / LAMPORTS_PER_SOL,
-    //     });
-    //   })
-    //   .catch(err => {
-    //     set({
-    //       walletBalance: null,
-    //     });
-    //     console.log(`Error getting balance [${err}]`);
-    //   });
+    // Fetch initial account balances
+    connection
+      .getBalance(owner)
+      .then(balance => {
+        console.log('Owner balance fetched: ' + balance);
+        set({
+          ownerBalance: balance,
+        });
+      })
+      .catch(err => {
+        set({
+          ownerBalance: null,
+        });
+        console.log(`Error getting balance [${err}]`);
+      });
+    connection
+      .getBalance(playerKeypair.publicKey)
+      .then(balance => {
+        console.log('Player balance fetched: ' + balance);
+
+        set({
+          playerBalance: balance,
+        });
+      })
+      .catch(err => {
+        set({
+          playerBalance: null,
+        });
+        console.log(`Error getting balance [${err}]`);
+      });
 
     set({
       owner,
@@ -124,6 +136,7 @@ export const useAppState = create<GameStore>()((set, get) => {
       gameState: farmAccount ? GameState.Initialized : GameState.Uninitialized,
     });
   };
+
   return {
     owner: null,
     playerKeypair: null,

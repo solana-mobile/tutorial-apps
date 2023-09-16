@@ -116,10 +116,13 @@ function AuthorizationProvider(props: {children: ReactNode}) {
         const cacheFetchResult = await AsyncStorage.getItem(STORAGE_KEY);
         console.log('Authorization cache attempt');
         if (cacheFetchResult !== null) {
-          console.log(
-            'Retrieving auth ' + JSON.parse(cacheFetchResult, cacheReviver),
+          const priorAuthorization: Authorization = JSON.parse(
+            cacheFetchResult,
+            cacheReviver,
           );
-          const priorAuthorization = JSON.parse(cacheFetchResult, cacheReviver);
+          console.log(
+            'Retrieved account: ' + priorAuthorization.selectedAccount.address,
+          );
           setAuthorization(priorAuthorization);
         }
       } catch (error) {

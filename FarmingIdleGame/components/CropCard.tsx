@@ -12,7 +12,7 @@ type Props = Readonly<{
   upgrade: UpgradeType;
   upgradeIndex: number;
   farmAccount: FarmAccount | null;
-  upgradeEnabled: boolean;
+  upgradesEnabled: boolean;
   onPurchase: () => Promise<void>;
 }>;
 
@@ -20,7 +20,7 @@ function CropCard({
   upgrade,
   upgradeIndex,
   farmAccount,
-  upgradeEnabled,
+  upgradesEnabled,
   onPurchase,
 }: Props) {
   const owned: string = farmAccount
@@ -31,13 +31,11 @@ function CropCard({
     : upgrade.baseCost;
   const costString = formatNumber(cost);
   const buyEnabled: boolean = farmAccount
-    ? farmAccount.harvestPoints.toNumber() >= cost && upgradeEnabled
+    ? farmAccount.harvestPoints.toNumber() >= cost && upgradesEnabled
     : false;
-  const shouldDarken: boolean =
-    farmAccount === null ||
-    buyEnabled ||
-    farmAccount.farmUpgrades[upgradeIndex] > 0;
-  console.log(shouldDarken);
+  const shouldShowActive: boolean =
+    farmAccount !== null &&
+    (buyEnabled || farmAccount.farmUpgrades[upgradeIndex] > 0);
 
   return (
     <ImageBackground
@@ -45,7 +43,9 @@ function CropCard({
       style={styles.card}
       blurRadius={2}
       resizeMode="cover">
-      <View style={shouldDarken ? styles.darkenedOverlay : styles.overlay} />
+      <View
+        style={shouldShowActive ? styles.overlay : styles.darkenedOverlay}
+      />
       <View style={styles.infoSection}>
         <Text style={styles.cardTitle}>{upgrade.name} </Text>
         <Text style={styles.description}>

@@ -6,7 +6,7 @@ import {UPGRADES} from '../../program-utils/cropUpgrades';
 
 export default function CropsScreen() {
   const {farmAccount, gameState, upgradeFarm} = useAppState();
-  const upgradeEnabled =
+  const upgradesEnabled =
     gameState === GameState.Initialized && farmAccount !== null;
 
   return (
@@ -20,7 +20,7 @@ export default function CropsScreen() {
             upgrade={upgrade}
             upgradeIndex={i}
             farmAccount={farmAccount}
-            upgradeEnabled={upgradeEnabled}
+            upgradesEnabled={upgradesEnabled}
             onPurchase={async () => {
               await upgradeFarm(i, 1);
             }}

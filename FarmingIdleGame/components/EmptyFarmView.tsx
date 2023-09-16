@@ -8,11 +8,7 @@ import FarmImage from './FarmImage';
 import GameButton from './GameButton';
 import HowToPlay from './HowToPlay';
 
-type EmptyFarmViewProps = {
-  // Any other prop types you might need
-};
-
-export default function EmptyFarmView({}: EmptyFarmViewProps) {
+export default function EmptyFarmView() {
   const {authorizeSession} = useAuthorization();
   const [isFetching, setIsFetching] = useState(false);
   const {owner, initializeFarm} = useAppState();

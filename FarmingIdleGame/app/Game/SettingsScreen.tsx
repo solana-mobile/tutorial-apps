@@ -1,7 +1,6 @@
-import {Connection, PublicKey} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {router} from 'expo-router';
-import {useCallback, useEffect, useState} from 'react';
+import {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import GameButton from '../../components/GameButton';
@@ -17,7 +16,6 @@ export default function SettingsScreen() {
   const {
     owner,
     playerKeypair,
-    connection,
     withdrawPlayerBalance,
     resetPlayer,
     clearAppState,
