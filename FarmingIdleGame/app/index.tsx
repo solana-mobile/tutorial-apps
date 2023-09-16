@@ -22,7 +22,7 @@ export default function ConnectScreen() {
     if (selectedAccount) {
       onConnect(
         selectedAccount.publicKey,
-        new Connection(clusterApiUrl('devnet')),
+        new Connection(clusterApiUrl('devnet'), 'processed'),
       );
       router.replace('Game/FarmScreen');
     }
