@@ -35,26 +35,14 @@ export default function FarmView({farmAccount}: Props) {
     <>
       <View style={styles.container}>
         <View style={styles.pointsHeader}>
-          <Text style={styles.harvestedText}>
-            🌾 {formatNumber(farmAccount.harvestPoints.toNumber())} 🌾
+          <Text style={styles.headerText}>
+            Tap to harvest {Math.floor(availableHarvest)} 🌾
           </Text>
-          <Text> crops harvested </Text>
-        </View>
-        <FarmImage isHarvesting={isHarvesting} onPress={handleHarvest} />
-        <View style={styles.textSection}>
-          <GameButton
-            text={`Harvest! (+${
-              availableHarvest === 0
-                ? '1 crop)'
-                : Math.floor(availableHarvest) + ' crops)'
-            }`}
-            disabled={isHarvesting}
-            onPress={handleHarvest}
-          />
-          <Text style={styles.text}>
+          <Text style={styles.headerSubtext}>
             (+{Math.floor(getCpS(farmAccount))} 🌾 per second)
           </Text>
         </View>
+        <FarmImage isHarvesting={isHarvesting} onPress={handleHarvest} />
       </View>
     </>
   );
@@ -72,6 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(111, 111, 111, 0.2)',
     paddingVertical: 10,
     paddingHorizontal: 15,
+    marginTop: 32,
   },
   textSection: {
     alignItems: 'center',
@@ -85,8 +74,14 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
-  harvestedText: {
-    fontSize: 32,
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333', // Dark gray text color
+  },
+  headerSubtext: {
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#333', // Dark gray text color
   },
   text: {

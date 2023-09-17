@@ -35,9 +35,15 @@ export default function EmptyFarmView() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Welcome to your farm!</Text>
-      <HowToPlay />
+      <View style={styles.banner}>
+        <Text style={styles.header}>Welcome to your farm!</Text>
+      </View>
       <FarmImage isHarvesting={false} />
+      <GameButton
+        text="Learn to play"
+        disabled={isFetching}
+        onPress={handleDeposit}
+      />
       <GameButton
         text="Deposit"
         disabled={isFetching}
@@ -49,15 +55,22 @@ export default function EmptyFarmView() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingHorizontal: 16,
     alignItems: 'center',
   },
+  banner: {
+    width: '100%',
+    backgroundColor: 'rgba(1, 1, 1, 0.4)',
+    borderRadius: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginTop: 32,
+  },
   header: {
     fontSize: 24,
-    color: 'black', // Dark gray text color
+    color: 'white',
     textAlign: 'center',
+    textAlignVertical: 'center',
     fontWeight: 'bold',
-    marginBottom: 20,
   },
 });

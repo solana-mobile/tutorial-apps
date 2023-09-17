@@ -30,7 +30,11 @@ export default function HarvestScreen() {
               <ActivityIndicator />
             </View>
           ) : null}
-          {gameState === GameState.Uninitialized ? <EmptyFarmView /> : null}
+          {gameState === GameState.Uninitialized ? (
+            <>
+              <EmptyFarmView />
+            </>
+          ) : null}
           {gameState === GameState.Initialized && farmAccount ? (
             <>
               <FarmView farmAccount={farmAccount} />

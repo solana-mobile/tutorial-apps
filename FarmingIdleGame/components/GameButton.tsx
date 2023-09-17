@@ -2,7 +2,7 @@ import {GestureResponderEvent, Pressable, StyleSheet, Text} from 'react-native';
 
 type Props = Readonly<{
   text: string;
-  onPress: (event: GestureResponderEvent) => void;
+  onPress?: (event: GestureResponderEvent) => void;
   disabled?: boolean;
 }>;
 

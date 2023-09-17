@@ -74,7 +74,6 @@ function FarmImage({isHarvesting, onPress}: Props) {
               },
             ]}
           />
-          {isHarvesting && <View style={styles.overlay} />}
         </View>
       </TouchableWithoutFeedback>
     </>
@@ -90,12 +89,6 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'white',
-    opacity: 0.3,
-    borderRadius: 8,
   },
 });
 

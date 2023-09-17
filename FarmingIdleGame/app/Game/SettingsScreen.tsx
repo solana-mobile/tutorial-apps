@@ -101,6 +101,10 @@ export default function SettingsScreen() {
             }
           }}
         />
+        <GameButton
+          text="Mint Farm NFT"
+          disabled={!selectedAccount || !playerKeypair || isLoading}
+        />
       </View>
     </ImageBackground>
   );
