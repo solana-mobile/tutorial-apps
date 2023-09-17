@@ -1,16 +1,17 @@
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {useCallback, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 
 import {useAuthorization} from '../hooks/AuthorizationProvider';
 import {useAppState} from '../hooks/useAppState';
 import FarmImage from './FarmImage';
 import GameButton from './GameButton';
-import HowToPlay from './HowToPlay';
+import OnboardingModal from './OnboardingModal';
 
 export default function EmptyFarmView() {
   const {authorizeSession} = useAuthorization();
   const [isFetching, setIsFetching] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const {owner, initializeFarm} = useAppState();
 
   const handleDeposit = useCallback(async () => {
@@ -36,16 +37,16 @@ export default function EmptyFarmView() {
   return (
     <View style={styles.container}>
       <View style={styles.banner}>
-        <Text style={styles.header}>Welcome to your farm!</Text>
+        <Text style={styles.header}>Deposit to initialize your farm!</Text>
       </View>
       <FarmImage isHarvesting={false} />
-      <GameButton
-        text="Learn to play"
-        disabled={isFetching}
-        onPress={handleDeposit}
+      <Button title="Open Onboarding" onPress={() => setModalVisible(true)} />
+      <OnboardingModal
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
       />
       <GameButton
-        text="Deposit"
+        text="Deposit 0.001 SOL"
         disabled={isFetching}
         onPress={handleDeposit}
       />
