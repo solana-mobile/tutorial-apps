@@ -1,11 +1,9 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {Tabs} from 'expo-router/tabs';
-import React from 'react';
-import {Text} from 'react-native';
 
+import HowToCrops from '../../components/HowToCrops';
 import HowToPlay from '../../components/HowToPlay';
 import NavBarInfoButton from '../../components/NavBarInfoButton';
-import HowToCrops from '../../components/HowToCrops';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -19,40 +17,42 @@ function TabBarIcon(props: {
 
 export default function GameLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen
-        name="FarmScreen"
-        options={{
-          title: 'Farm',
-          tabBarIcon: ({color}) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => (
-            <NavBarInfoButton>
-              <HowToPlay />
-            </NavBarInfoButton>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="CropsScreen"
-        options={{
-          title: 'Crops',
-          tabBarIcon: ({color}) => (
-            <TabBarIcon name="plus-circle" color={color} />
-          ),
-          headerRight: () => (
-            <NavBarInfoButton>
-              <HowToCrops />
-            </NavBarInfoButton>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="SettingsScreen"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({color}) => <TabBarIcon name="gear" color={color} />,
-        }}
-      />
-    </Tabs>
+    <>
+      <Tabs>
+        <Tabs.Screen
+          name="FarmScreen"
+          options={{
+            title: 'Farm',
+            tabBarIcon: ({color}) => <TabBarIcon name="home" color={color} />,
+            headerRight: () => (
+              <NavBarInfoButton>
+                <HowToPlay />
+              </NavBarInfoButton>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="CropsScreen"
+          options={{
+            title: 'Crops',
+            tabBarIcon: ({color}) => (
+              <TabBarIcon name="plus-circle" color={color} />
+            ),
+            headerRight: () => (
+              <NavBarInfoButton>
+                <HowToCrops />
+              </NavBarInfoButton>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="SettingsScreen"
+          options={{
+            title: 'Settings',
+            tabBarIcon: ({color}) => <TabBarIcon name="gear" color={color} />,
+          }}
+        />
+      </Tabs>
+    </>
   );
 }

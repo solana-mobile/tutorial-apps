@@ -17,7 +17,7 @@ export default function BalanceHeaderBar() {
   return (
     <View style={styles.container}>
       <View style={styles.balanceSection}>
-        <Text style={styles.balanceHeader}>Harvest points:</Text>
+        <Text style={styles.balanceHeader}>Harvest points</Text>
         <Text style={styles.balanceText}>
           {farmAccount ? formatNumber(farmAccount.harvestPoints.toNumber()) : 0}
           🌾
@@ -25,7 +25,7 @@ export default function BalanceHeaderBar() {
       </View>
       <View style={styles.verticalLine} />
       <View style={styles.balanceSection}>
-        <Text style={styles.balanceHeader}>Burner wallet:</Text>
+        <Text style={styles.balanceHeader}>Burner wallet</Text>
         <Text style={styles.balanceText}>
           {playerBalance
             ? truncateNumberToDecimals(
@@ -39,7 +39,7 @@ export default function BalanceHeaderBar() {
       <View style={styles.verticalLine} />
 
       <View style={styles.balanceSection}>
-        <Text style={styles.balanceHeader}>Main wallet:</Text>
+        <Text style={styles.balanceHeader}>Main wallet</Text>
         <Text style={styles.balanceText}>
           {ownerBalance
             ? truncateNumberToDecimals(ownerBalance / LAMPORTS_PER_SOL, 4)
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: 'white',
+    marginTop: -1,
     paddingHorizontal: 15,
     borderTopWidth: 1,
     borderColor: 'rgba(111, 111, 111, 0.2)',
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     width: '100%',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 0,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,

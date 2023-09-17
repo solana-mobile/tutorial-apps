@@ -1,5 +1,11 @@
-import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {
+  ActivityIndicator,
+  ImageBackground,
+  StyleSheet,
+  View,
+} from 'react-native';
 
+import BalanceHeaderBar from '../../components/BalanceHeaderBar';
 import EmptyFarmView from '../../components/EmptyFarmView';
 import FarmView from '../../components/FarmView';
 import {GameState, useAppState} from '../../hooks/useAppState';
@@ -13,26 +19,31 @@ export const APP_IDENTITY = {
 export default function HarvestScreen() {
   const {farmAccount, gameState} = useAppState();
   return (
-    <View style={styles.container}>
-      {gameState === GameState.Loading ? (
-        <View>
-          <ActivityIndicator />
+    <>
+      <ImageBackground
+        style={{flex: 1}}
+        source={require('../../assets/crystal_background.jpg')}>
+        <View style={styles.container}>
+          <BalanceHeaderBar />
+          {gameState === GameState.Loading ? (
+            <View>
+              <ActivityIndicator />
+            </View>
+          ) : null}
+          {gameState === GameState.Uninitialized ? <EmptyFarmView /> : null}
+          {gameState === GameState.Initialized && farmAccount ? (
+            <>
+              <FarmView farmAccount={farmAccount} />
+            </>
+          ) : null}
         </View>
-      ) : null}
-      {gameState === GameState.Uninitialized ? <EmptyFarmView /> : null}
-      {gameState === GameState.Initialized && farmAccount ? (
-        <>
-          <FarmView farmAccount={farmAccount} />
-        </>
-      ) : null}
-    </View>
+      </ImageBackground>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
   },
   image: {

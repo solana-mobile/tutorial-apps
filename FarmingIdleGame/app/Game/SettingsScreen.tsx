@@ -1,8 +1,9 @@
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {router} from 'expo-router';
 import {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ImageBackground, StyleSheet, Text, View} from 'react-native';
 
+import BalanceHeaderBar from '../../components/BalanceHeaderBar';
 import GameButton from '../../components/GameButton';
 import WalletBalanceCard from '../../components/WalletBalanceCard';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
@@ -24,88 +25,90 @@ export default function SettingsScreen() {
   } = useAppState();
 
   return (
-    <View style={styles.container}>
-      <Text>In Settings Screen</Text>
-      <WalletBalanceCard
-        title="Main Wallet (Owner)"
-        subtitle={selectedAccount?.publicKey.toString()}
-        balance={ownerBalance}
-      />
-      <WalletBalanceCard
-        title="Player Wallet (Burner)"
-        subtitle={playerKeypair?.publicKey.toString()}
-        balance={playerBalance}
-      />
-      <GameButton
-        text="Disconnect Owner Wallet"
-        disabled={!selectedAccount || !playerKeypair || isLoading}
-        onPress={async () => {
-          setIsLoading(true);
-          try {
-            await transact(async wallet => {
-              await deauthorizeSession(wallet);
-            });
-            await clearAppState();
-            router.replace('/');
-          } catch (error: any) {
-            console.error('Failed to disconnect wallet');
-            console.error(error);
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      />
-      <GameButton
-        text="Withdraw Player balance"
-        disabled={!selectedAccount || !playerKeypair || isLoading}
-        onPress={async () => {
-          if (!selectedAccount || !playerKeypair) {
-            throw new Error('Wallet is not initialized');
-          }
+    <ImageBackground
+      style={{flex: 1}}
+      source={require('../../assets/crystal_background.jpg')}>
+      <View style={styles.container}>
+        <BalanceHeaderBar />
+        <Text>In Settings Screen</Text>
+        <WalletBalanceCard
+          title="Main Wallet (Owner)"
+          subtitle={selectedAccount?.publicKey.toString()}
+          balance={ownerBalance}
+        />
+        <WalletBalanceCard
+          title="Player Wallet (Burner)"
+          subtitle={playerKeypair?.publicKey.toString()}
+          balance={playerBalance}
+        />
+        <GameButton
+          text="Disconnect Owner Wallet"
+          disabled={!selectedAccount || !playerKeypair || isLoading}
+          onPress={async () => {
+            setIsLoading(true);
+            try {
+              await transact(async wallet => {
+                await deauthorizeSession(wallet);
+              });
+              await clearAppState();
+              router.replace('/');
+            } catch (error: any) {
+              console.error('Failed to disconnect wallet');
+              console.error(error);
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        />
+        <GameButton
+          text="Withdraw Player balance"
+          disabled={!selectedAccount || !playerKeypair || isLoading}
+          onPress={async () => {
+            if (!selectedAccount || !playerKeypair) {
+              throw new Error('Wallet is not initialized');
+            }
 
-          setIsLoading(true);
-          try {
-            await transact(async wallet => {
-              const authResult = await authorizeSession(wallet);
-              if (authResult.publicKey.toString() !== owner?.toString()) {
-                throw Error('Incorrect wallet authorized for owner signing');
-              }
+            setIsLoading(true);
+            try {
+              await transact(async wallet => {
+                const authResult = await authorizeSession(wallet);
+                if (authResult.publicKey.toString() !== owner?.toString()) {
+                  throw Error('Incorrect wallet authorized for owner signing');
+                }
 
-              await withdrawPlayerBalance(wallet);
-            });
-          } catch (error: any) {
-            console.error('Failed to initialize farm');
-            console.error(error);
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      />
-      <GameButton
-        text="Reset Player Wallet"
-        disabled={!selectedAccount || !playerKeypair || isLoading}
-        onPress={async () => {
-          setIsLoading(true);
-          try {
-            await resetPlayer();
-          } catch (error: any) {
-            console.error('Failed to reset player');
-            console.error(error);
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      />
-    </View>
+                await withdrawPlayerBalance(wallet);
+              });
+            } catch (error: any) {
+              console.error('Failed to initialize farm');
+              console.error(error);
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        />
+        <GameButton
+          text="Reset Player Wallet"
+          disabled={!selectedAccount || !playerKeypair || isLoading}
+          onPress={async () => {
+            setIsLoading(true);
+            try {
+              await resetPlayer();
+            } catch (error: any) {
+              console.error('Failed to reset player');
+              console.error(error);
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        />
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
   },
 });

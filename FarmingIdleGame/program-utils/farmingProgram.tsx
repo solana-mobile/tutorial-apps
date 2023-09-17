@@ -64,7 +64,7 @@ export async function fetchFarmAccount(
   farmPDA: PublicKey,
 ) {
   try {
-    return await program.account.farm.fetch(farmPDA, 'confirmed');
+    return await program.account.farm.fetch(farmPDA, 'processed');
   } catch (e: any) {
     // Check for the specific uninitialized account error message
     if (
@@ -230,7 +230,7 @@ export async function signSendAndConfirmBurnerTx(
       lastValidBlockHeight: _latestBlockhash.lastValidBlockHeight,
       signature: txSig,
     },
-    'confirmed',
+    'processed',
   );
 
   if (result.value.err) {

@@ -34,7 +34,6 @@ export default function FarmView({farmAccount}: Props) {
   return (
     <>
       <View style={styles.container}>
-        <BalanceHeaderBar balance={'123'} />
         <View style={styles.pointsHeader}>
           <Text style={styles.harvestedText}>
             🌾 {formatNumber(farmAccount.harvestPoints.toNumber())} 🌾

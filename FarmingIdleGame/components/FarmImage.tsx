@@ -66,7 +66,7 @@ function FarmImage({isHarvesting, onPress}: Props) {
         disabled={isHarvesting}>
         <View>
           <Animated.Image
-            source={require('../assets/farm2.png')}
+            source={require('../assets/farm_transparent.png')}
             style={[
               styles.image,
               {

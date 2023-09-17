@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, ImageBackground, StyleSheet, View} from 'react-native';
 
 import BalanceHeaderBar from '../../components/BalanceHeaderBar';
 import CropCard from '../../components/CropCard';
@@ -11,33 +11,38 @@ export default function CropsScreen() {
     gameState === GameState.Initialized && farmAccount !== null;
 
   return (
-    <View style={styles.container}>
-      <BalanceHeaderBar balance={'123'} />
-      <FlatList
-        data={UPGRADES}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item: upgrade, index: i}) => (
-          <CropCard
-            upgrade={upgrade}
-            upgradeIndex={i}
-            farmAccount={farmAccount}
-            upgradesEnabled={upgradesEnabled}
-            onPurchase={async () => {
-              await upgradeFarm(i, 1);
-            }}
+    <>
+      <ImageBackground
+        style={{flex: 1}}
+        source={require('../../assets/crystal_background.jpg')}>
+        <View style={styles.container}>
+          <BalanceHeaderBar />
+          <FlatList
+            data={UPGRADES}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item: upgrade, index: i}) => (
+              <CropCard
+                upgrade={upgrade}
+                upgradeIndex={i}
+                farmAccount={farmAccount}
+                upgradesEnabled={upgradesEnabled}
+                onPurchase={async () => {
+                  await upgradeFarm(i, 1);
+                }}
+              />
+            )}
+            contentContainerStyle={styles.list}
           />
-        )}
-        contentContainerStyle={styles.list}
-      />
-    </View>
+        </View>
+      </ImageBackground>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
   },
   list: {

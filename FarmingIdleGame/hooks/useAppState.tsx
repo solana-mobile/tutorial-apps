@@ -80,7 +80,6 @@ export const useAppState = create<GameStore>()((set, get) => {
     const playerListener = connection.onAccountChange(
       playerKeypair.publicKey,
       playerAccount => {
-        console.log('Player balance fetched: ' + playerAccount.lamports);
         set({
           playerBalance: playerAccount.lamports,
         });
@@ -91,7 +90,6 @@ export const useAppState = create<GameStore>()((set, get) => {
     connection
       .getBalance(owner)
       .then(balance => {
-        console.log('Owner balance fetched: ' + balance);
         set({
           ownerBalance: balance,
         });
@@ -105,8 +103,6 @@ export const useAppState = create<GameStore>()((set, get) => {
     connection
       .getBalance(playerKeypair.publicKey)
       .then(balance => {
-        console.log('Player balance fetched: ' + balance);
-
         set({
           playerBalance: balance,
         });
