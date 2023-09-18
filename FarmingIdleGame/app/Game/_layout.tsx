@@ -1,9 +1,11 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {Tabs} from 'expo-router/tabs';
+import {useState} from 'react';
 
 import HowToCrops from '../../components/HowToCrops';
 import HowToPlay from '../../components/HowToPlay';
 import NavBarInfoButton from '../../components/NavBarInfoButton';
+import OnboardingModal from '../../components/OnboardingModal';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -16,8 +18,13 @@ function TabBarIcon(props: {
 }
 
 export default function GameLayout() {
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <>
+      <OnboardingModal
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
       <Tabs>
         <Tabs.Screen
           name="FarmScreen"
@@ -25,9 +32,11 @@ export default function GameLayout() {
             title: 'Farm',
             tabBarIcon: ({color}) => <TabBarIcon name="home" color={color} />,
             headerRight: () => (
-              <NavBarInfoButton>
-                <HowToPlay />
-              </NavBarInfoButton>
+              <NavBarInfoButton
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+              />
             ),
           }}
         />
@@ -39,9 +48,11 @@ export default function GameLayout() {
               <TabBarIcon name="plus-circle" color={color} />
             ),
             headerRight: () => (
-              <NavBarInfoButton>
-                <HowToCrops />
-              </NavBarInfoButton>
+              <NavBarInfoButton
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+              />
             ),
           }}
         />

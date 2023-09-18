@@ -9,17 +9,14 @@ import {
 } from 'react-native';
 
 type Props = Readonly<{
-  children: React.ReactElement;
+  onPress: () => void;
+  // children: React.ReactElement;
 }>;
 
-export default function NavBarInfoButton({children}: Props) {
-  const [modalVisible, setModalVisible] = useState(false);
-
+export default function NavBarInfoButton({onPress}: Props) {
   return (
     <>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => setModalVisible(true)}>
+      <TouchableOpacity style={styles.button} onPress={onPress}>
         <FontAwesome
           size={28}
           style={{marginBottom: -3}}
@@ -27,20 +24,6 @@ export default function NavBarInfoButton({children}: Props) {
           name="question-circle-o"
         />
       </TouchableOpacity>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>{children}</View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
     </>
   );
 }
