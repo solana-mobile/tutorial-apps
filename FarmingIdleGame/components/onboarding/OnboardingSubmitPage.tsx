@@ -1,19 +1,16 @@
 import {StyleSheet, Text, View} from 'react-native';
 
-export default function OnboardingIntro() {
+export default function OnboardingGamePage() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Welcome!</Text>
-      <View style={styles.paragraph}>
+      <Text style={styles.header}>How to play!</Text>
+      <Text style={styles.paragraph}>
         <Text>
-          This is an on-chain clicker game built on Solana, created for
-          educational purposes. {'\n'}
+          This goal of the game is to harvest crops, upgrade your farm, and
+          'cash out' your game progress for a finalized NFT of your score!{' '}
+          {'\n'}
         </Text>
-        <Text>
-          The source code for the Expo app and the on-chain program is fully
-          open source. {'\n'}
-        </Text>
-      </View>
+      </Text>
     </View>
   );
 }
@@ -22,7 +19,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 0,
     flexDirection: 'column',
+    justifyContent: 'center',
     width: '100%',
+    height: '100%',
   },
   header: {
     fontWeight: 'bold',
@@ -34,6 +33,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   paragraph: {
-    justifyContent: 'center',
+    textAlign: 'center',
   },
 });
