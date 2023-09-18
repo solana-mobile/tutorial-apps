@@ -2,12 +2,11 @@ import {Entypo} from '@expo/vector-icons';
 import {useState} from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-import HowToCrops from './HowToCrops';
-import HowToPlay from './HowToPlay';
-import OnboardingDepositPage from './onboarding/OnboardingDepositPage';
-import OnboardingGamePage from './onboarding/OnboardingGamePage';
-import OnboardingIntroPage from './onboarding/OnboardingIntroPage';
-import OnboardingModalPage from './onboarding/OnboardingModalPage';
+import OnboardingGettingStarted from './onboarding/OnboardingGettingStarted';
+import OnboardingHarvest from './onboarding/OnboardingHarvest';
+import OnboardingIntro from './onboarding/OnboardingIntro';
+import OnboardingSubmit from './onboarding/OnboardingSubmit';
+import OnboardingUpgrade from './onboarding/OnboardingUpgrade';
 
 type Props = Readonly<{
   isVisible: boolean;
@@ -18,56 +17,11 @@ const OnboardingModal = ({isVisible, onClose}: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const onboardingScreens = [
-    <OnboardingModalPage title="Welcome!">
-      <Text>
-        This is an on-chain clicker game built on Solana, created for
-        educational purposes. {'\n'}
-        {'\n'}
-      </Text>
-      <Text>
-        The source code for the Expo app and the on-chain program is fully open
-        source. {'\n'}
-      </Text>
-    </OnboardingModalPage>,
-    <OnboardingModalPage title="Getting Started">
-      <Text>
-        Deposit 0.001 SOL into a burner wallet, used to sign for transactions
-        without disrupting gameplay. {'\n'}
-        {'\n'}
-      </Text>
-      <Text>
-        The burner wallet is unsafe and uninstalling the app will lose access to
-        the wallet! {'\n'}
-      </Text>
-    </OnboardingModalPage>,
-    <OnboardingModalPage title="Harvesting Crops">
-      <Text>
-        Press the floating farm to harvest your crops. Initially, you gain +1
-        per harvest. {'\n'}
-        {'\n'}
-      </Text>
-      <Text>Each 'harvest' action is an on-chain transaction! {'\n'}</Text>
-    </OnboardingModalPage>,
-    <OnboardingModalPage title="Upgrading the farm">
-      <Text>
-        You can purchase upgrades to your farm in the Crops screen. {'\n'}
-        {'\n'}
-      </Text>
-      <Text>
-        Each crop upgrade increases the passive yield of your farm! {'\n'}
-      </Text>
-    </OnboardingModalPage>,
-    <OnboardingModalPage title="Submit your highscore">
-      <Text>
-        When finished, submit your highscore and reset your farm. {'\n'}
-        {'\n'}
-      </Text>
-      <Text>
-        If you score high enough, your farm appears in the global Top 5
-        leaderboards!
-        {'\n'}
-      </Text>
-    </OnboardingModalPage>,
+    <OnboardingIntro />,
+    <OnboardingGettingStarted />,
+    <OnboardingHarvest />,
+    <OnboardingUpgrade />,
+    <OnboardingSubmit />,
   ];
 
   return (
