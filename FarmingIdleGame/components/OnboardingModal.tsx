@@ -1,5 +1,5 @@
 import {Entypo} from '@expo/vector-icons';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import OnboardingGettingStarted from './onboarding/OnboardingGettingStarted';
@@ -29,29 +29,44 @@ const OnboardingModal = ({isVisible, onClose}: Props) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.onboardingContainer}>
-            <View style={styles.modalNavButton}>
-              {currentIndex > 0 && (
-                <TouchableOpacity
-                  onPress={() => setCurrentIndex(currentIndex - 1)}>
-                  <Entypo name="chevron-thin-left" size={24} color="black" />
-                </TouchableOpacity>
-              )}
-            </View>
             <View style={styles.onboardingContent}>
               {onboardingScreens[currentIndex]}
             </View>
-            <View style={styles.modalNavButton}>
-              {currentIndex < onboardingScreens.length - 1 && (
-                <TouchableOpacity
-                  onPress={() => setCurrentIndex(currentIndex + 1)}>
-                  <Entypo name="chevron-thin-right" size={24} color="black" />
-                </TouchableOpacity>
-              )}
-            </View>
           </View>
-          <TouchableOpacity style={{marginTop: 50}} onPress={onClose}>
-            <Text>Close</Text>
-          </TouchableOpacity>
+          <View style={styles.navContainer}>
+            <TouchableOpacity
+              disabled={currentIndex === 0}
+              onPress={() => setCurrentIndex(currentIndex - 1)}>
+              <View style={styles.navButton}>
+                {currentIndex === 0 ? null : (
+                  <Text style={styles.navButtonText}>{'<'}</Text>
+                )}
+              </View>
+            </TouchableOpacity>
+            <Text>
+              {currentIndex + 1} / {onboardingScreens.length}{' '}
+            </Text>
+            {currentIndex === onboardingScreens.length - 1 ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setCurrentIndex(0);
+                  onClose();
+                }}>
+                <View style={styles.playButton}>
+                  <View style={styles.navButton}>
+                    <Text style={styles.playButtonText}>{'✔️'}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => setCurrentIndex(currentIndex + 1)}>
+                <View style={styles.navButton}>
+                  <Text style={styles.navButtonText}>{'>'}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </View>
     </Modal>
@@ -70,14 +85,9 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    width: '100%',
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  modalNavButton: {
-    alignItems: 'center',
-    width: '10%',
   },
   centeredView: {
     flex: 1,
@@ -93,7 +103,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '80%',
-    height: 200,
+    height: 250,
+  },
+  navContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  navButton: {
+    minWidth: 150,
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  playButton: {
+    alignItems: 'center',
+  },
+  playButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  navButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'gray',
   },
 });
 
