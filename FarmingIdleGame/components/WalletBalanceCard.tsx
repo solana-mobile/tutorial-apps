@@ -34,6 +34,7 @@ export default function WalletBalanceCard({title, subtitle, balance}: Props) {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
+    minHeight: 200,
     backgroundColor: '#fff',
     padding: 20,
     marginVertical: 10,

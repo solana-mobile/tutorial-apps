@@ -6,7 +6,6 @@ import {useAuthorization} from '../hooks/AuthorizationProvider';
 import {useAppState} from '../hooks/useAppState';
 import FarmImage from './FarmImage';
 import GameButton from './GameButton';
-import OnboardingModal from './OnboardingModal';
 
 export default function EmptyFarmView() {
   const {authorizeSession} = useAuthorization();
@@ -54,6 +53,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
   banner: {
     width: '100%',
