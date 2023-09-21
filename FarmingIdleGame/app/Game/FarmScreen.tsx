@@ -9,6 +9,8 @@ import BalanceHeaderBar from '../../components/BalanceHeaderBar';
 import EmptyFarmView from '../../components/EmptyFarmView';
 import FarmView from '../../components/FarmView';
 import {GameState, useAppState} from '../../hooks/useAppState';
+import InfoCard from '../../components/InfoCard';
+import {router} from 'expo-router';
 
 export const APP_IDENTITY = {
   name: 'Farming Idle Game',

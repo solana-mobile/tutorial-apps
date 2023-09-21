@@ -7,6 +7,7 @@ import {
 import {
   Connection,
   Keypair,
+  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
   Transaction,
@@ -23,6 +24,7 @@ export type FarmAccount = IdlAccounts<FarmingGameProgram>['farm'];
 
 const FARMING_GAME_PROGRAM_ID = 'RkoKjJ7UVatbVegugEjq11Q5agPynBAZV2VhPrNp5kH';
 const FARM_SEED = 'farm';
+const DEPOSIT_LAMPORTS_AMOUNT = LAMPORTS_PER_SOL / 1000; // 0.001 SOL
 
 export function getFarmingGameProgram(
   connection: Connection,
@@ -146,6 +148,14 @@ export async function getUpgradeFarmIx(
   return upgradeFarmInstruction;
 }
 
+export function getDepositIx(owner: PublicKey, player: PublicKey) {
+  return SystemProgram.transfer({
+    fromPubkey: owner,
+    toPubkey: player,
+    lamports: DEPOSIT_LAMPORTS_AMOUNT,
+  });
+}
+
 export async function signSendAndConfirmBurnerIx(
   connection: Connection,
   burnerKeypair: Keypair,
@@ -163,10 +173,12 @@ export async function signSendAndConfirmBurnerIx(
     feePayer: burnerKeypair.publicKey,
   }).add(instruction);
 
-  return signSendAndConfirmBurnerTx(
+  // Sign with local burner keypair
+  tx.sign(burnerKeypair);
+
+  return sendAndConfirmSignedTransaction(
     connection,
-    burnerKeypair,
-    tx,
+    tx.serialize(),
     _latestBlockhash,
   );
 }
@@ -175,7 +187,7 @@ export async function signSendAndConfirmOwnerBurnerIx(
   connection: Connection,
   ownerWallet: Web3MobileWallet,
   ownerKey: PublicKey,
-  playerKeypair: Keypair,
+  burnerKeypair: Keypair,
   ix: TransactionInstruction,
   latestBlockhash?: Readonly<{
     blockhash: string;
@@ -196,18 +208,22 @@ export async function signSendAndConfirmOwnerBurnerIx(
   });
   const ownerSignedTx = signedTransactions[0];
 
-  return signSendAndConfirmBurnerTx(
+  // Sign with local burner keypair
+  ownerSignedTx.partialSign(burnerKeypair);
+
+  const rawTransaction = tx.serialize();
+  return await sendAndConfirmSignedTransaction(
     connection,
-    playerKeypair,
-    ownerSignedTx,
-    latestBlockhash,
+    rawTransaction,
+    _latestBlockhash,
   );
 }
 
-export async function signSendAndConfirmBurnerTx(
+export async function signSendAndConfirmOwnerIx(
   connection: Connection,
-  burnerKeypair: Keypair,
-  tx: Transaction,
+  ownerWallet: Web3MobileWallet,
+  ownerKey: PublicKey,
+  ix: TransactionInstruction,
   latestBlockhash?: Readonly<{
     blockhash: string;
     lastValidBlockHeight: number;
@@ -216,18 +232,41 @@ export async function signSendAndConfirmBurnerTx(
   const _latestBlockhash =
     latestBlockhash ?? (await connection.getLatestBlockhash());
 
-  // Sign with local burner keypair
-  tx.partialSign(burnerKeypair);
+  const tx = new Transaction({
+    ..._latestBlockhash,
+    feePayer: ownerKey,
+  }).add(ix);
 
-  const rawTransaction = tx.serialize();
+  // Sign the tx first with the owner wallet
+  const signedTransactions = await ownerWallet.signTransactions({
+    transactions: [tx],
+  });
+  const ownerSignedTx = signedTransactions[0];
+
+  const rawTransaction = ownerSignedTx.serialize();
+  return await sendAndConfirmSignedTransaction(
+    connection,
+    rawTransaction,
+    _latestBlockhash,
+  );
+}
+
+async function sendAndConfirmSignedTransaction(
+  connection: Connection,
+  rawTransaction: Buffer,
+  latestBlockhash: Readonly<{
+    blockhash: string;
+    lastValidBlockHeight: number;
+  }>,
+) {
   const txSig = await connection.sendRawTransaction(rawTransaction, {
     skipPreflight: true,
   });
 
   const result = await connection.confirmTransaction(
     {
-      blockhash: _latestBlockhash.blockhash,
-      lastValidBlockHeight: _latestBlockhash.lastValidBlockHeight,
+      blockhash: latestBlockhash.blockhash,
+      lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
       signature: txSig,
     },
     'processed',

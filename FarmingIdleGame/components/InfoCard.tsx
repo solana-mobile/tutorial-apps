@@ -23,12 +23,14 @@ export default function InfoCard({title, subtitle, onPress, children}: Props) {
         <View style={styles.bodySection}>
           <Text style={styles.cardTitle}>{title}</Text>
           <Text style={styles.cardSubtitle}>{subtitle}</Text>
-
           {children}
         </View>
-        <View style={styles.rightIcon}>
-          <Entypo name="chevron-thin-right" size={24} color="black" />
-        </View>
+
+        {onPress ? (
+          <View style={styles.rightIcon}>
+            <Entypo name="chevron-thin-right" size={24} color="black" />
+          </View>
+        ) : null}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -64,6 +66,7 @@ const styles = StyleSheet.create({
   },
   bodySection: {
     flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   rightIcon: {
     flexGrow: 1,
