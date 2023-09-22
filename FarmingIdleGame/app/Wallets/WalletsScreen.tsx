@@ -2,9 +2,10 @@ import {LAMPORTS_PER_SOL, PublicKey} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {router} from 'expo-router';
 import {useState} from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import InfoCard from '../../components/InfoCard';
+import ResetWalletModal from '../../components/ResetWalletModal';
 import SettingsButton from '../../components/SettingsButton';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {useAppState} from '../../hooks/useAppState';
@@ -112,42 +113,16 @@ export default function WalletsScreen() {
 
   return (
     <>
-      <Modal animationType="fade" transparent={true} visible={isModalVisible}>
-        <View style={styles.modalContainer}>
-          <View style={styles.centeredView}>
-            <Text style={styles.modalTitle}>Reset Player Wallet</Text>
-            <Text style={styles.modalBody}>
-              This action will replace the current burner wallet stored locally
-              on your device.
-              {'\n'}
-              {'\n'}
-              <Text style={{fontWeight: 'bold'}}>
-                Any existing funds will be lost!
-              </Text>
-            </Text>
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsModalVisible(false);
-                }}>
-                <View>
-                  <Text style={styles.modalButtonTitle}>Go Back</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsModalVisible(false);
-                }}>
-                <View>
-                  <Text style={[styles.modalButtonTitle, {color: '#FC3D39'}]}>
-                    Reset
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <ResetWalletModal
+        isVisible={isModalVisible}
+        onClose={() => {
+          setIsModalVisible(false);
+        }}
+        onResetPress={() => {
+          handleResetPlayerPress();
+          setIsModalVisible(false);
+        }}
+      />
       <View style={styles.container}>
         <InfoCard
           title="Main Wallet"
@@ -164,6 +139,7 @@ export default function WalletsScreen() {
           <SettingsButton
             title="Disconnect main wallet"
             onPress={handleDisconnectPress}
+            disabled={isLoading}
           />
         </View>
         <View style={styles.divider} />
@@ -184,11 +160,13 @@ export default function WalletsScreen() {
             <SettingsButton
               title="Withdraw funds"
               onPress={handleWithdrawPress}
+              disabled={isLoading}
             />
             <View style={styles.buttonSpacer} />
             <SettingsButton
               title="Deposit funds"
               onPress={handleDepositPress}
+              disabled={isLoading}
             />
           </View>
           <View style={styles.optionRow}>
@@ -199,6 +177,7 @@ export default function WalletsScreen() {
               onPress={() => {
                 setIsModalVisible(true);
               }}
+              disabled={isLoading}
             />
           </View>
         </View>
@@ -243,45 +222,5 @@ const styles = StyleSheet.create({
   },
   buttonSpacer: {
     paddingHorizontal: 4,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 12,
-  },
-  centeredView: {
-    flexDirection: 'column',
-    width: '100%',
-    backgroundColor: 'white',
-    paddingHorizontal: 36,
-    paddingTop: 36,
-    paddingBottom: 16,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    paddingBottom: 16,
-  },
-  modalBody: {
-    fontSize: 16,
-    fontWeight: '400',
-    textAlign: 'justify',
-    paddingBottom: 32,
-  },
-  modalButtonContainer: {
-    flexGrow: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  modalButtonTitle: {
-    fontWeight: 'bold',
   },
 });
