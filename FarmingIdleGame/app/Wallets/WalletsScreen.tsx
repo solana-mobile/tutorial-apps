@@ -2,24 +2,14 @@ import {LAMPORTS_PER_SOL, PublicKey} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {router} from 'expo-router';
 import {useState} from 'react';
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-import GameButton from '../../components/GameButton';
 import InfoCard from '../../components/InfoCard';
 import SettingsButton from '../../components/SettingsButton';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {useAppState} from '../../hooks/useAppState';
 import {
   getDepositIx,
-  signSendAndConfirmBurnerIx,
-  signSendAndConfirmOwnerBurnerIx,
   signSendAndConfirmOwnerIx,
 } from '../../program-utils/farmingProgram';
 
@@ -131,25 +121,27 @@ export default function WalletsScreen() {
               on your device.
               {'\n'}
               {'\n'}
-              Any existing funds will be lost!
+              <Text style={{fontWeight: 'bold'}}>
+                Any existing funds will be lost!
+              </Text>
             </Text>
-            <View style={styles.modalButtons}>
+            <View style={styles.modalButtonContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  console.log('hi');
                   setIsModalVisible(false);
                 }}>
-                <View style={{backgroundColor: 'red'}}>
-                  <Text>Close</Text>
+                <View>
+                  <Text style={styles.modalButtonTitle}>Go Back</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  console.log('hi');
                   setIsModalVisible(false);
                 }}>
-                <View style={{backgroundColor: 'red'}}>
-                  <Text>Reset</Text>
+                <View>
+                  <Text style={[styles.modalButtonTitle, {color: '#FC3D39'}]}>
+                    Reset
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -260,12 +252,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   centeredView: {
+    flexDirection: 'column',
     width: '100%',
     backgroundColor: 'white',
-    padding: 12,
+    paddingHorizontal: 36,
+    paddingTop: 36,
+    paddingBottom: 16,
     borderRadius: 20,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -275,13 +268,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     alignSelf: 'center',
+    paddingBottom: 16,
   },
   modalBody: {
     fontSize: 16,
     fontWeight: '400',
     textAlign: 'justify',
+    paddingBottom: 32,
   },
-  modalButtons: {
+  modalButtonContainer: {
+    flexGrow: 1,
     flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  modalButtonTitle: {
+    fontWeight: 'bold',
   },
 });
