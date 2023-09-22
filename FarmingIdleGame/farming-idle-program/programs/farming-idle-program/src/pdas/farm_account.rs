@@ -10,4 +10,5 @@ pub struct Farm {
     pub last_harvested: i64,
     pub harvest_points: u64,
     pub farm_upgrades: [u16; 16],
+    pub high_score: u64,
 }

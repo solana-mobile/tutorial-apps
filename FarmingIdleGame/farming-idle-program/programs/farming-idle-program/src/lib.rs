@@ -3,8 +3,9 @@ use anchor_lang::solana_program::log::sol_log_compute_units;
 
 use instructions::harvest_instruction::*;
 use instructions::initialize_farm_instruction::*;
+use instructions::initialize_leaderboard_instruction::*;
+use instructions::submit_farm_instruction::*;
 use instructions::upgrade_farm_instruction::*;
-use instructions::withdraw_instruction::*;
 
 declare_id!("RkoKjJ7UVatbVegugEjq11Q5agPynBAZV2VhPrNp5kH");
 
@@ -30,6 +31,13 @@ pub mod farming_idle_program {
         Ok(())
     }
 
+    pub fn initialize_leaderboard(ctx: Context<InitializeLeaderboard>) -> Result<()> {
+        run_initialize_leaderboard(ctx)?;
+        sol_log_compute_units();
+
+        Ok(())
+    }
+
     pub fn harvest(ctx: Context<Harvest>) -> Result<()> {
         run_harvest(ctx)?;
         sol_log_compute_units();
@@ -44,10 +52,10 @@ pub mod farming_idle_program {
         Ok(())
     }
 
-    // pub fn withdraw(ctx: Context<Withdraw>) -> Result<()> {
-    //     run_withdraw(ctx)?;
-    //     sol_log_compute_units();
+    pub fn submit_farm(ctx: Context<SubmitFarm>) -> Result<()> {
+        run_submit_farm(ctx)?;
+        sol_log_compute_units();
 
-    //     Ok(())
-    // }
+        Ok(())
+    }
 }

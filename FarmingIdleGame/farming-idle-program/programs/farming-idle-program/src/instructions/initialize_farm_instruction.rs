@@ -48,6 +48,7 @@ pub fn run_initialize_farm(ctx: Context<InitializeFarm>, bump: u8) -> Result<()>
         farm.date_created = Clock::get()?.unix_timestamp;
         farm.last_harvested = Clock::get()?.unix_timestamp;
         farm.harvest_points = 0;
+        farm.high_score = 0;
     }
     Ok(())
 }
