@@ -1,9 +1,9 @@
 import {StyleSheet, Text, View} from 'react-native';
 
-export default function LeaderboardScreen() {
+export default function SubmitScreen() {
   return (
     <View style={styles.container}>
-      <Text>Leaderboard</Text>
+      <Text>Submit your score</Text>
     </View>
   );
 }

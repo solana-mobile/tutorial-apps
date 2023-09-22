@@ -1,9 +1,9 @@
 import {StyleSheet, Text, View} from 'react-native';
 
-export default function LeaderboardScreen() {
+export default function DevResourcesScreen() {
   return (
     <View style={styles.container}>
-      <Text>Leaderboard</Text>
+      <Text>DevResources</Text>
     </View>
   );
 }
