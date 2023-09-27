@@ -24,9 +24,9 @@ pub struct InitializeLeaderboard<'info> {
 pub fn run_initialize_leaderboard(ctx: Context<InitializeLeaderboard>) -> Result<()> {
     // Create the leaderboard account
     {
-        let leaderBoardAccount = &mut ctx.accounts.leaderboard;
+        let leader_board_account = &mut ctx.accounts.leaderboard;
 
-        leaderBoardAccount.leaderboard = [LeaderboardEntry {
+        leader_board_account.leaderboard = [LeaderboardEntry {
             wallet: Pubkey::default(),
             points: 0,
         }; 5];

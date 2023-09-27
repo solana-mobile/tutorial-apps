@@ -8,5 +8,5 @@ pub struct LeaderboardEntry {
 
 #[account]
 pub struct Leaderboard {
-    pub leaderboard: [LeaderboardEntry; 5]
+    pub leaderboard: [LeaderboardEntry; 5],
 }
