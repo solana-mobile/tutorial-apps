@@ -1,0 +1,15 @@
+{
+  "name": "init-leaderboard",
+  "version": "1.0.0",
+  "description": "A script to initialize the global leaderboard account for the farming idle game.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Sulistio",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.7.1",
+    "typescript": "^5.2.2"
+  }
+}
