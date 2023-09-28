@@ -3,7 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 
 import {useAppState} from '../hooks/useAppState';
 import useAvailableHarvest from '../hooks/useAvailableHarvest';
-import {formatNumber, getCpS} from '../program-utils/cropUpgrades';
+import {formatNumber, getCpS} from '../program-utils/utils';
 import {FarmAccount} from '../program-utils/farmingProgram';
 import BalanceHeaderBar from './BalanceHeaderBar';
 import FarmImage from './FarmImage';

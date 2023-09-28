@@ -2,7 +2,7 @@ import {LAMPORTS_PER_SOL} from '@solana/web3.js';
 import {StyleSheet, Text, View} from 'react-native';
 
 import {useAppState} from '../hooks/useAppState';
-import {formatNumber} from '../program-utils/cropUpgrades';
+import {formatNumber} from '../program-utils/utils';
 
 function truncateNumberToDecimals(
   number: number,

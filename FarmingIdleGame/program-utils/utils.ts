@@ -1,6 +1,6 @@
 import {ImageSourcePropType} from 'react-native';
 
-import {FarmAccount} from '../program-utils/farmingProgram';
+import {FarmAccount} from './farmingProgram';
 
 export interface UpgradeType {
   name: string;
@@ -127,4 +127,11 @@ export function formatNumber(number: number) {
     return (number / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
   }
   return number.toFixed(0).toString();
+}
+
+export function truncatePublicKey(pubKeyString: string) {
+  return `${pubKeyString.slice(0, 5)}...${pubKeyString.slice(
+    pubKeyString.length - 5,
+    pubKeyString.length,
+  )}`;
 }

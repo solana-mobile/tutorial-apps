@@ -1,11 +1,20 @@
+import {PublicKey} from '@solana/web3.js';
+import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
+import {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+
+import GameButton from '../../components/GameButton';
+import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {useAppState} from '../../hooks/useAppState';
 import {
   fetchLeaderboardAccount,
   getFarmingGameProgram,
+  getInitializeLeaderBoardIx,
   getLeaderboardPDA,
+  LeaderboardAccount,
+  signSendAndConfirmOwnerIx,
 } from '../../program-utils/farmingProgram';
-import {useEffect} from 'react';
+import {truncatePublicKey} from '../../program-utils/utils';
 
 type LeaderboardEntryProps = Readonly<{
   rankColText: string;
@@ -22,27 +31,45 @@ function LeaderboardEntry({
 }: LeaderboardEntryProps) {
   return (
     <View style={styles.tableRow}>
-      <Text style={[isHeader && styles.headerCell, styles.rankCell]}>
+      <Text
+        style={[
+          isHeader ? styles.headerCell : styles.entryCell,
+          styles.rankCell,
+        ]}>
         {rankColText}
       </Text>
-      <Text style={[isHeader && styles.headerCell, styles.addressCell]}>
+      <Text
+        style={[
+          isHeader ? styles.headerCell : styles.entryCell,
+          styles.addressCell,
+        ]}>
         {addressColText}
       </Text>
-      <Text style={[isHeader && styles.headerCell, styles.pointsCell]}>
+      <Text
+        style={[
+          isHeader ? styles.headerCell : styles.entryCell,
+          styles.pointsCell,
+        ]}>
         {pointsColText}
       </Text>
     </View>
   );
 }
 
+type LeaderboardEntryData = Readonly<{
+  wallet: PublicKey;
+  points: number;
+}>;
+
 export default function LeaderboardScreen() {
-  const {farmAccount, connection} = useAppState();
+  const {authorizeSession} = useAuthorization();
+  const [isLoading, setIsLoading] = useState(true);
+  const [entries, setEntries] = useState<Array<LeaderboardEntryData>>([]);
+  const {owner, connection} = useAppState();
 
   useEffect(() => {
-    console.log('Attempting to fetch leaderboard');
+    console.log('=Game=: Fetching leaderboard');
     (async () => {
-      console.log('Conn check');
-
       if (connection) {
         const farmProgram = getFarmingGameProgram(connection);
         const [leaderboardPDA] = getLeaderboardPDA(farmProgram);
@@ -50,7 +77,17 @@ export default function LeaderboardScreen() {
           farmProgram,
           leaderboardPDA,
         );
-        console.log(leaderboardAccount);
+        if (leaderboardAccount) {
+          const data = leaderboardAccount.leaderboard.map(entry => {
+            return {
+              wallet: entry.wallet,
+              points: entry.points.toNumber(),
+            };
+          });
+          setEntries(data);
+        }
+
+        setIsLoading(false);
       }
     })();
   }, [connection]);
@@ -65,7 +102,56 @@ export default function LeaderboardScreen() {
           addressColText="Address"
           pointsColText="Harvest Points"
         />
+        {entries.map((leaderboardEntry, index) => {
+          return (
+            <>
+              <View style={styles.divider} />
+              <LeaderboardEntry
+                key={index}
+                isHeader={false}
+                rankColText={String(index + 1)}
+                addressColText={truncatePublicKey(
+                  leaderboardEntry.wallet.toBase58(),
+                )}
+                pointsColText={leaderboardEntry.points.toString()}
+              />
+            </>
+          );
+        })}
       </View>
+      {
+        // If leaderboard account has not been globally initialized
+        !isLoading && entries.length === 0 ? (
+          <View style={styles.initButton}>
+            <GameButton
+              text={'Initialize Leaderboard'}
+              onPress={async () => {
+                console.log('In press');
+
+                const farmProgram = getFarmingGameProgram(connection!);
+                console.log('Pre transact');
+
+                await transact(async wallet => {
+                  console.log('In transact');
+                  await authorizeSession(wallet);
+
+                  const initLeaderboardIx = await getInitializeLeaderBoardIx(
+                    farmProgram,
+                    owner!,
+                  );
+
+                  await signSendAndConfirmOwnerIx(
+                    connection!,
+                    wallet,
+                    owner!,
+                    initLeaderboardIx,
+                  );
+                });
+              }}
+            />
+          </View>
+        ) : null
+      }
     </View>
   );
 }
@@ -83,19 +169,34 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
+    paddingVertical: 16,
   },
   headerCell: {
     fontSize: 22,
     fontWeight: 'bold',
   },
+  entryCell: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#444444',
+  },
   rankCell: {
     flexBasis: '20%',
   },
   addressCell: {
-    flexBasis: '30%',
+    flexBasis: '40%',
   },
   pointsCell: {
-    flexBasis: '50%',
+    flexBasis: '40%',
     textAlign: 'right',
+  },
+  initButton: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderColor: 'rgba(111, 111, 111, 0.5)',
   },
 });

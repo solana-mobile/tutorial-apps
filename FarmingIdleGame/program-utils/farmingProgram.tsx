@@ -21,6 +21,8 @@ import {
 } from '../farming-idle-program/target/types/farming_idle_program';
 
 export type FarmAccount = IdlAccounts<FarmingGameProgram>['farm'];
+export type LeaderboardEntry =
+  IdlAccounts<FarmingGameProgram>['leaderboard']['leaderboard'];
 
 const FARMING_GAME_PROGRAM_ID = 'RkoKjJ7UVatbVegugEjq11Q5agPynBAZV2VhPrNp5kH';
 const FARM_SEED = 'farm';
@@ -183,6 +185,23 @@ export function getDepositIx(owner: PublicKey, player: PublicKey) {
     toPubkey: player,
     lamports: DEPOSIT_LAMPORTS_AMOUNT,
   });
+}
+
+export async function getInitializeLeaderBoardIx(
+  program: Program<FarmingGameProgram>,
+  owner: PublicKey,
+) {
+  const [leaderboardPDA] = getLeaderboardPDA(program);
+  const initializeLeaderboardInstruction = await program.methods
+    .initializeLeaderboard()
+    .accounts({
+      leaderboard: leaderboardPDA,
+      feePayer: owner,
+      systemProgram: SystemProgram.programId,
+    })
+    .instruction();
+
+  return initializeLeaderboardInstruction;
 }
 
 export async function signSendAndConfirmBurnerIx(

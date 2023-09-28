@@ -15,7 +15,7 @@
     "@craftzdog/react-native-buffer": "^6.0.5",
     "@react-native-async-storage/async-storage": "1.18.2",
     "@solana-mobile/mobile-wallet-adapter-protocol": "^2.0.1",
-    "@solana-mobile/mobile-wallet-adapter-protocol-web3js": "^2.0.1",
+    "@solana-mobile/mobile-wallet-adapter-protocol-web3js": "^2.0.2",
     "@solana/web3.js": "^1.78.4",
     "@types/react": "~18.2.14",
     "bs58": "^5.0.0",

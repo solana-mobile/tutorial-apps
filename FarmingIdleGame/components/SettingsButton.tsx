@@ -8,7 +8,7 @@ type Props = Readonly<{
   textColor?: string;
 }>;
 
-export default function GameButton({
+export default function SettingsButton({
   title,
   disabled,
   onPress,

@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 
-import {getCpS} from '../program-utils/cropUpgrades';
+import {getCpS} from '../program-utils/utils';
 import {FarmAccount} from '../program-utils/farmingProgram';
 
 type Props = Readonly<{

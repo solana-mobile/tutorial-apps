@@ -13,13 +13,7 @@ import {
   getDepositIx,
   signSendAndConfirmOwnerIx,
 } from '../../program-utils/farmingProgram';
-
-function truncatePublicKey(pubKeyString: string) {
-  return `${pubKeyString.slice(0, 5)}...${pubKeyString.slice(
-    pubKeyString.length - 5,
-    pubKeyString.length,
-  )}`;
-}
+import {truncatePublicKey} from '../../program-utils/utils';
 
 function bs64To58(bs64String: string) {
   const bytes = Buffer.from(bs64String, 'base64');

@@ -1,10 +1,6 @@
 import {ImageBackground, StyleSheet, Text, View} from 'react-native';
 
-import {
-  formatNumber,
-  getNextCost,
-  UpgradeType,
-} from '../program-utils/cropUpgrades';
+import {formatNumber, getNextCost, UpgradeType} from '../program-utils/utils';
 import {FarmAccount} from '../program-utils/farmingProgram';
 import GameButton from './GameButton';
 
