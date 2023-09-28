@@ -24,6 +24,7 @@ export type FarmAccount = IdlAccounts<FarmingGameProgram>['farm'];
 
 const FARMING_GAME_PROGRAM_ID = 'RkoKjJ7UVatbVegugEjq11Q5agPynBAZV2VhPrNp5kH';
 const FARM_SEED = 'farm';
+const LEADERBOARD_SEED = 'leaderboard';
 const DEPOSIT_LAMPORTS_AMOUNT = LAMPORTS_PER_SOL / 1000; // 0.001 SOL
 
 export function getFarmingGameProgram(
@@ -80,6 +81,34 @@ export async function fetchFarmAccount(
     return null;
   }
 }
+
+export function getLeaderboardPDA(program: Program<FarmingGameProgram>) {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from(LEADERBOARD_SEED)],
+    new PublicKey(program.programId),
+  );
+}
+
+export async function fetchLeaderboardAccount(
+  program: Program<FarmingGameProgram>,
+  leaderboardPDA: PublicKey,
+) {
+  try {
+    return await program.account.leaderboard.fetch(leaderboardPDA, 'processed');
+  } catch (e: any) {
+    // Check for the specific uninitialized account error message
+    if (
+      typeof e?.message === 'string' &&
+      e.message.startsWith('Account does not exist or has no data')
+    ) {
+      console.log('Leaderboard account has not been initialized.');
+      return null;
+    }
+    console.error(e);
+    return null;
+  }
+}
+
 export async function getInitializeFarmIx(
   program: Program<FarmingGameProgram>,
   farmPDA: PublicKey,
