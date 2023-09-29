@@ -3,11 +3,9 @@ import {StyleSheet, Text, View} from 'react-native';
 
 import {useAppState} from '../hooks/useAppState';
 import useAvailableHarvest from '../hooks/useAvailableHarvest';
-import {formatNumber, getCpS} from '../program-utils/utils';
 import {FarmAccount} from '../program-utils/farmingProgram';
-import BalanceHeaderBar from './BalanceHeaderBar';
+import {getCpS} from '../program-utils/utils';
 import FarmImage from './FarmImage';
-import GameButton from './GameButton';
 import GameDialogBox from './GameDialogBox';
 
 type Props = Readonly<{
@@ -45,7 +43,8 @@ export default function FarmView({farmAccount}: Props) {
       <View style={styles.container}>
         <View style={styles.pointsHeader}>
           <Text style={styles.headerText}>
-            Tap to harvest {Math.floor(availableHarvest)} 🌾
+            Tap to harvest{' '}
+            {availableHarvest === 0 ? '1' : Math.floor(availableHarvest)} 🌾
           </Text>
           <Text style={styles.headerSubtext}>
             (+{Math.floor(getCpS(farmAccount))} 🌾 per second)

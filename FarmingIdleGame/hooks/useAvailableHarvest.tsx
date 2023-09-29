@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 
-import {getCpS} from '../program-utils/utils';
 import {FarmAccount} from '../program-utils/farmingProgram';
+import {getCpS} from '../program-utils/utils';
 
 type Props = Readonly<{
   farmAccount: FarmAccount;
@@ -16,7 +16,7 @@ export default function useAvailableHarvest({farmAccount}: Props) {
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); // Empty array ensures effect is only run on mount and unmount
+  }, []);
 
   const elapsedSeconds = farmAccount
     ? currentTime - farmAccount.lastHarvested.toNumber()
