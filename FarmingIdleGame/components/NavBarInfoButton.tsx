@@ -1,12 +1,5 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import React, {useState} from 'react';
-import {
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 
 type Props = Readonly<{
   onPress: () => void;

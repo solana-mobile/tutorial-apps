@@ -1,10 +1,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {Stack} from 'expo-router';
 import {Tabs} from 'expo-router/tabs';
 import {useState} from 'react';
 
-import HowToCrops from '../../components/HowToCrops';
-import HowToPlay from '../../components/HowToPlay';
 import NavBarInfoButton from '../../components/NavBarInfoButton';
 import OnboardingModal from '../../components/OnboardingModal';
 

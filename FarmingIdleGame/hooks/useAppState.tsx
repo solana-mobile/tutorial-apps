@@ -3,6 +3,10 @@ import {Web3MobileWallet} from '@solana-mobile/mobile-wallet-adapter-protocol-we
 import {create} from 'zustand';
 
 import {
+  fetchBurnerKeypair,
+  generateNewBurnerKeypair,
+} from '../utils/burnerWalletUtils';
+import {
   FarmAccount,
   fetchFarmAccount,
   fetchLeaderboardAccount,
@@ -16,11 +20,7 @@ import {
   getWithdrawIx,
   signSendAndConfirmBurnerIx,
   signSendAndConfirmOwnerBurnerIx,
-} from '../program-utils/farmingProgram';
-import {
-  fetchBurnerKeypair,
-  generateNewBurnerKeypair,
-} from '../store/burnerWalletUtils';
+} from '../utils/programUtils';
 
 // Game State
 export enum GameState {

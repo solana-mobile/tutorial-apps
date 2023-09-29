@@ -1,6 +1,6 @@
 import {Entypo} from '@expo/vector-icons';
-import {router, Slot, Stack} from 'expo-router';
-import {StyleSheet, View} from 'react-native';
+import {router, Stack} from 'expo-router';
+import {StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 export default function WalletsLayout() {

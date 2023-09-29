@@ -1,6 +1,6 @@
 import {ImageSourcePropType} from 'react-native';
 
-import {FarmAccount} from './farmingProgram';
+import {FarmAccount} from './programUtils';
 
 export interface UpgradeType {
   name: string;
@@ -10,30 +10,6 @@ export interface UpgradeType {
   baseCost: number;
   coinPerUpgrade: number;
 }
-
-// export const UPGRADES: UpgradeType[] = [
-//   {
-//     imageUri:
-//       'https://static.wikia.nocookie.net/minecraft_gamepedia/images/a/af/Apple_JE3_BE3.png/revision/latest?cb=20200519232834',
-//     description: 'Apple',
-//     baseCost: 15,
-//     coinPerUpgrade: 1,
-//   },
-//   {
-//     imageUri:
-//       'https://static.wikia.nocookie.net/minecraft_gamepedia/images/7/75/Wheat_JE2_BE2.png/revision/latest?cb=20190521034232',
-//     description: 'Wheat',
-//     baseCost: 10,
-//     amount: 1,
-//   },
-//   {
-//     imageUri:
-//       'https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/3a/Sugar_Cane_%28item%29_JE3_BE3.png/revision/latest?cb=20210317220330',
-//     description: 'Sugar Cane',
-//     baseCost: 10,
-//     amount: 1,
-//   },
-// ];
 
 export const UPGRADES: UpgradeType[] = [
   {

@@ -1,7 +1,7 @@
 import {ImageBackground, StyleSheet, Text, View} from 'react-native';
 
-import {formatNumber, getNextCost, UpgradeType} from '../program-utils/utils';
-import {FarmAccount} from '../program-utils/farmingProgram';
+import {FarmAccount} from '../utils/programUtils';
+import {formatNumber, getNextCost, UpgradeType} from '../utils/utils';
 import GameButton from './GameButton';
 
 type Props = Readonly<{
