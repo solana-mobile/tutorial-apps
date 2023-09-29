@@ -41,7 +41,7 @@ export default function EmptyFarmView() {
       </View>
       <FarmImage isHarvesting={false} />
       <GameButton
-        text="Deposit 0.001 SOL"
+        text="Deposit 0.01 SOL"
         disabled={isFetching}
         onPress={handleDeposit}
       />
