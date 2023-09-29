@@ -11,6 +11,7 @@ import {
   getHarvestIx,
   getInitializeFarmIx,
   getLeaderboardPDA,
+  getSubmitFarmIx,
   getUpgradeFarmIx,
   getWithdrawIx,
   signSendAndConfirmBurnerIx,
@@ -63,6 +64,9 @@ interface GameStore {
   upgradeFarm: (upgradeIndex: number, amount: number) => Promise<void>;
   withdrawPlayerBalance: (mwaWallet: Web3MobileWallet) => Promise<void>;
   resetPlayer: () => Promise<void>;
+  submitLeaderboard: (wallet: Web3MobileWallet) => Promise<void>;
+  refreshLeaderboard: () => Promise<void>;
+  refreshFarmAccount: () => Promise<void>;
   clearAppState: () => Promise<void>;
 }
 
@@ -315,22 +319,64 @@ export const useAppState = create<GameStore>()((set, get) => {
         await setupProgramState(owner, newPlayerKeypair, connection);
       }
     },
-    refreshLeaderboard: async (connection: Connection) => {
-      const farmProgram = getFarmingGameProgram(connection);
-      const [leaderboardPDA] = getLeaderboardPDA(farmProgram);
-      fetchLeaderboardAccount(farmProgram, leaderboardPDA).then(
-        leaderboardAccount => {
-          if (leaderboardAccount) {
-            const data = leaderboardAccount.leaderboard.map(entry => {
-              return {
-                wallet: entry.wallet,
-                points: entry.points.toNumber(),
-              };
-            });
-            set({leaderboardEntries: data});
+    submitLeaderboard: async (wallet: Web3MobileWallet) => {
+      const {owner, connection, farmPDA, playerKeypair} = get();
+      if (connection && owner && farmPDA && playerKeypair) {
+        const farmProgram = getFarmingGameProgram(connection);
+
+        const submitFarmIx = await getSubmitFarmIx(
+          farmProgram,
+          farmPDA,
+          owner,
+          playerKeypair.publicKey,
+        );
+
+        await signSendAndConfirmOwnerBurnerIx(
+          connection,
+          wallet,
+          owner,
+          playerKeypair,
+          submitFarmIx,
+        );
+      }
+    },
+    refreshLeaderboard: async () => {
+      const {connection} = get();
+
+      if (connection) {
+        const farmProgram = getFarmingGameProgram(connection);
+        const [leaderboardPDA] = getLeaderboardPDA(farmProgram);
+        fetchLeaderboardAccount(farmProgram, leaderboardPDA).then(
+          leaderboardAccount => {
+            if (leaderboardAccount) {
+              const data = leaderboardAccount.leaderboard.map(entry => {
+                return {
+                  wallet: entry.wallet,
+                  points: entry.points.toNumber(),
+                };
+              });
+              set({leaderboardEntries: data});
+            }
+          },
+        );
+      }
+    },
+    refreshFarmAccount: async () => {
+      const {connection, owner, playerKeypair} = get();
+
+      if (connection && owner && playerKeypair) {
+        const farmProgram = getFarmingGameProgram(connection);
+        const [farmPDA] = getFarmPDA(
+          farmProgram,
+          owner,
+          playerKeypair.publicKey,
+        );
+        fetchFarmAccount(farmProgram, farmPDA).then(farmAccount => {
+          if (farmAccount) {
+            set({farmAccount, harvestPoints: farmAccount.harvestPoints});
           }
-        },
-      );
+        });
+      }
     },
     clearAppState: async () => {
       set({

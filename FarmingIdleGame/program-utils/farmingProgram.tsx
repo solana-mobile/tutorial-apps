@@ -157,7 +157,7 @@ export async function getWithdrawIx(
   return SystemProgram.transfer({
     fromPubkey: player,
     toPubkey: owner,
-    lamports: playerBalance,
+    lamports: playerBalance, // 5000 for fee,
   });
 }
 
@@ -280,7 +280,7 @@ export async function signSendAndConfirmOwnerBurnerIx(
   // Sign with local burner keypair
   ownerSignedTx.partialSign(burnerKeypair);
 
-  const rawTransaction = tx.serialize();
+  const rawTransaction = ownerSignedTx.serialize();
   return await sendAndConfirmSignedTransaction(
     connection,
     rawTransaction,

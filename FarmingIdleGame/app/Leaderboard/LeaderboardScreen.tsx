@@ -1,6 +1,6 @@
 import {PublicKey} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import GameButton from '../../components/GameButton';
@@ -17,6 +17,7 @@ import {
   signSendAndConfirmOwnerIx,
 } from '../../program-utils/farmingProgram';
 import {truncatePublicKey} from '../../program-utils/utils';
+import React from 'react';
 
 type LeaderboardEntryProps = Readonly<{
   rankColText: string;
@@ -61,8 +62,45 @@ function LeaderboardEntry({
 export default function LeaderboardScreen() {
   const {authorizeSession} = useAuthorization();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const {owner, connection, farmAccount, playerKeypair, leaderboardEntries} =
-    useAppState();
+  const {
+    owner,
+    connection,
+    farmAccount,
+    playerKeypair,
+    leaderboardEntries,
+    submitLeaderboard,
+    refreshLeaderboard,
+    refreshFarmAccount,
+  } = useAppState();
+
+  const handleSubmitPress = useCallback(async () => {
+    if (!connection || !owner || !playerKeypair) {
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await transact(async wallet => {
+        await authorizeSession(wallet);
+        await submitLeaderboard(wallet);
+      });
+
+      // Refresh local state after submission
+      refreshLeaderboard();
+      refreshFarmAccount();
+    } catch (e) {
+      console.error('Error trying to submit high score: ' + e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [
+    authorizeSession,
+    connection,
+    owner,
+    playerKeypair,
+    refreshFarmAccount,
+    refreshLeaderboard,
+    submitLeaderboard,
+  ]);
 
   return (
     <View style={styles.container}>
@@ -78,10 +116,9 @@ export default function LeaderboardScreen() {
         {leaderboardEntries !== null &&
           leaderboardEntries.map((leaderboardEntry, index) => {
             return (
-              <>
+              <React.Fragment key={index}>
                 <View style={styles.divider} />
                 <LeaderboardEntry
-                  key={index}
                   isHeader={false}
                   rankColText={String(index + 1)}
                   addressColText={truncatePublicKey(
@@ -89,7 +126,7 @@ export default function LeaderboardScreen() {
                   )}
                   pointsColText={leaderboardEntry.points.toString()}
                 />
-              </>
+              </React.Fragment>
             );
           })}
 
@@ -110,41 +147,7 @@ export default function LeaderboardScreen() {
           <GameButton
             disabled={!farmAccount || !connection || isSubmitting}
             text="🏆 Submit your score 🏆"
-            onPress={async () => {
-              if (!connection || !owner || !playerKeypair) {
-                return;
-              }
-              setIsSubmitting(true);
-              try {
-                await transact(async wallet => {
-                  await authorizeSession(wallet);
-                  const farmProgram = getFarmingGameProgram(connection);
-                  const [farmPDA] = getFarmPDA(
-                    farmProgram,
-                    owner,
-                    playerKeypair.publicKey,
-                  );
-                  const submitFarmIx = await getSubmitFarmIx(
-                    farmProgram,
-                    farmPDA,
-                    owner,
-                    playerKeypair.publicKey,
-                  );
-
-                  await signSendAndConfirmOwnerBurnerIx(
-                    connection,
-                    wallet,
-                    owner,
-                    playerKeypair,
-                    submitFarmIx,
-                  );
-                });
-              } catch (e) {
-                console.error('Error trying to submit high score: ' + e);
-              } finally {
-                setIsSubmitting(false);
-              }
-            }}
+            onPress={handleSubmitPress}
           />
         </View>
       )}
