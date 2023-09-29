@@ -30,7 +30,7 @@ export default function SettingsScreen() {
           title="✅ Submit highscore"
           subtitle={'Finish the game by recording your score.'}
           onPress={() => {
-            router.push('/Submit');
+            router.push('/Leaderboard');
           }}
         />
         <InfoCard
