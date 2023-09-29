@@ -137,6 +137,8 @@ export const useAppState = create<GameStore>()((set, get) => {
               points: entry.points.toNumber(),
             };
           });
+          // Sort entries in descending order
+          data.sort((a, b) => b.points - a.points);
           set({leaderboardEntries: data});
         }
       },
@@ -355,6 +357,8 @@ export const useAppState = create<GameStore>()((set, get) => {
                   points: entry.points.toNumber(),
                 };
               });
+              // Sort the entries in descending order
+              data.sort((a, b) => b.points - a.points);
               set({leaderboardEntries: data});
             }
           },
