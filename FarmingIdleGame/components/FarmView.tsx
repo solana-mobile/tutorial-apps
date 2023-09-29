@@ -3,8 +3,8 @@ import {StyleSheet, Text, View} from 'react-native';
 
 import {useAppState} from '../hooks/useAppState';
 import useAvailableHarvest from '../hooks/useAvailableHarvest';
-import {FarmAccount} from '../program-utils/farmingProgram';
-import {getCpS} from '../program-utils/utils';
+import {FarmAccount} from '../utils/programUtils';
+import {getCpS} from '../utils/utils';
 import FarmImage from './FarmImage';
 import GameDialogBox from './GameDialogBox';
 

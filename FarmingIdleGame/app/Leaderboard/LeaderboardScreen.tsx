@@ -10,8 +10,8 @@ import {
   getFarmingGameProgram,
   getInitializeLeaderBoardIx,
   signSendAndConfirmOwnerIx,
-} from '../../program-utils/farmingProgram';
-import {truncatePublicKey} from '../../program-utils/utils';
+} from '../../utils/programUtils';
+import {truncatePublicKey} from '../../utils/utils';
 
 type LeaderboardEntryProps = Readonly<{
   rankColText: string;

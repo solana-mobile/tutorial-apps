@@ -12,8 +12,8 @@ import {useAppState} from '../../hooks/useAppState';
 import {
   getDepositIx,
   signSendAndConfirmOwnerIx,
-} from '../../program-utils/farmingProgram';
-import {truncatePublicKey} from '../../program-utils/utils';
+} from '../../utils/programUtils';
+import {truncatePublicKey} from '../../utils/utils';
 
 function bs64To58(bs64String: string) {
   const bytes = Buffer.from(bs64String, 'base64');

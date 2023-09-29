@@ -3,7 +3,7 @@ import {FlatList, ImageBackground, StyleSheet, View} from 'react-native';
 import BalanceHeaderBar from '../../components/BalanceHeaderBar';
 import CropCard from '../../components/CropCard';
 import {GameState, useAppState} from '../../hooks/useAppState';
-import {UPGRADES} from '../../program-utils/utils';
+import {UPGRADES} from '../../utils/utils';
 
 export default function CropsScreen() {
   const {farmAccount, gameState, upgradeFarm} = useAppState();

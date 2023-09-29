@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
-import {formatNumber} from '../program-utils/utils';
+import {formatNumber} from '../utils/utils';
 
 type Props = Readonly<{
   isHarvesting: boolean;
