@@ -8,6 +8,7 @@ import {FarmAccount} from '../program-utils/farmingProgram';
 import BalanceHeaderBar from './BalanceHeaderBar';
 import FarmImage from './FarmImage';
 import GameButton from './GameButton';
+import GameDialogBox from './GameDialogBox';
 
 type Props = Readonly<{
   farmAccount: FarmAccount;
@@ -16,12 +17,20 @@ type Props = Readonly<{
 export default function FarmView({farmAccount}: Props) {
   const {harvestFarm} = useAppState();
   const [isHarvesting, setIsHarvesting] = useState(false);
+  const [gainedPoints, setGainedPoints] = useState<number | null>(null);
   const {availableHarvest} = useAvailableHarvest({farmAccount});
 
   const handleHarvest = useCallback(async () => {
     setIsHarvesting(true);
     try {
-      await harvestFarm();
+      const harvestedPoints = await harvestFarm();
+
+      setGainedPoints(harvestedPoints);
+
+      // Display gained points for a brief time, then hide
+      setTimeout(() => {
+        setGainedPoints(null);
+      }, 2000); // for 2 seconds, adjust as needed
     } catch (error: any) {
       if (error instanceof Error) {
         console.error(`Failed to harvest: ${error.message}`);
@@ -43,6 +52,10 @@ export default function FarmView({farmAccount}: Props) {
           </Text>
         </View>
         <FarmImage isHarvesting={isHarvesting} onPress={handleHarvest} />
+        <GameDialogBox
+          isHarvesting={isHarvesting}
+          gainedPoints={gainedPoints}
+        />
       </View>
     </>
   );
@@ -87,5 +100,19 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: '#333', // Dark gray text color
+  },
+  banner: {
+    backgroundColor: 'rgba(1, 1, 1, 0.4)',
+    borderRadius: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginTop: 32,
+  },
+  header: {
+    fontSize: 24,
+    color: 'white',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontWeight: 'bold',
   },
 });

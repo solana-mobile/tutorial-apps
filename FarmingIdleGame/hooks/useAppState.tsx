@@ -60,7 +60,7 @@ interface GameStore {
   // Actions
   onConnect: (owner: PublicKey, connection: Connection) => Promise<void>;
   initializeFarm: (mwaWallet: Web3MobileWallet) => Promise<void>;
-  harvestFarm: () => Promise<void>;
+  harvestFarm: () => Promise<number>;
   upgradeFarm: (upgradeIndex: number, amount: number) => Promise<void>;
   withdrawPlayerBalance: (mwaWallet: Web3MobileWallet) => Promise<void>;
   resetPlayer: () => Promise<void>;
@@ -224,20 +224,34 @@ export const useAppState = create<GameStore>()((set, get) => {
     harvestFarm: async () => {
       console.log('=Game=: Harvesting farm');
 
-      const {owner, playerKeypair, farmPDA, bump, connection, gameState} =
-        get();
+      const {
+        owner,
+        playerKeypair,
+        farmPDA,
+        bump,
+        connection,
+        gameState,
+        farmAccount,
+      } = get();
       if (gameState !== GameState.Initialized) {
         throw new Error(
           'Game state must be initialized to harvest a new farm.',
         );
       }
-      if (owner && playerKeypair && farmPDA && bump && connection) {
+      if (
+        owner &&
+        playerKeypair &&
+        farmPDA &&
+        bump &&
+        connection &&
+        farmAccount
+      ) {
         const farmProgram = getFarmingGameProgram(connection);
         const [harvestIx, latestBlockhash] = await Promise.all([
           getHarvestIx(farmProgram, farmPDA, playerKeypair.publicKey),
           connection.getLatestBlockhash(),
         ]);
-
+        const beforePoints = farmAccount.harvestPoints;
         try {
           await signSendAndConfirmBurnerIx(
             connection,
@@ -246,14 +260,23 @@ export const useAppState = create<GameStore>()((set, get) => {
             latestBlockhash,
           );
 
-          const farmAccount = await fetchFarmAccount(farmProgram, farmPDA);
+          const fetchedFarmAccount = await fetchFarmAccount(
+            farmProgram,
+            farmPDA,
+          );
 
           set({
-            farmAccount,
+            farmAccount: fetchedFarmAccount,
           });
+
+          return fetchedFarmAccount
+            ? fetchedFarmAccount.harvestPoints - beforePoints
+            : 0;
         } catch (e) {
           console.error(e);
         }
+
+        return 0;
       }
     },
     upgradeFarm: async (upgradeIndex: number, amount: number) => {
