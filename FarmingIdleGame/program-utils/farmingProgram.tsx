@@ -204,6 +204,27 @@ export async function getInitializeLeaderBoardIx(
   return initializeLeaderboardInstruction;
 }
 
+export async function getSubmitFarmIx(
+  program: Program<FarmingGameProgram>,
+  farmPDA: PublicKey,
+  owner: PublicKey,
+  player: PublicKey,
+) {
+  const [leaderboardPDA] = getLeaderboardPDA(program);
+  const submitFarmInstruction = await program.methods
+    .submitFarm()
+    .accounts({
+      farm: farmPDA,
+      leaderboard: leaderboardPDA,
+      owner: owner,
+      player: player,
+      systemProgram: SystemProgram.programId,
+    })
+    .instruction();
+
+  return submitFarmInstruction;
+}
+
 export async function signSendAndConfirmBurnerIx(
   connection: Connection,
   burnerKeypair: Keypair,

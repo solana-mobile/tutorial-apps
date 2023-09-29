@@ -5,10 +5,12 @@ import {create} from 'zustand';
 import {
   FarmAccount,
   fetchFarmAccount,
+  fetchLeaderboardAccount,
   getFarmingGameProgram,
   getFarmPDA,
   getHarvestIx,
   getInitializeFarmIx,
+  getLeaderboardPDA,
   getUpgradeFarmIx,
   getWithdrawIx,
   signSendAndConfirmBurnerIx,
@@ -29,6 +31,11 @@ export enum GameState {
   Initialized = 'Initialized',
 }
 
+type LeaderboardEntryData = Readonly<{
+  wallet: PublicKey;
+  points: number;
+}>;
+
 interface GameStore {
   // Program Model
   owner: PublicKey | null;
@@ -39,6 +46,7 @@ interface GameStore {
   bump: number | null;
   farmAccount: FarmAccount | null;
   gameState: GameState;
+  leaderboardEntries: Array<LeaderboardEntryData> | null;
 
   // Balance
   ownerBalance: number | null;
@@ -114,6 +122,22 @@ export const useAppState = create<GameStore>()((set, get) => {
         console.log(`Error getting balance [${err}]`);
       });
 
+    // Fetch global leaderboard
+    const [leaderboardPDA] = getLeaderboardPDA(farmProgram);
+    fetchLeaderboardAccount(farmProgram, leaderboardPDA).then(
+      leaderboardAccount => {
+        if (leaderboardAccount) {
+          const data = leaderboardAccount.leaderboard.map(entry => {
+            return {
+              wallet: entry.wallet,
+              points: entry.points.toNumber(),
+            };
+          });
+          set({leaderboardEntries: data});
+        }
+      },
+    );
+
     set({
       owner,
       playerKeypair,
@@ -143,6 +167,7 @@ export const useAppState = create<GameStore>()((set, get) => {
     bump: null,
     farmAccount: null,
     gameState: GameState.Loading,
+    leaderboardEntries: null,
     ownerBalance: null,
     playerBalance: null,
     ownerListener: null,
@@ -289,6 +314,23 @@ export const useAppState = create<GameStore>()((set, get) => {
         const newPlayerKeypair = await generateNewBurnerKeypair(owner);
         await setupProgramState(owner, newPlayerKeypair, connection);
       }
+    },
+    refreshLeaderboard: async (connection: Connection) => {
+      const farmProgram = getFarmingGameProgram(connection);
+      const [leaderboardPDA] = getLeaderboardPDA(farmProgram);
+      fetchLeaderboardAccount(farmProgram, leaderboardPDA).then(
+        leaderboardAccount => {
+          if (leaderboardAccount) {
+            const data = leaderboardAccount.leaderboard.map(entry => {
+              return {
+                wallet: entry.wallet,
+                points: entry.points.toNumber(),
+              };
+            });
+            set({leaderboardEntries: data});
+          }
+        },
+      );
     },
     clearAppState: async () => {
       set({

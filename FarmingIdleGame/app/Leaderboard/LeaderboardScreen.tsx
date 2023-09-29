@@ -9,8 +9,11 @@ import {useAppState} from '../../hooks/useAppState';
 import {
   fetchLeaderboardAccount,
   getFarmingGameProgram,
+  getFarmPDA,
   getInitializeLeaderBoardIx,
   getLeaderboardPDA,
+  getSubmitFarmIx,
+  signSendAndConfirmOwnerBurnerIx,
   signSendAndConfirmOwnerIx,
 } from '../../program-utils/farmingProgram';
 import {truncatePublicKey} from '../../program-utils/utils';
@@ -55,68 +58,41 @@ function LeaderboardEntry({
   );
 }
 
-type LeaderboardEntryData = Readonly<{
-  wallet: PublicKey;
-  points: number;
-}>;
-
 export default function LeaderboardScreen() {
   const {authorizeSession} = useAuthorization();
-  const [isLoading, setIsLoading] = useState(true);
-  const [entries, setEntries] = useState<Array<LeaderboardEntryData>>([]);
-  const {owner, connection, farmAccount} = useAppState();
-
-  useEffect(() => {
-    console.log('=Game=: Fetching leaderboard');
-    (async () => {
-      if (connection) {
-        const farmProgram = getFarmingGameProgram(connection);
-        const [leaderboardPDA] = getLeaderboardPDA(farmProgram);
-        const leaderboardAccount = await fetchLeaderboardAccount(
-          farmProgram,
-          leaderboardPDA,
-        );
-        if (leaderboardAccount) {
-          const data = leaderboardAccount.leaderboard.map(entry => {
-            return {
-              wallet: entry.wallet,
-              points: entry.points.toNumber(),
-            };
-          });
-          setEntries(data);
-        }
-
-        setIsLoading(false);
-      }
-    })();
-  }, [connection]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {owner, connection, farmAccount, playerKeypair, leaderboardEntries} =
+    useAppState();
 
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.header}>🏆 All Time</Text>
         <LeaderboardEntry
+          key={'header'}
           isHeader={true}
           rankColText="Rank"
           addressColText="Address"
           pointsColText="Harvest Points"
         />
-        {entries.map((leaderboardEntry, index) => {
-          return (
-            <>
-              <View style={styles.divider} />
-              <LeaderboardEntry
-                key={index}
-                isHeader={false}
-                rankColText={String(index + 1)}
-                addressColText={truncatePublicKey(
-                  leaderboardEntry.wallet.toBase58(),
-                )}
-                pointsColText={leaderboardEntry.points.toString()}
-              />
-            </>
-          );
-        })}
+        {leaderboardEntries !== null &&
+          leaderboardEntries.map((leaderboardEntry, index) => {
+            return (
+              <>
+                <View style={styles.divider} />
+                <LeaderboardEntry
+                  key={index}
+                  isHeader={false}
+                  rankColText={String(index + 1)}
+                  addressColText={truncatePublicKey(
+                    leaderboardEntry.wallet.toBase58(),
+                  )}
+                  pointsColText={leaderboardEntry.points.toString()}
+                />
+              </>
+            );
+          })}
+
         {owner && (
           <>
             <View style={styles.divider} />
@@ -129,22 +105,52 @@ export default function LeaderboardScreen() {
           </>
         )}
       </View>
-      {!isLoading && (
+      {leaderboardEntries && (
         <View style={styles.submitButton}>
           <GameButton
-            disabled={!farmAccount}
+            disabled={!farmAccount || !connection || isSubmitting}
             text="🏆 Submit your score 🏆"
             onPress={async () => {
-              await transact(async wallet => {
-                await authorizeSession(wallet);
-              });
+              if (!connection || !owner || !playerKeypair) {
+                return;
+              }
+              setIsSubmitting(true);
+              try {
+                await transact(async wallet => {
+                  await authorizeSession(wallet);
+                  const farmProgram = getFarmingGameProgram(connection);
+                  const [farmPDA] = getFarmPDA(
+                    farmProgram,
+                    owner,
+                    playerKeypair.publicKey,
+                  );
+                  const submitFarmIx = await getSubmitFarmIx(
+                    farmProgram,
+                    farmPDA,
+                    owner,
+                    playerKeypair.publicKey,
+                  );
+
+                  await signSendAndConfirmOwnerBurnerIx(
+                    connection,
+                    wallet,
+                    owner,
+                    playerKeypair,
+                    submitFarmIx,
+                  );
+                });
+              } catch (e) {
+                console.error('Error trying to submit high score: ' + e);
+              } finally {
+                setIsSubmitting(false);
+              }
             }}
           />
         </View>
       )}
       {
         // If leaderboard account has not been globally initialized
-        !isLoading && entries.length === 0 ? (
+        !leaderboardEntries ? (
           <View style={styles.initButton}>
             <GameButton
               text={'Initialize Leaderboard'}
