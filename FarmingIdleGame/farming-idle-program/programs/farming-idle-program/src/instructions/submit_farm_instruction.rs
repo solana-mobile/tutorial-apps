@@ -65,6 +65,7 @@ pub fn run_submit_farm(ctx: Context<SubmitFarm>) -> Result<()> {
             // Reset the farm points and upgrades
             farm.last_harvested = Clock::get()?.unix_timestamp;
             farm.farm_upgrades = [0; 16];
+            farm.harvest_points = 0;
         }
     }
 
