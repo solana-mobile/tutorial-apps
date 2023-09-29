@@ -8,8 +8,8 @@
     "userInterfaceStyle": "light",
     "scheme": ["farmingidlegame"],
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/image_1024.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
