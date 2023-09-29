@@ -1,5 +1,4 @@
-import {Entypo} from '@expo/vector-icons';
-import {useCallback, useState} from 'react';
+import {useState} from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import OnboardingGettingStarted from './onboarding/OnboardingGettingStarted';

@@ -1,23 +1,17 @@
-import {PublicKey} from '@solana/web3.js';
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
+import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import GameButton from '../../components/GameButton';
 import {useAuthorization} from '../../hooks/AuthorizationProvider';
 import {useAppState} from '../../hooks/useAppState';
 import {
-  fetchLeaderboardAccount,
   getFarmingGameProgram,
-  getFarmPDA,
   getInitializeLeaderBoardIx,
-  getLeaderboardPDA,
-  getSubmitFarmIx,
-  signSendAndConfirmOwnerBurnerIx,
   signSendAndConfirmOwnerIx,
 } from '../../program-utils/farmingProgram';
 import {truncatePublicKey} from '../../program-utils/utils';
-import React from 'react';
 
 type LeaderboardEntryProps = Readonly<{
   rankColText: string;
