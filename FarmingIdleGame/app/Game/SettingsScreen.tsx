@@ -12,7 +12,7 @@ export default function SettingsScreen() {
       <BalanceHeaderBar />
       <View style={styles.container}>
         <InfoCard
-          title="Wallet Management"
+          title="⚙️ Wallet Management"
           subtitle={'Manage your connected wallets.'}
           onPress={() => {
             router.push('/Wallets');
@@ -20,21 +20,21 @@ export default function SettingsScreen() {
         />
 
         <InfoCard
-          title="Leaderboards"
+          title="🏆 Leaderboards"
           subtitle={'View the global Top 5 farms.'}
           onPress={() => {
             router.push('/Leaderboard');
           }}
         />
         <InfoCard
-          title="Submit highscore"
+          title="✅ Submit highscore"
           subtitle={'Finish the game by recording your score.'}
           onPress={() => {
             router.push('/Submit');
           }}
         />
         <InfoCard
-          title="Dev Resources"
+          title="🎓 Dev Resources"
           subtitle={'Learn about how this app is built.'}
           onPress={() => {
             router.push('/DevResources');

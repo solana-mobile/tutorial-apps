@@ -11,7 +11,6 @@ import {
   getFarmingGameProgram,
   getInitializeLeaderBoardIx,
   getLeaderboardPDA,
-  LeaderboardAccount,
   signSendAndConfirmOwnerIx,
 } from '../../program-utils/farmingProgram';
 import {truncatePublicKey} from '../../program-utils/utils';
@@ -65,7 +64,7 @@ export default function LeaderboardScreen() {
   const {authorizeSession} = useAuthorization();
   const [isLoading, setIsLoading] = useState(true);
   const [entries, setEntries] = useState<Array<LeaderboardEntryData>>([]);
-  const {owner, connection} = useAppState();
+  const {owner, connection, farmAccount} = useAppState();
 
   useEffect(() => {
     console.log('=Game=: Fetching leaderboard');
@@ -95,7 +94,7 @@ export default function LeaderboardScreen() {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.header}>All Time</Text>
+        <Text style={styles.header}>🏆 All Time</Text>
         <LeaderboardEntry
           isHeader={true}
           rankColText="Rank"
@@ -118,7 +117,31 @@ export default function LeaderboardScreen() {
             </>
           );
         })}
+        {owner && (
+          <>
+            <View style={styles.divider} />
+            <LeaderboardEntry
+              isHeader={false}
+              rankColText={'You'}
+              addressColText={truncatePublicKey(owner.toBase58())}
+              pointsColText={farmAccount?.harvestPoints.toString() ?? '0'}
+            />
+          </>
+        )}
       </View>
+      {!isLoading && (
+        <View style={styles.submitButton}>
+          <GameButton
+            disabled={!farmAccount}
+            text="🏆 Submit your score 🏆"
+            onPress={async () => {
+              await transact(async wallet => {
+                await authorizeSession(wallet);
+              });
+            }}
+          />
+        </View>
+      )}
       {
         // If leaderboard account has not been globally initialized
         !isLoading && entries.length === 0 ? (
@@ -198,5 +221,9 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomWidth: 1,
     borderColor: 'rgba(111, 111, 111, 0.5)',
+  },
+  submitButton: {
+    alignSelf: 'center',
+    paddingVertical: 32,
   },
 });
