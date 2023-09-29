@@ -275,9 +275,8 @@ export const useAppState = create<GameStore>()((set, get) => {
         } catch (e) {
           console.error(e);
         }
-
-        return 0;
       }
+      return 0;
     },
     upgradeFarm: async (upgradeIndex: number, amount: number) => {
       console.log('=Game=: Upgrading farm');

@@ -1,6 +1,6 @@
 import {transact} from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import {useCallback, useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import {useAuthorization} from '../hooks/AuthorizationProvider';
 import {useAppState} from '../hooks/useAppState';
