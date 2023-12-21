@@ -20,29 +20,31 @@ Our tutorials range from introductory to advanced levels, covering a variety of 
 Each tutorial is self-contained with specific setup instructions. Refer to individual tutorials for detailed steps. Generally, you will need:
 
 - Node.js and npm/yarn installed.
-- React Native environment setup.
-- Access to a Solana devnet wallet.
+- Android development environment setup.
+- React Native or Expo environment setup
 
 ## 💡 Features and Learning Goals
 
 Our tutorials are designed to help you:
 
-- Understand Solana network interaction with React Native.
+- Understand the core SDKs from the Solana Mobile Stack
 - Learn wallet integration and transaction processing.
-- Explore NFT minting and management on Solana.
-- Develop skills in using Solana's various programs and tools.
+- Recognize good design patterns common to many Solana dApps
+- Explore common ecosystem SDKs and tooling like Metaplex and Anchor.
 
 ## 📖 Additional Resources
 
 - [Solana Documentation](https://docs.solana.com/)
+- [Solana Mobile Documentation](https://docs.solanamobile.com/getting-started/intro)
 - [React Native Documentation](https://reactnative.dev/docs/getting-started)
+- [Android Developer Documentation](https://developer.android.com/design-for-safety/privacy-sandbox/setup)
 
 ## 🔄 Updates and Contributions
 
-We regularly update our tutorials to keep up with Solana's and React Native's latest developments. To contribute or suggest improvements:
+To contribute or suggest improvements:
 
 - Open an issue or pull request on this GitHub repository.
-- Follow contribution guidelines outlined in each tutorial.
+- Reach out on Twitter or Discord.
 
 ## 📄 License
 
