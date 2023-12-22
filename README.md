@@ -8,12 +8,12 @@ Welcome to the Solana Mobile Tutorial Apps repository! This repository is a cura
 
 Our tutorials range from introductory to advanced levels, covering a variety of topics and use-cases in Solana Mobile dApp development. Below is a snapshot of what each tutorial offers:
 
-| Tutorial                                                                                                                                                                                                                                                                | Description                                                                                                                                                                                             |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **First Mobile dApp** <br> Introductory Level - React Native <br><br> **[> View tutorial](https://docs.solanamobile.com/react-native/first_app_tutorial)** <br> **[> Browse code](https://docs.solanamobile.com/react-native/first_app_tutorial)**                      | Build off the [Solana Mobile dApp Scaffold](https://github.com/solana-mobile/solana-mobile-dapp-scaffold). Learn to use Mobile Wallet Adapter, connect to devnet, and interact with the Solana network. |
-| **AnchorCounterDapp** <br> Intermediate Level - React Native with Anchor <br><br> **[> View tutorial](https://docs.solanamobile.com/react-native/anchor_integration)** <br> **[> Browse code](https://docs.solanamobile.com/react-native/anchor_integration)**          | Integrate an Anchor Program into a React Native dApp. Learn about Anchor Wallet and Provider creation, and transaction handling.                                                                        |
-| **MobileNFTMinter** <br> **[> View tutorial](https://docs.solanamobile.com/react-native/mobile_nft_minter_tutorial)** <br> **[> Browse code](https://docs.solanamobile.com/react-native/mobile_nft_minter_tutorial)** <br><br> Advanced Level - NFT Minting             | Dive into NFT minting using Metaplex JS in a React Native project. Understand image file handling and IPFS uploading through NFT.storage.                                                               |
-| **SolanaReactNativeTutorial** <br> Introductory Level - Hello World in Solana <br><br> **[> View tutorial](https://docs.solanamobile.com/react-native/hello_world_tutorial)** <br> **[> Browse code](https://docs.solanamobile.com/react-native/hello_world_tutorial)** | Set up a React Native Android project with Mobile Wallet Adapter library. Learn wallet connection, airdrop requests, balance checks, and transaction signing.                                           |
+| Tutorial                                                                                                                                                                                                                 | Description                                                                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **First Mobile dApp** <br> <br>[> View tutorial](https://docs.solanamobile.com/react-native/first_app_tutorial) <br> [> Browse code](https://docs.solanamobile.com/react-native/first_app_tutorial)                      | Build off the [Solana Mobile dApp Scaffold](https://github.com/solana-mobile/solana-mobile-dapp-scaffold). Learn to use Mobile Wallet Adapter, connect to devnet, and interact with the Solana network. <br><br> • Introductory Level <br> • React Native <br><br> |
+| **AnchorCounterDapp** <br><br> [> View tutorial](https://docs.solanamobile.com/react-native/anchor_integration) <br> [> Browse code](https://docs.solanamobile.com/react-native/anchor_integration)                      | Integrate an Anchor Program into a React Native dApp. Learn about Anchor Wallet and Provider creation, and transaction handling. <br><br> • Intermediate Level <br> • React Native <br> • Anchor <br><br>                                                          |
+| **MobileNFTMinter** <br><br> [> View tutorial](https://docs.solanamobile.com/react-native/mobile_nft_minter_tutorial) <br> [> Browse code](https://docs.solanamobile.com/react-native/mobile_nft_minter_tutorial) <br>   | Dive into NFT minting using Metaplex JS in a React Native project. Understand image file handling and IPFS uploading through NFT.storage. <br><br> • Advanced Level <br> • Metaplex JS SDK <br> • IPFS <br><br>                                                    |
+| **SolanaReactNativeTutorial** <br><br> [> View tutorial](https://docs.solanamobile.com/react-native/hello_world_tutorial) <br> [> Browse code](https://docs.solanamobile.com/react-native/hello_world_tutorial) <br><br> | Set up a React Native Android project with Mobile Wallet Adapter library. Learn wallet connection, airdrop requests, balance checks, and transaction signing. <br><br> • Introductory Level <br> • Hello World in Solana <br><br>                                  |
 
 ## 🛠️ Building and Running Tutorials
 
@@ -21,7 +21,7 @@ Each tutorial is self-contained with specific setup instructions. Refer to indiv
 
 - Node.js and npm/yarn installed.
 - Android development environment setup.
-- React Native or Expo environment setup
+- [React Native](https://docs.solanamobile.com/react-native/setup) or [Expo](https://docs.solanamobile.com/react-native/expo) environment setup
 
 ## 💡 Features and Learning Goals
 
@@ -45,7 +45,3 @@ To contribute or suggest improvements:
 
 - Open an issue or pull request on this GitHub repository.
 - Reach out on Twitter or Discord.
-
-## 📄 License
-
-[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
