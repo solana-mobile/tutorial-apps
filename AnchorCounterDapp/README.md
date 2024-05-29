@@ -1,35 +1,94 @@
-# AnchorCounterDapp
+# Solana Mobile Expo Template
 
-A reference React Native dApp that shows how to use and call Anchor Programs in React Native, using Mobile Wallet Adapter as a signer.
+This template is a ready-to-go Expo dApp that offers:
 
-## Featured Libraries/Technology
+- Pre-installed standard SDKs like Mobile Wallet Adapter and `@solana/web3.js`
+- Required polyfills like `react-native-get-random-values` and `Buffer` installed.
+- Simple React UI Components like `ConnectWalletButton`, `RequestAirdropButton`, `SignMessageButton`.
+
+**This is only fully functional on Android.**
+
+## Tech Stack
+
 - [Mobile Wallet Adapter](https://github.com/solana-mobile/mobile-wallet-adapter/tree/main/js/packages/mobile-wallet-adapter-protocol) for connecting to wallets and signing transactions/messages
 - [web3.js](https://solana-labs.github.io/solana-web3.js/) for constructing transactions and an RPC `connection` client.
-- [@coral-xyz/anchor](https://github.com/coral-xyz/anchor) for a TypeScript client for Anchor Programs
 
 <table>
   <tr>
     <td align="center">
-      <img src="https://github.com/solana-mobile/tutorial-apps/assets/18451967/8589ccbb-a959-44fc-80c3-b642a8a8f712" alt="AnchorDapp Screenshot 1" width=300 />
+      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/3d83d3dc-ab65-4a2c-881d-8a229f34e392" alt="Scaffold dApp Screenshot 1" width=300 />
     </td>
     <td align="center">
-      <img src="https://github.com/solana-mobile/tutorial-apps/assets/18451967/0b9fa5b7-a23c-44e8-b387-9289ade03eac" alt="AnchorDapp Screenshot 3" width=300 />
+      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/2fd69bd4-834d-45e1-8c7a-f80b5b576c96" alt="Scaffold dApp Screenshot 3" width=300 />
     </td>
     <td align="center">
-      <img src="https://github.com/solana-mobile/tutorial-apps/assets/18451967/d44e703f-01b4-419c-8d2a-0d0a9c6c1cc3" alt="AnchorDapp Screenshot 2" width=300 />
+      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/cdd93c12-d9ff-4739-81af-92da5b90303a" alt="Scaffold dApp Screenshot 2" width=300 />
     </td>
   </tr>
 </table>
 
+<CTAButton label="View on GitHub" to="https://github.com/solana-mobile/solana-mobile-dapp-scaffold" />
+
 ## Prerequisites
 
-If you haven't setup a React Native development environment for Android, you'll need to do that first. Follow the [Prerequisite Setup Guide](https://docs.solanamobile.com/getting-started/development-setup).
+- An [Expo](https://expo.dev/) account.
+- React Native and Android Envrionment [setup](https://docs.solanamobile.com/getting-started/development-setup)
+  - An Android device/emulator.
+  - Install an MWA compliant wallet app on your device/emulator.
 
-Follow the guide to make sure you:
-- setup your Android and React Native development environment.
-- have an Android device or emulator.
-- Basic understanding of MWA and React Native.
-   
-## Tutorial
+## Usage
 
-See a [full guide](https://docs.solanamobile.com/react-native/anchor_integration) that explains how to integrate with Anchor on the doc site.
+### Initialization
+
+Initialize the template with:
+
+```
+yarn create expo-app --template @solana-mobile/solana-mobile-expo-template
+```
+
+Choose your project name then navigate into the directory.
+
+### Build and run the app
+
+Follow the **["Running the app"](https://docs.solanamobile.com/react-native/expo#running-the-app)** section in the Expo Setup guide to launch the template as a custom development build.
+
+## Troubleshooting
+
+- `Metro has encountered an error: While trying to resolve module @solana-mobile/mobile-wallet-adapter-protocol...`
+
+  - This is an on-going issue when using `npm install` to install the Expo template.
+  - To mitigate, clean your project dependencies and reinstall with `yarn install`
+
+- `The package 'solana-mobile-wallet-adapter-protocol' doesn't seem to be linked. Make sure: ...`
+
+  - Ensure you are _NOT_ using Expo Go to run your app.
+  - You need to be using an [Expo custom development build](https://docs.solanamobile.com/react-native/expo#custom-development-build), rather than Expo Go.
+
+- `failed to connect to...`
+
+  - This is an Expo error that can occur when trying to connect to the dev server on certain Wifi networks.
+  - To fix, try starting the dev server with the `--tunnel` command (`npx expo start --dev-client --tunnel`)
+
+- `Error: crypto.getRandomValues() not supported`
+  - This is a polyfill issue when trying to use certain functions from the `@solana/web3.js` in a React Native/Expo environment.
+  - To fix, ensure your App properly imports and uses the polyfills like in this [guide](http://docs.solanamobile.com/react-native/expo#step-3-update-appjs-with-polyfills).
+
+<br>
+
+- `error Failed to load configuration of your project.`
+  - Same as above, but for `yarn`. [Uninstall and reinstall](https://github.com/react-native-community/cli#updating-the-cli) the CLI through yarn.
+
+<br>
+
+- `Looks like your iOS environment is not properly set`:
+  - You can ignore this during template initialization and build the Android app as normal. This template is only compatible with Android.
+
+<br>
+
+- `Usage Error: It seems you are trying to add a package using a https:... url; we now require package names to be explicitly specified.`
+  - This error happens on certain versions of `yarn`, and occurs if you try to initialize the template through the Github repo URL, rather than the npm package. To avoid this, use the `@solana-mobile/solana-mobile-dapp-scaffold` package as specified, or downgrade your `yarn` version to classic (1.22.x).
+
+<br>
+
+- `error Couldn't find the ".../@solana-mobile/solana-mobile-dapp-scaffold/template.config.js file inside "@solana-mobile/solana-mobile-dapp-scaffold" template.`
+  - This is a [known error](https://github.com/react-native-community/cli/issues/1924) that occurs with certain versions of `yarn` (>= 3.5.0). It is fixed by running the cli command with the `--npm` flag or downgrading your version of `yarn`.
