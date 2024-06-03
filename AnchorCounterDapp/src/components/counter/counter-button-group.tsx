@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
-import { useCounterProgram, useCounterProgram3 } from "./counter-data-access";
+import { useCounterProgram } from "./counter-data-access";
 import { useAuthorization } from "../../utils/useAuthorization";
 
 export default function CounterButtonGroup() {
