@@ -1,10 +1,6 @@
-# Solana Mobile Expo Template
+# Anchor Counter Dapp
 
-This template is a ready-to-go Expo dApp that offers:
-
-- Pre-installed standard SDKs like Mobile Wallet Adapter and `@solana/web3.js`
-- Required polyfills like `react-native-get-random-values` and `Buffer` installed.
-- Simple React UI Components like `ConnectWalletButton`, `RequestAirdropButton`, `SignMessageButton`.
+A reference app that shows to use and invoke Anchor Programs in react Native, using Mobile Wallet Adapter as a signer.
 
 **This is only fully functional on Android.**
 
@@ -16,13 +12,13 @@ This template is a ready-to-go Expo dApp that offers:
 <table>
   <tr>
     <td align="center">
-      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/3d83d3dc-ab65-4a2c-881d-8a229f34e392" alt="Scaffold dApp Screenshot 1" width=300 />
+      <img src="./images/screenshot1.png" alt="Screenshot 1" width=300 />
     </td>
     <td align="center">
-      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/2fd69bd4-834d-45e1-8c7a-f80b5b576c96" alt="Scaffold dApp Screenshot 3" width=300 />
+      <img src="./images/screenshot2.png" alt="Screenshot 2" width=300 />
     </td>
     <td align="center">
-      <img src="https://github.com/solana-mobile/solana-mobile-dapp-scaffold/assets/18451967/cdd93c12-d9ff-4739-81af-92da5b90303a" alt="Scaffold dApp Screenshot 2" width=300 />
+      <img src="./images/screenshot3.png" alt="Screenshot 3" width=300 />
     </td>
   </tr>
 </table>
@@ -38,19 +34,19 @@ This template is a ready-to-go Expo dApp that offers:
 
 ## Usage
 
-### Initialization
-
-Initialize the template with:
-
-```
-yarn create expo-app --template @solana-mobile/solana-mobile-expo-template
-```
-
-Choose your project name then navigate into the directory.
-
 ### Build and run the app
 
 Follow the **["Running the app"](https://docs.solanamobile.com/react-native/expo#running-the-app)** section in the Expo Setup guide to launch the template as a custom development build.
+
+### Initialization
+
+Initialize the example app with:
+
+```
+npx expo start --dev-client
+```
+
+Choose your project name then navigate into the directory.
 
 ## Troubleshooting
 
