@@ -12,13 +12,13 @@ A reference app that shows to use and invoke Anchor Programs in react Native, us
 <table>
   <tr>
     <td align="center">
-      <img src="./images/screenshot1.png" alt="Screenshot 1" width=300 />
+      <img src="./images/v2/screenshot1.png" alt="Screenshot 1" width=300 />
     </td>
     <td align="center">
-      <img src="./images/screenshot2.png" alt="Screenshot 2" width=300 />
+      <img src="./images/v2/screenshot2.png" alt="Screenshot 2" width=300 />
     </td>
     <td align="center">
-      <img src="./images/screenshot3.png" alt="Screenshot 3" width=300 />
+      <img src="./images/v2/screenshot3.png" alt="Screenshot 3" width=300 />
     </td>
   </tr>
 </table>

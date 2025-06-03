@@ -1,7 +1,4 @@
-import { transact } from "@solana-mobile/mobile-wallet-adapter-protocol";
-import { Web3MobileWallet } from "@solana-mobile/mobile-wallet-adapter-protocol-web3js";
 import {
-  Keypair,
   PublicKey,
   Transaction,
   VersionedTransaction,
