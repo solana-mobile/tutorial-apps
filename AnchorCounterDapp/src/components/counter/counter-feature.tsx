@@ -15,7 +15,12 @@ export function CounterFeature() {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
-    justifyContent: "center",
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 24,
   },
 });

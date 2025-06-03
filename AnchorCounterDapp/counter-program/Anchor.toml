@@ -1,17 +1,18 @@
 [toolchain]
+package_manager = "yarn"
 
 [features]
-seeds = false
+resolution = true
 skip-lint = false
 
-[programs.localnet]
-counter_program = "ADraQ2ENAbVoVZhvH5SPxWPsF2hH5YmFcgx61TafHuwu"
+[programs.devnet]
+counter_program = "3sFQdgDGSKryFsFFB5dF9NoN94cEatjM37g6v8zAJWm6"
 
 [registry]
-url = "https://api.apr.dev"
+url = "https://api.devnet.solana.com"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

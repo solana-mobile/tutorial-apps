@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AnchorCounterDapp",
-    "slug": "AnchorCounterDapp",
+    "name": "anchor-counter-dapp",
+    "slug": "anchor-counter-dapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,21 +15,22 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.solanamobile.tutorial.anchorcounterdapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.michaelsulistio.AnchorCounterDapp"
+      "package": "com.solanamobile.tutorial.anchorcounterdapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "62dc83d7-696a-4388-b802-e258cb9cc5de"
+        "projectId": ""
       }
     }
   }
