@@ -35,6 +35,8 @@ export default function App() {
       ...MD3LightTheme.colors,
       ...LightTheme.colors,
     },
+  // Ensure MD3 font variants are preserved (regular, medium, bold, heavy)
+  fonts: MD3LightTheme.fonts,
   };
   const CombinedDarkTheme = {
     ...MD3DarkTheme,
@@ -43,6 +45,8 @@ export default function App() {
       ...MD3DarkTheme.colors,
       ...DarkTheme.colors,
     },
+  // Ensure MD3 font variants are preserved (regular, medium, bold, heavy)
+  fonts: MD3DarkTheme.fonts,
   };
   return (
     <QueryClientProvider client={queryClient}>

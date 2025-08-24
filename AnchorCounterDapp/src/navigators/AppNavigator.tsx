@@ -33,7 +33,7 @@ import {
  */
 
 type RootStackParamList = {
-  Home: undefined;
+  HomeStack: undefined;
   Settings: undefined;
   // 🔥 Your screens go here
 };
@@ -49,7 +49,7 @@ const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
   return (
-    <Stack.Navigator initialRouteName={"Home"}>
+    <Stack.Navigator initialRouteName={"HomeStack"}>
       <Stack.Screen
         name="HomeStack"
         component={HomeNavigator}

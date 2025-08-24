@@ -1,7 +1,10 @@
+#![allow(deprecated)]
+#![allow(unexpected_cfgs)]
+
 use anchor_lang::prelude::*;
 use std::ops::DerefMut;
 
-declare_id!("ADraQ2ENAbVoVZhvH5SPxWPsF2hH5YmFcgx61TafHuwu");
+declare_id!("J59JrEwy2LXNdME3hurENgiNDJosRM1YHLUECc1JTijh");
 
 #[program]
 pub mod basic_counter {

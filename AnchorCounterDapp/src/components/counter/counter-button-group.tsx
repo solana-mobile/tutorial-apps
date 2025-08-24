@@ -1,4 +1,3 @@
-import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { useCounterProgram } from "./counter-data-access";
@@ -11,9 +10,10 @@ export default function CounterButtonGroup() {
 
   // Is wallet connected and account fetched
   const isReady = selectedAccount && counterAccount.isSuccess;
+  const isCounterInitialized = !!counterAccount.data;
 
-  const incrementDisabled = !isReady || !counterAccount.data;
-  const initializeDisabled = !isReady || !!counterAccount.data;
+  const incrementDisabled = !isReady || !isCounterInitialized;
+  const initializeDisabled = !isReady || isCounterInitialized;
 
   return (
     <>
@@ -23,6 +23,7 @@ export default function CounterButtonGroup() {
             mode="contained-tonal"
             style={styles.incrementButton}
             disabled={incrementDisabled}
+            loading={incrementCounter.isPending}
             onPress={() => incrementCounter.mutateAsync(1)}
           >
             +1
@@ -31,6 +32,7 @@ export default function CounterButtonGroup() {
             mode="contained-tonal"
             style={styles.incrementButton}
             disabled={incrementDisabled}
+            loading={incrementCounter.isPending}
             onPress={() => incrementCounter.mutateAsync(5)}
           >
             +5
@@ -39,6 +41,7 @@ export default function CounterButtonGroup() {
             mode="contained-tonal"
             style={styles.incrementButton}
             disabled={incrementDisabled}
+            loading={incrementCounter.isPending}
             onPress={() => incrementCounter.mutateAsync(10)}
           >
             +10
@@ -47,10 +50,18 @@ export default function CounterButtonGroup() {
         <Button
           mode="contained"
           disabled={initializeDisabled}
+          loading={initializeCounter.isPending}
           style={styles.initializeButton}
           onPress={() => initializeCounter.mutateAsync()}
         >
-          Initialize Counter
+          {!selectedAccount 
+            ? "Connect Wallet First" 
+            : isCounterInitialized 
+              ? "Counter Initialized" 
+              : counterAccount.isLoading 
+                ? "Loading..." 
+                : "Initialize Counter"
+          }
         </Button>
       </View>
     </>

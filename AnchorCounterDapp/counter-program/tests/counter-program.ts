@@ -1,12 +1,12 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
-import { CounterProgram } from "../target/types/counter_program";
+import { BasicCounter } from "../target/types/basic_counter";
 
 describe("counter-program", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
-  const program = anchor.workspace.CounterProgram as Program<CounterProgram>;
+  const program = anchor.workspace.BasicCounter as Program<BasicCounter>;
 
   it("Is initialized!", async () => {
     // Add your test here.

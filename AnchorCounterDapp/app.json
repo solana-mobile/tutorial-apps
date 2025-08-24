@@ -15,22 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zeesh.AnchorCounterDapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.michaelsulistio.AnchorCounterDapp"
+      "package": "com.zeesh.AnchorCounterDapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "62dc83d7-696a-4388-b802-e258cb9cc5de"
+        "projectId": "5c150e28-99d1-4f32-8af1-70253a89a1fa"
       }
-    }
+    },
+    "owner": "zeesh"
   }
 }
